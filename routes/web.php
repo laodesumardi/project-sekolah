@@ -4,6 +4,10 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\PPDBController;
+use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\AcademicController;
+use App\Http\Controllers\LibraryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,35 +36,38 @@ Route::prefix('ppdb')->name('ppdb.')->group(function () {
 });
 
 // News Routes
-Route::get('/berita', [\App\Http\Controllers\NewsController::class, 'index'])->name('news');
-Route::get('/berita/{news}', [\App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
-Route::get('/berita/kategori/{category}', [\App\Http\Controllers\NewsController::class, 'category'])->name('news.category');
-Route::get('/berita/tag/{tag}', [\App\Http\Controllers\NewsController::class, 'tag'])->name('news.tag');
-Route::get('/feed', [\App\Http\Controllers\NewsController::class, 'feed'])->name('news.feed');
+Route::get('/berita', [NewsController::class, 'index'])->name('news');
+Route::get('/berita/{news}', [NewsController::class, 'show'])->name('news.show');
+Route::get('/berita/kategori/{category}', [NewsController::class, 'category'])->name('news.category');
+Route::get('/berita/tag/{tag}', [NewsController::class, 'tag'])->name('news.tag');
+Route::get('/feed', [NewsController::class, 'feed'])->name('news.feed');
 
 // Gallery Routes
-Route::get('/galeri', [\App\Http\Controllers\GalleryController::class, 'index'])->name('gallery');
-Route::get('/galeri/data', [\App\Http\Controllers\GalleryController::class, 'getGalleryData'])->name('gallery.data');
-Route::get('/galeri/{gallery}/download', [\App\Http\Controllers\GalleryController::class, 'download'])->name('gallery.download');
+Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery');
+Route::get('/galeri/data', [GalleryController::class, 'getGalleryData'])->name('gallery.data');
+Route::get('/galeri/{gallery}/download', [GalleryController::class, 'download'])->name('gallery.download');
+
+// Library Routes
+Route::get('/perpustakaan', [LibraryController::class, 'index'])->name('library');
 
 // Academic Routes
 Route::prefix('akademik')->name('academic.')->group(function () {
-    Route::get('/kurikulum', [\App\Http\Controllers\AcademicController::class, 'curriculum'])->name('curriculum');
-    Route::get('/ekstrakurikuler', [\App\Http\Controllers\AcademicController::class, 'extracurriculars'])->name('extracurriculars');
-    Route::get('/ekstrakurikuler/{extracurricular}', [\App\Http\Controllers\AcademicController::class, 'extracurricularDetail'])->name('extracurricular.detail');
-    Route::get('/guru', [\App\Http\Controllers\AcademicController::class, 'teachers'])->name('teachers');
-    Route::get('/guru/{teacher}', [\App\Http\Controllers\AcademicController::class, 'teacherDetail'])->name('teacher.detail');
-    Route::get('/kalender', [\App\Http\Controllers\AcademicController::class, 'calendar'])->name('calendar');
-    Route::get('/prestasi', [\App\Http\Controllers\AcademicController::class, 'achievements'])->name('achievements');
+    Route::get('/kurikulum', [AcademicController::class, 'curriculum'])->name('curriculum');
+    Route::get('/ekstrakurikuler', [AcademicController::class, 'extracurriculars'])->name('extracurriculars');
+    Route::get('/ekstrakurikuler/{extracurricular}', [AcademicController::class, 'extracurricularDetail'])->name('extracurricular.detail');
+    Route::get('/guru', [AcademicController::class, 'teachers'])->name('teachers');
+    Route::get('/guru/{teacher}', [AcademicController::class, 'teacherDetail'])->name('teacher.detail');
+    Route::get('/kalender', [AcademicController::class, 'calendar'])->name('calendar');
+    Route::get('/prestasi', [AcademicController::class, 'achievements'])->name('achievements');
     
     // Detail routes
-    Route::get('/ekstrakurikuler/{extracurricular}', [\App\Http\Controllers\AcademicController::class, 'extracurricularDetail'])->name('extracurricular-detail');
-    Route::get('/guru/{teacher}', [\App\Http\Controllers\AcademicController::class, 'teacherDetail'])->name('teacher-detail');
+    Route::get('/ekstrakurikuler/{extracurricular}', [AcademicController::class, 'extracurricularDetail'])->name('extracurricular-detail');
+    Route::get('/guru/{teacher}', [AcademicController::class, 'teacherDetail'])->name('teacher-detail');
     
     // Download/Export routes
-    Route::get('/silabus/{subject}/download', [\App\Http\Controllers\AcademicController::class, 'downloadSyllabus'])->name('syllabus.download');
-    Route::get('/jadwal-ekskul/export', [\App\Http\Controllers\AcademicController::class, 'exportExtracurricularSchedule'])->name('extracurricular.export');
-    Route::get('/kalender/export', [\App\Http\Controllers\AcademicController::class, 'exportCalendar'])->name('calendar.export');
+    Route::get('/silabus/{subject}/download', [AcademicController::class, 'downloadSyllabus'])->name('syllabus.download');
+    Route::get('/jadwal-ekskul/export', [AcademicController::class, 'exportExtracurricularSchedule'])->name('extracurricular.export');
+    Route::get('/kalender/export', [AcademicController::class, 'exportCalendar'])->name('calendar.export');
 });
 
 // API Routes for Modal
@@ -73,23 +80,13 @@ Route::get('/tentang', function () {
 })->name('tentang');
 
 Route::get('/akademik', function () {
-    return view('welcome');
+    return redirect()->route('academic.curriculum');
 })->name('akademik');
 
-Route::get('/ppdb', function () {
-    return view('welcome');
-})->name('ppdb');
-
-Route::get('/galeri', function () {
-    return view('welcome');
-})->name('galeri');
-
-Route::get('/berita', function () {
-    return view('welcome');
-})->name('berita');
+Route::get('/ppdb', [PPDBController::class, 'index'])->name('ppdb');
 
 Route::get('/kontak', function () {
-    return view('welcome');
+    return view('frontend.contact.index');
 })->name('kontak');
 
 Route::middleware(['auth', 'active'])->group(function () {

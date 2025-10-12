@@ -19,13 +19,13 @@
                     berprestasi, dan berakhlak mulia untuk masa depan yang gemilang.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="#ppdb" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    <a href="{{ route('ppdb') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
                         Daftar Sekarang
                     </a>
-                    <a href="#tentang" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105">
+                    <a href="{{ route('about') }}" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105">
                         Pelajari Lebih Lanjut
                     </a>
-                                </div>
+                </div>
                                         </div>
             <div class="animate-slide-up">
                 <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
@@ -58,7 +58,7 @@
                     Dengan fasilitas modern, tenaga pendidik yang berpengalaman, dan kurikulum yang disesuaikan dengan 
                     perkembangan zaman, kami siap membimbing setiap siswa untuk meraih prestasi terbaik mereka.
                 </p>
-                <a href="#akademik" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <a href="{{ route('academic.curriculum') }}" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
                     Selengkapnya
                 </a>
             </div>
@@ -133,10 +133,10 @@
             dan wujudkan impian pendidikan terbaik untuk masa depan mereka.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#ppdb" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+            <a href="{{ route('ppdb') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
                 Daftar PPDB 2024
             </a>
-            <a href="#kontak" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105">
+            <a href="{{ route('kontak') }}" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105">
                 Hubungi Kami
             </a>
         </div>

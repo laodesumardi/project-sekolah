@@ -1,0 +1,16 @@
+# Placeholder Images for Library Organizational Structure
+
+This directory contains placeholder images for the library organizational structure:
+
+- kepala-sekolah.jpg - Photo of Muhammad Said Buton, SH, Gr (School Principal)
+- komite.jpg - Photo of Abas Siolont (School Committee)
+- kepala-perpustakaan.jpg - Photo of Rusmin T., S.Pd, Gr (Head of Library)
+- dewan-guru.jpg - Photo of Teachers' Council
+- layanan-teknis.jpg - Photo of Sahelna Batmomolin, S.Pd (Technical Services)
+- layanan-pemustaka.jpg - Photo of Amelia Takimpo, S.Pd, Gr (User Services)
+- koordinator-literasi.jpg - Photo of Rubiati Wabula, SS, Gr (Literacy Coordinator)
+- duta-siswa.jpg - Photo of Villia Aininda Putri Purnama (Student Literacy Ambassador)
+- duta-tendik.jpg - Photo of Suci Asyurah Khas, S.Pd (Educational Staff Literacy Ambassador)
+- duta-guru.jpg - Photo of Nyaun Elly, S.Pd (Teacher Literacy Ambassador)
+
+Note: These are placeholder files. In a real implementation, you would replace these with actual photos of the staff members.

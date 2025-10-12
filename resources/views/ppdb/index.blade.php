@@ -364,51 +364,193 @@
 
         <div class="max-w-4xl mx-auto">
             <div class="space-y-4">
+                <!-- FAQ 1: Cara Mendaftar -->
                 <div class="bg-white rounded-lg shadow-lg">
-                    <button class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none" onclick="toggleFAQ(1)">
+                    <button class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none hover:bg-gray-50 transition-colors duration-200" data-faq="1">
                         <span class="font-semibold text-gray-900">Bagaimana cara mendaftar PPDB?</span>
-                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" id="icon-1">
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" data-icon="1">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <div class="px-6 pb-4 text-gray-600 hidden" id="content-1">
-                        <p>Pendaftaran dilakukan secara online melalui website ini. Klik tombol "Mulai Pendaftaran" dan ikuti langkah-langkah yang tersedia.</p>
+                    <div class="px-6 pb-4 text-gray-600 hidden" data-content="1">
+                        <div class="space-y-3">
+                            <p>Pendaftaran PPDB dilakukan secara online melalui website ini dengan langkah-langkah berikut:</p>
+                            <ol class="list-decimal list-inside space-y-2 ml-4">
+                                <li>Klik tombol "Mulai Pendaftaran" di halaman ini</li>
+                                <li>Pilih jalur pendaftaran yang sesuai (Reguler, Prestasi, atau Afirmasi)</li>
+                                <li>Isi formulir pendaftaran dengan data yang benar dan lengkap</li>
+                                <li>Upload semua dokumen yang diperlukan</li>
+                                <li>Submit pendaftaran dan tunggu konfirmasi</li>
+                                <li>Simpan nomor pendaftaran untuk tracking status</li>
+                            </ol>
+                        </div>
                     </div>
                 </div>
 
+                <!-- FAQ 2: Dokumen yang Diperlukan -->
                 <div class="bg-white rounded-lg shadow-lg">
-                    <button class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none" onclick="toggleFAQ(2)">
+                    <button class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none hover:bg-gray-50 transition-colors duration-200" data-faq="2">
                         <span class="font-semibold text-gray-900">Dokumen apa saja yang diperlukan?</span>
-                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" id="icon-2">
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" data-icon="2">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <div class="px-6 pb-4 text-gray-600 hidden" id="content-2">
-                        <p>Dokumen yang diperlukan meliputi: foto siswa 3x4, scan ijazah/SKHUN, scan kartu keluarga, scan akta kelahiran, dan sertifikat prestasi (jika ada).</p>
+                    <div class="px-6 pb-4 text-gray-600 hidden" data-content="2">
+                        <div class="space-y-3">
+                            <p>Dokumen yang harus disiapkan dan diupload:</p>
+                            <ul class="list-disc list-inside space-y-2 ml-4">
+                                <li><strong>Foto siswa 3x4</strong> - latar belakang merah, format JPG/PNG, maksimal 2MB</li>
+                                <li><strong>Scan ijazah/SKHUN SD/MI</strong> - format PDF, maksimal 5MB</li>
+                                <li><strong>Scan kartu keluarga</strong> - format PDF, maksimal 5MB</li>
+                                <li><strong>Scan akta kelahiran</strong> - format PDF, maksimal 5MB</li>
+                                <li><strong>Sertifikat prestasi</strong> - format PDF, maksimal 5MB (jika ada)</li>
+                                <li><strong>Surat keterangan tidak mampu</strong> - format PDF, maksimal 5MB (untuk jalur afirmasi)</li>
+                            </ul>
+                            <p class="text-sm text-gray-500 mt-3">Pastikan semua dokumen dalam kondisi jelas dan dapat dibaca.</p>
+                        </div>
                     </div>
                 </div>
 
+                <!-- FAQ 3: Pengumuman Hasil -->
                 <div class="bg-white rounded-lg shadow-lg">
-                    <button class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none" onclick="toggleFAQ(3)">
+                    <button class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none hover:bg-gray-50 transition-colors duration-200" data-faq="3">
                         <span class="font-semibold text-gray-900">Kapan pengumuman hasil seleksi?</span>
-                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" id="icon-3">
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" data-icon="3">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <div class="px-6 pb-4 text-gray-600 hidden" id="content-3">
-                        <p>Pengumuman hasil seleksi akan dilakukan pada {{ $setting->announcement_date->format('d F Y, H:i') }}. Hasil dapat dilihat di halaman pengumuman atau melalui email.</p>
+                    <div class="px-6 pb-4 text-gray-600 hidden" data-content="3">
+                        <div class="space-y-3">
+                            <p>Pengumuman hasil seleksi akan dilakukan pada:</p>
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <p class="font-semibold text-blue-800">{{ $setting->announcement_date->format('d F Y, H:i') }}</p>
+                            </div>
+                            <p>Hasil dapat dilihat melalui:</p>
+                            <ul class="list-disc list-inside space-y-1 ml-4">
+                                <li>Halaman pengumuman di website ini</li>
+                                <li>Email yang terdaftar saat pendaftaran</li>
+                                <li>Pengumuman di papan sekolah</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
+                <!-- FAQ 4: Cek Status Pendaftaran -->
                 <div class="bg-white rounded-lg shadow-lg">
-                    <button class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none" onclick="toggleFAQ(4)">
+                    <button class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none hover:bg-gray-50 transition-colors duration-200" data-faq="4">
                         <span class="font-semibold text-gray-900">Bagaimana cara cek status pendaftaran?</span>
-                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" id="icon-4">
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" data-icon="4">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <div class="px-6 pb-4 text-gray-600 hidden" id="content-4">
-                        <p>Anda dapat mengecek status pendaftaran dengan memasukkan nomor pendaftaran dan email yang digunakan saat mendaftar di halaman "Cek Status".</p>
+                    <div class="px-6 pb-4 text-gray-600 hidden" data-content="4">
+                        <div class="space-y-3">
+                            <p>Untuk mengecek status pendaftaran:</p>
+                            <ol class="list-decimal list-inside space-y-2 ml-4">
+                                <li>Klik menu "Cek Status" di halaman ini</li>
+                                <li>Masukkan nomor pendaftaran yang Anda terima</li>
+                                <li>Masukkan email yang digunakan saat pendaftaran</li>
+                                <li>Klik "Cek Status" untuk melihat informasi terkini</li>
+                            </ol>
+                            <p class="text-sm text-gray-500 mt-3">Status yang mungkin muncul: Menunggu Verifikasi, Terverifikasi, Diterima, Ditolak, atau Cadangan.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 5: Biaya Pendaftaran -->
+                <div class="bg-white rounded-lg shadow-lg">
+                    <button class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none hover:bg-gray-50 transition-colors duration-200" data-faq="5">
+                        <span class="font-semibold text-gray-900">Berapa biaya pendaftaran PPDB?</span>
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" data-icon="5">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="px-6 pb-4 text-gray-600 hidden" data-content="5">
+                        <div class="space-y-3">
+                            <p>Biaya pendaftaran PPDB adalah:</p>
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <p class="font-semibold text-green-800">Rp {{ number_format($setting->registration_fee, 0, ',', '.') }}</p>
+                            </div>
+                            <p>Biaya ini berlaku untuk semua jalur pendaftaran (Reguler, Prestasi, dan Afirmasi).</p>
+                            <p class="text-sm text-gray-500">Pembayaran dapat dilakukan melalui transfer bank atau langsung ke sekolah.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 6: Kuota Pendaftaran -->
+                <div class="bg-white rounded-lg shadow-lg">
+                    <button class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none hover:bg-gray-50 transition-colors duration-200" data-faq="6">
+                        <span class="font-semibold text-gray-900">Berapa kuota pendaftaran untuk setiap jalur?</span>
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" data-icon="6">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="px-6 pb-4 text-gray-600 hidden" data-content="6">
+                        <div class="space-y-3">
+                            <p>Kuota pendaftaran untuk tahun ajaran {{ $setting->academicYear->year }}:</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="bg-blue-50 p-4 rounded-lg text-center">
+                                    <p class="font-semibold text-blue-800">Jalur Reguler</p>
+                                    <p class="text-2xl font-bold text-blue-600">{{ number_format($setting->quota_regular) }}</p>
+                                    <p class="text-sm text-blue-600">siswa</p>
+                                </div>
+                                <div class="bg-yellow-50 p-4 rounded-lg text-center">
+                                    <p class="font-semibold text-yellow-800">Jalur Prestasi</p>
+                                    <p class="text-2xl font-bold text-yellow-600">{{ number_format($setting->quota_achievement) }}</p>
+                                    <p class="text-sm text-yellow-600">siswa</p>
+                                </div>
+                                <div class="bg-green-50 p-4 rounded-lg text-center">
+                                    <p class="font-semibold text-green-800">Jalur Afirmasi</p>
+                                    <p class="text-2xl font-bold text-green-600">{{ number_format($setting->quota_affirmation) }}</p>
+                                    <p class="text-sm text-green-600">siswa</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 7: Persyaratan Umur -->
+                <div class="bg-white rounded-lg shadow-lg">
+                    <button class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none hover:bg-gray-50 transition-colors duration-200" data-faq="7">
+                        <span class="font-semibold text-gray-900">Berapa batas usia untuk mendaftar?</span>
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" data-icon="7">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="px-6 pb-4 text-gray-600 hidden" data-content="7">
+                        <div class="space-y-3">
+                            <p>Batas usia untuk mendaftar PPDB:</p>
+                            <ul class="list-disc list-inside space-y-2 ml-4">
+                                <li><strong>Usia maksimal:</strong> 15 tahun pada 1 Juli {{ $setting->academicYear->year }}</li>
+                                <li><strong>Usia minimal:</strong> 12 tahun pada 1 Juli {{ $setting->academicYear->year }}</li>
+                                <li>Usia dihitung berdasarkan akta kelahiran</li>
+                                <li>Untuk siswa yang lahir di luar negeri, usia dihitung berdasarkan dokumen resmi</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ 8: Kontak Bantuan -->
+                <div class="bg-white rounded-lg shadow-lg">
+                    <button class="w-full px-6 py-4 text-left flex items-center justify-between focus:outline-none hover:bg-gray-50 transition-colors duration-200" data-faq="8">
+                        <span class="font-semibold text-gray-900">Bagaimana jika mengalami kendala teknis?</span>
+                        <svg class="w-5 h-5 text-gray-500 transform transition-transform duration-200" data-icon="8">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="px-6 pb-4 text-gray-600 hidden" data-content="8">
+                        <div class="space-y-3">
+                            <p>Jika mengalami kendala teknis, Anda dapat menghubungi:</p>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="space-y-2">
+                                    <p><strong>Telepon:</strong> (0913) 1234567</p>
+                                    <p><strong>Email:</strong> ppdb@smpn01namrole.sch.id</p>
+                                    <p><strong>WhatsApp:</strong> +62 812-3456-7890</p>
+                                    <p><strong>Jam Layanan:</strong> Senin - Jumat, 08:00 - 15:00 WIB</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-500">Tim support akan membantu mengatasi kendala yang Anda alami.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -423,65 +565,152 @@
         <p class="text-xl mb-8 max-w-2xl mx-auto">
             Jangan lewatkan kesempatan untuk bergabung dengan SMP Negeri 01 Namrole
         </p>
-        @if($setting->isCurrentlyOpen())
-            <a href="{{ route('ppdb.form') }}" 
-               class="inline-flex items-center px-8 py-4 bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-xl rounded-lg transition-colors duration-200 shadow-lg">
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            @if($setting->isCurrentlyOpen())
+                <a href="{{ route('ppdb.form') }}" 
+                   class="inline-flex items-center px-8 py-4 bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-xl rounded-lg transition-colors duration-200 shadow-lg">
+                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    MULAI PENDAFTARAN SEKARANG
+                </a>
+            @else
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg p-6 max-w-2xl mx-auto">
+                    <h3 class="text-2xl font-semibold mb-2">Pendaftaran Belum Dibuka</h3>
+                    <p class="text-lg">Pendaftaran akan dibuka pada {{ $setting->start_date->format('d F Y, H:i') }}</p>
+                </div>
+            @endif
+            
+            <a href="{{ route('ppdb.status') }}" 
+               class="inline-flex items-center px-8 py-4 bg-white/20 hover:bg-white/30 text-white font-bold text-xl rounded-lg transition-colors duration-200 shadow-lg border-2 border-white/30">
                 <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                MULAI PENDAFTARAN SEKARANG
+                CEK STATUS PENDAFTARAN
             </a>
-        @else
-            <div class="bg-white/20 backdrop-blur-sm rounded-lg p-6 max-w-2xl mx-auto">
-                <h3 class="text-2xl font-semibold mb-2">Pendaftaran Belum Dibuka</h3>
-                <p class="text-lg">Pendaftaran akan dibuka pada {{ $setting->start_date->format('d F Y, H:i') }}</p>
-            </div>
-        @endif
+        </div>
     </div>
 </section>
 @endsection
 
+@push('styles')
+<style>
+/* FAQ Dropdown Styles */
+.faq-content {
+    transition: all 0.3s ease-in-out;
+}
+
+.faq-icon {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Ensure dropdown visibility */
+.group:hover .group-hover\:opacity-100 {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Mobile dropdown improvements */
+@media (max-width: 768px) {
+    .group:hover .group-hover\:opacity-100 {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+</style>
+@endpush
+
 @push('scripts')
 <script>
-// Countdown Timer
-function updateCountdown() {
-    const endDate = new Date('{{ $setting->end_date->format('Y-m-d H:i:s') }}').getTime();
-    const now = new Date().getTime();
-    const distance = endDate - now;
+document.addEventListener('DOMContentLoaded', function() {
+    // Countdown Timer
+    function updateCountdown() {
+        const endDate = new Date('{{ $setting->end_date->format('Y-m-d H:i:s') }}').getTime();
+        const now = new Date().getTime();
+        const distance = endDate - now;
 
-    if (distance < 0) {
-        document.getElementById('countdown').innerHTML = '<div class="text-2xl font-bold">Pendaftaran Sudah Ditutup</div>';
-        return;
+        if (distance < 0) {
+            const countdownElement = document.getElementById('countdown');
+            if (countdownElement) {
+                countdownElement.innerHTML = '<div class="text-2xl font-bold">Pendaftaran Sudah Ditutup</div>';
+            }
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        const daysElement = document.getElementById('days');
+        const hoursElement = document.getElementById('hours');
+        const minutesElement = document.getElementById('minutes');
+        const secondsElement = document.getElementById('seconds');
+
+        if (daysElement) daysElement.innerHTML = days.toString().padStart(2, '0');
+        if (hoursElement) hoursElement.innerHTML = hours.toString().padStart(2, '0');
+        if (minutesElement) minutesElement.innerHTML = minutes.toString().padStart(2, '0');
+        if (secondsElement) secondsElement.innerHTML = seconds.toString().padStart(2, '0');
     }
 
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    // Update countdown every second
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
 
-    document.getElementById('days').innerHTML = days.toString().padStart(2, '0');
-    document.getElementById('hours').innerHTML = hours.toString().padStart(2, '0');
-    document.getElementById('minutes').innerHTML = minutes.toString().padStart(2, '0');
-    document.getElementById('seconds').innerHTML = seconds.toString().padStart(2, '0');
-}
-
-// Update countdown every second
-setInterval(updateCountdown, 1000);
-updateCountdown();
-
-// FAQ Toggle
-function toggleFAQ(id) {
-    const content = document.getElementById('content-' + id);
-    const icon = document.getElementById('icon-' + id);
+    // FAQ Toggle - Ultra Simple Version
+    function initFAQ() {
+        console.log('Initializing FAQ...');
+        
+        // Add click listeners to all FAQ buttons
+        const faqButtons = document.querySelectorAll('[data-faq]');
+        console.log('Found FAQ buttons:', faqButtons.length);
+        
+        faqButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const faqId = this.getAttribute('data-faq');
+                console.log('FAQ clicked:', faqId);
+                
+                const content = document.querySelector(`[data-content="${faqId}"]`);
+                const icon = document.querySelector(`[data-icon="${faqId}"]`);
+                
+                if (!content || !icon) {
+                    console.error('FAQ elements not found for id:', faqId);
+                    return;
+                }
+                
+                // Close all other FAQs
+                document.querySelectorAll('[data-content]').forEach(item => {
+                    if (item.getAttribute('data-content') !== faqId) {
+                        item.classList.add('hidden');
+                    }
+                });
+                
+                document.querySelectorAll('[data-icon]').forEach(item => {
+                    if (item.getAttribute('data-icon') !== faqId) {
+                        item.style.transform = 'rotate(0deg)';
+                    }
+                });
+                
+                // Toggle current FAQ
+                if (content.classList.contains('hidden')) {
+                    content.classList.remove('hidden');
+                    icon.style.transform = 'rotate(180deg)';
+                    console.log('FAQ opened:', faqId);
+                } else {
+                    content.classList.add('hidden');
+                    icon.style.transform = 'rotate(0deg)';
+                    console.log('FAQ closed:', faqId);
+                }
+            });
+        });
+    }
     
-    if (content.classList.contains('hidden')) {
-        content.classList.remove('hidden');
-        icon.style.transform = 'rotate(180deg)';
-    } else {
-        content.classList.add('hidden');
-        icon.style.transform = 'rotate(0deg)';
-    }
-}
+    // Initialize FAQ
+    initFAQ();
+});
 </script>
 @endpush
 
