@@ -88,7 +88,14 @@ class NewsController extends Controller
         // Get popular tags
         $popularTags = Tag::popular(10)->get();
 
-        return view('frontend.news.show', compact('news', 'relatedNews', 'popularTags'));
+        // Get recent news for sidebar
+        $recentNews = News::published()
+            ->where('id', '!=', $news->id)
+            ->orderBy('published_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        return view('frontend.news.show', compact('news', 'relatedNews', 'popularTags', 'recentNews'));
     }
 
     /**

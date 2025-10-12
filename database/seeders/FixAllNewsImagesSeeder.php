@@ -4,7 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\News;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class FixAllNewsImagesSeeder extends Seeder
 {
@@ -13,67 +14,60 @@ class FixAllNewsImagesSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create news directory if not exists
-        if (!file_exists(storage_path('app/public/news'))) {
-            mkdir(storage_path('app/public/news'), 0755, true);
-        }
-
-        // Create thumbnails directory if not exists
-        if (!file_exists(storage_path('app/public/news/thumbnails'))) {
-            mkdir(storage_path('app/public/news/thumbnails'), 0755, true);
+        // Create storage directory if it doesn't exist
+        if (!Storage::exists('public/news')) {
+            Storage::makeDirectory('public/news');
         }
 
         // Get all news
-        $news = News::all();
-        
-        foreach ($news as $index => $article) {
-            // Create a unique image name
-            $imageName = time() . '_' . Str::slug($article->title) . '.jpg';
+        $allNews = News::all();
+
+        foreach ($allNews as $news) {
+            $imagePath = storage_path('app/public/news/' . $news->image);
+            
+            // Check if image exists
+            if ($news->image && file_exists($imagePath)) {
+                $this->command->info("Image exists for news: {$news->title}");
+                continue;
+            }
+
+            // Create a new image if it doesn't exist
+            $imageName = 'news-' . $news->id . '-' . time() . '.jpg';
+            $newImagePath = storage_path('app/public/news/' . $imageName);
             
             // Create a simple colored rectangle as placeholder
-            $imageContent = $this->createPlaceholderImage($article->title, $index);
+            $image = imagecreate(400, 300);
+            $bgColor = imagecolorallocate($image, 59, 130, 246); // Blue background
+            $textColor = imagecolorallocate($image, 255, 255, 255); // White text
+            
+            imagefill($image, 0, 0, $bgColor);
+            
+            // Add some simple shapes
+            $rectColor = imagecolorallocate($image, 37, 99, 235);
+            imagefilledrectangle($image, 50, 50, 350, 250, $rectColor);
+            
+            // Add text
+            imagestring($image, 5, 120, 140, 'News Image', $textColor);
             
             // Save the image
-            file_put_contents(storage_path('app/public/news/' . $imageName), $imageContent);
+            if (imagejpeg($image, $newImagePath, 80)) {
+                // Update the news record
+                $news->update(['image' => $imageName]);
+                $this->command->info("Created new image for news: {$news->title}");
+            } else {
+                $this->command->error("Failed to create image for news: {$news->title}");
+            }
             
-            // Create thumbnail
-            $thumbnailName = 'thumb_' . $imageName;
-            file_put_contents(storage_path('app/public/news/thumbnails/' . $thumbnailName), $imageContent);
-            
-            // Update the news record
-            $article->update(['image' => $imageName]);
-            
-            $this->command->info("Created image for: {$article->title} -> {$imageName}");
+            imagedestroy($image);
+        }
+
+        $this->command->info('Fixed images for ' . $allNews->count() . ' news articles');
+        
+        // Test image URLs
+        $this->command->info('Testing image URLs...');
+        foreach ($allNews as $news) {
+            $url = $news->image_url;
+            $this->command->info("News: {$news->title} - Image URL: {$url}");
         }
     }
-
-    /**
-     * Create a simple placeholder image with different colors
-     */
-    private function createPlaceholderImage($title, $index)
-    {
-        $colors = [
-            '#3B82F6', // Blue
-            '#10B981', // Green
-            '#F59E0B', // Yellow
-            '#EF4444', // Red
-            '#8B5CF6', // Purple
-            '#06B6D4', // Cyan
-            '#84CC16', // Lime
-        ];
-        
-        $color = $colors[$index % count($colors)];
-        
-        // Create a simple SVG placeholder
-        $svg = '<?xml version="1.0" encoding="UTF-8"?>
-        <svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-            <rect width="400" height="300" fill="#f3f4f6"/>
-            <rect x="50" y="50" width="300" height="200" fill="' . $color . '" rx="8"/>
-            <text x="200" y="140" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16" font-weight="bold">' . Str::limit($title, 20) . '</text>
-            <text x="200" y="170" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12">News Image</text>
-        </svg>';
-        
-        return $svg;
-    }
 }
-

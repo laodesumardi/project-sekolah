@@ -108,7 +108,7 @@
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-base lg:text-lg font-semibold text-gray-900">Distribusi Jalur</h3>
                 <div class="flex items-center space-x-2">
-                    <span class="text-xs lg:text-sm text-gray-500">Total: {{ $totalApplicants }}</span>
+                    <span class="text-xs lg:text-sm text-gray-500">Total: {{ $totalRegistrations }}</span>
                 </div>
             </div>
             <div class="h-48 lg:h-64">
@@ -126,11 +126,11 @@
             <div>
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-medium text-gray-700">Jalur Reguler</span>
-                    <span class="text-sm text-gray-500">{{ $pathDistribution['regular'] ?? 0 }} / {{ $setting->quota_regular }}</span>
+                    <span class="text-sm text-gray-500">{{ $pathDistributionArray['regular'] ?? 0 }} / {{ $setting->quota_regular }}</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2">
                     <div class="bg-blue-500 h-2 rounded-full transition-all duration-300" 
-                         style="width: {{ $setting->quota_regular > 0 ? (($pathDistribution['regular'] ?? 0) / $setting->quota_regular) * 100 : 0 }}%"></div>
+                         style="width: {{ $setting->quota_regular > 0 ? (($pathDistributionArray['regular'] ?? 0) / $setting->quota_regular) * 100 : 0 }}%"></div>
                 </div>
             </div>
 
@@ -138,11 +138,11 @@
             <div>
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-medium text-gray-700">Jalur Prestasi</span>
-                    <span class="text-sm text-gray-500">{{ $pathDistribution['achievement'] ?? 0 }} / {{ $setting->quota_achievement }}</span>
+                    <span class="text-sm text-gray-500">{{ $pathDistributionArray['achievement'] ?? 0 }} / {{ $setting->quota_achievement }}</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2">
                     <div class="bg-green-500 h-2 rounded-full transition-all duration-300" 
-                         style="width: {{ $setting->quota_achievement > 0 ? (($pathDistribution['achievement'] ?? 0) / $setting->quota_achievement) * 100 : 0 }}%"></div>
+                         style="width: {{ $setting->quota_achievement > 0 ? (($pathDistributionArray['achievement'] ?? 0) / $setting->quota_achievement) * 100 : 0 }}%"></div>
                 </div>
             </div>
 
@@ -150,11 +150,11 @@
             <div>
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-sm font-medium text-gray-700">Jalur Afirmasi</span>
-                    <span class="text-sm text-gray-500">{{ $pathDistribution['affirmation'] ?? 0 }} / {{ $setting->quota_affirmation }}</span>
+                    <span class="text-sm text-gray-500">{{ $pathDistributionArray['affirmation'] ?? 0 }} / {{ $setting->quota_affirmation }}</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2">
                     <div class="bg-orange-500 h-2 rounded-full transition-all duration-300" 
-                         style="width: {{ $setting->quota_affirmation > 0 ? (($pathDistribution['affirmation'] ?? 0) / $setting->quota_affirmation) * 100 : 0 }}%"></div>
+                         style="width: {{ $setting->quota_affirmation > 0 ? (($pathDistributionArray['affirmation'] ?? 0) / $setting->quota_affirmation) * 100 : 0 }}%"></div>
                 </div>
             </div>
             @else
@@ -175,7 +175,7 @@
                 <a href="{{ route('admin.ppdb.index') }}" class="text-blue-600 hover:text-blue-800 text-sm">Lihat semua</a>
             </div>
             <div class="space-y-3">
-                @forelse($recentApplicants as $applicant)
+                @forelse($recentRegistrations as $applicant)
                 <div class="flex items-center p-3 bg-gray-50 rounded-lg">
                     <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                         <span class="text-blue-600 font-medium text-sm">{{ substr($applicant->full_name, 0, 1) }}</span>
@@ -245,7 +245,7 @@
                 label: 'Pendaftar',
                 data: [
                     @for($i = 29; $i >= 0; $i--)
-                        {{ $applicantsPerDay->where('date', now()->subDays($i)->format('Y-m-d'))->first()->count ?? 0 }}{{ $i > 0 ? ',' : '' }}
+                        {{ $dailyRegistrations->where('date', now()->subDays($i)->format('Y-m-d'))->first()->count ?? 0 }}{{ $i > 0 ? ',' : '' }}
                     @endfor
                 ],
                 borderColor: 'rgb(59, 130, 246)',
@@ -291,9 +291,9 @@
             labels: ['Reguler', 'Prestasi', 'Afirmasi'],
             datasets: [{
                 data: [
-                    {{ $pathDistribution['regular'] ?? 0 }},
-                    {{ $pathDistribution['achievement'] ?? 0 }},
-                    {{ $pathDistribution['affirmation'] ?? 0 }}
+                    {{ $pathDistributionArray['regular'] ?? 0 }},
+                    {{ $pathDistributionArray['achievement'] ?? 0 }},
+                    {{ $pathDistributionArray['affirmation'] ?? 0 }}
                 ],
                 backgroundColor: [
                     'rgb(59, 130, 246)',

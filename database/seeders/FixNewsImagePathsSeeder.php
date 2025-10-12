@@ -7,7 +7,7 @@ use App\Models\News;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
-class UpdateNewsImagesSeeder extends Seeder
+class FixNewsImagePathsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -19,17 +19,20 @@ class UpdateNewsImagesSeeder extends Seeder
 
         foreach ($allNews as $news) {
             $this->command->info("Processing news: {$news->title}");
+            $this->command->info("Current image field: {$news->image}");
             
-            // Check if image exists in storage
+            // Check if the current image file exists
             if ($news->image) {
-                $imagePath = storage_path('app/public/news/' . $news->image);
-                if (file_exists($imagePath)) {
-                    $this->command->info("Image exists: {$news->image}");
+                $currentImagePath = storage_path('app/public/news/' . $news->image);
+                if (file_exists($currentImagePath)) {
+                    $this->command->info("Image file exists: {$news->image}");
                     continue;
+                } else {
+                    $this->command->info("Image file not found: {$currentImagePath}");
                 }
             }
 
-            // Create a new image
+            // Create a new image with proper naming
             $imageName = 'news-' . $news->id . '-' . time() . '.jpg';
             $newImagePath = storage_path('app/public/news/' . $imageName);
             
@@ -52,6 +55,10 @@ class UpdateNewsImagesSeeder extends Seeder
                 // Update the news record
                 $news->update(['image' => $imageName]);
                 $this->command->info("Created new image: {$imageName}");
+                
+                // Test the image URL
+                $imageUrl = $news->fresh()->image_url;
+                $this->command->info("Image URL: {$imageUrl}");
             } else {
                 $this->command->error("Failed to create image for: {$news->title}");
             }
@@ -59,6 +66,6 @@ class UpdateNewsImagesSeeder extends Seeder
             imagedestroy($image);
         }
 
-        $this->command->info('Updated images for ' . $allNews->count() . ' news articles');
+        $this->command->info('Fixed images for ' . $allNews->count() . ' news articles');
     }
 }

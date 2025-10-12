@@ -150,35 +150,35 @@
 
         <!-- Ambassadors Level -->
         <div class="mb-12">
-            <h3 class="text-2xl font-semibold text-center mb-8 text-blue-600">Duta Literasi</h3>
+            <h3 class="text-2xl font-semibold text-center mb-8 text-primary-600">Duta Literasi</h3>
             <div class="grid md:grid-cols-3 gap-6">
                 <!-- Duta Literasi Siswa -->
-                <div class="bg-blue-50 p-6 rounded-lg shadow-md text-center">
-                    <div class="w-20 h-20 bg-blue-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-graduation-cap text-2xl text-blue-600"></i>
+                <div class="bg-primary-50 p-6 rounded-lg shadow-md text-center">
+                    <div class="w-20 h-20 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-2xl text-primary-600"></i>
                     </div>
                     <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['ambassadors']['duta_siswa']['name'] }}</h4>
-                    <p class="text-blue-600 font-medium mb-3">{{ $libraryStructure['ambassadors']['duta_siswa']['position'] }}</p>
+                    <p class="text-primary-600 font-medium mb-3">{{ $libraryStructure['ambassadors']['duta_siswa']['position'] }}</p>
                     <p class="text-sm text-gray-600">{{ $libraryStructure['ambassadors']['duta_siswa']['description'] }}</p>
                 </div>
 
                 <!-- Duta Literasi Tenaga Kependidikan -->
-                <div class="bg-blue-50 p-6 rounded-lg shadow-md text-center">
-                    <div class="w-20 h-20 bg-blue-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-user-tie text-2xl text-blue-600"></i>
+                <div class="bg-primary-50 p-6 rounded-lg shadow-md text-center">
+                    <div class="w-20 h-20 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-user-tie text-2xl text-primary-600"></i>
                     </div>
                     <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['ambassadors']['duta_tendik']['name'] }}</h4>
-                    <p class="text-blue-600 font-medium mb-3">{{ $libraryStructure['ambassadors']['duta_tendik']['position'] }}</p>
+                    <p class="text-primary-600 font-medium mb-3">{{ $libraryStructure['ambassadors']['duta_tendik']['position'] }}</p>
                     <p class="text-sm text-gray-600">{{ $libraryStructure['ambassadors']['duta_tendik']['description'] }}</p>
                 </div>
 
                 <!-- Duta Literasi Guru -->
-                <div class="bg-blue-50 p-6 rounded-lg shadow-md text-center">
-                    <div class="w-20 h-20 bg-blue-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-chalkboard-teacher text-2xl text-blue-600"></i>
+                <div class="bg-primary-50 p-6 rounded-lg shadow-md text-center">
+                    <div class="w-20 h-20 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-chalkboard-teacher text-2xl text-primary-600"></i>
                     </div>
                     <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['ambassadors']['duta_guru']['name'] }}</h4>
-                    <p class="text-blue-600 font-medium mb-3">{{ $libraryStructure['ambassadors']['duta_guru']['position'] }}</p>
+                    <p class="text-primary-600 font-medium mb-3">{{ $libraryStructure['ambassadors']['duta_guru']['position'] }}</p>
                     <p class="text-sm text-gray-600">{{ $libraryStructure['ambassadors']['duta_guru']['description'] }}</p>
                 </div>
             </div>
@@ -186,9 +186,9 @@
 
         <!-- Library Users -->
         <div class="text-center">
-            <div class="bg-orange-50 p-8 rounded-lg shadow-md max-w-md mx-auto">
-                <div class="w-24 h-24 bg-orange-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <i class="fas fa-users text-3xl text-orange-600"></i>
+            <div class="bg-primary-50 p-8 rounded-lg shadow-md max-w-md mx-auto">
+                <div class="w-24 h-24 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <i class="fas fa-users text-3xl text-primary-600"></i>
                 </div>
                 <h4 class="font-semibold text-xl mb-2">Pengguna Perpustakaan</h4>
                 <p class="text-gray-600">Siswa, Guru, dan Staf SMP Negeri 01 Namrole</p>
@@ -210,7 +210,7 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($libraryServices as $service)
             <div class="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow duration-300">
-                <div class="text-4xl mb-4 text-blue-600">
+                <div class="text-4xl mb-4 text-primary-600">
                     <i class="{{ $service['icon'] }}"></i>
                 </div>
                 <h3 class="text-xl font-semibold mb-3">{{ $service['title'] }}</h3>
@@ -234,7 +234,7 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($collections as $type => $description)
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold mb-3 text-blue-600 capitalize">{{ str_replace('_', ' ', $type) }}</h3>
+                <h3 class="text-xl font-semibold mb-3 text-primary-600 capitalize">{{ str_replace('_', ' ', $type) }}</h3>
                 <p class="text-gray-600">{{ $description }}</p>
             </div>
             @endforeach
@@ -243,25 +243,25 @@
 </section>
 
 <!-- Contact Information -->
-<section class="py-16 bg-blue-600 text-white">
+<section class="py-16 bg-primary-600 text-white">
     <div class="container mx-auto px-4">
         <div class="text-center">
             <h2 class="text-3xl font-bold mb-4">Informasi Perpustakaan</h2>
             <div class="grid md:grid-cols-3 gap-8 mt-8">
                 <div>
                     <h3 class="text-xl font-semibold mb-2">Jam Operasional</h3>
-                    <p class="text-blue-100">Senin - Jumat: 07.00 - 15.00 WIT</p>
-                    <p class="text-blue-100">Sabtu: 08.00 - 12.00 WIT</p>
+                    <p class="text-primary-100">Senin - Jumat: 07.00 - 15.00 WIT</p>
+                    <p class="text-primary-100">Sabtu: 08.00 - 12.00 WIT</p>
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold mb-2">Lokasi</h3>
-                    <p class="text-blue-100">Gedung Perpustakaan</p>
-                    <p class="text-blue-100">SMP Negeri 01 Namrole</p>
+                    <p class="text-primary-100">Gedung Perpustakaan</p>
+                    <p class="text-primary-100">SMP Negeri 01 Namrole</p>
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold mb-2">Kontak</h3>
-                    <p class="text-blue-100">Email: perpustakaan@smpn01namrole.sch.id</p>
-                    <p class="text-blue-100">Telp: (0913) 123456</p>
+                    <p class="text-primary-100">Email: perpustakaan@smpn01namrole.sch.id</p>
+                    <p class="text-primary-100">Telp: (0913) 123456</p>
                 </div>
             </div>
         </div>

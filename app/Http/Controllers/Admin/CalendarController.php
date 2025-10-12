@@ -52,7 +52,10 @@ class CalendarController extends Controller
             'deadline' => 'Deadline'
         ];
 
-        return view('admin.calendar.index', compact('events', 'eventTypes', 'currentYear'));
+        // Get all academic years for dropdown
+        $academicYears = AcademicYear::orderBy('start_date', 'desc')->get();
+
+        return view('admin.calendar.index', compact('events', 'eventTypes', 'currentYear', 'academicYears'));
     }
 
     /**
@@ -67,7 +70,11 @@ class CalendarController extends Controller
             'holiday' => 'Libur',
             'deadline' => 'Deadline'
         ];
-        return view('admin.calendar.create', compact('eventTypes', 'currentYear'));
+        
+        // Get all academic years for dropdown
+        $academicYears = AcademicYear::orderBy('start_date', 'desc')->get();
+        
+        return view('admin.calendar.create', compact('eventTypes', 'currentYear', 'academicYears'));
     }
 
     /**
@@ -131,7 +138,11 @@ class CalendarController extends Controller
             'holiday' => 'Libur',
             'deadline' => 'Deadline'
         ];
-        return view('admin.calendar.edit', compact('calendar', 'eventTypes', 'currentYear'));
+        
+        // Get all academic years for dropdown
+        $academicYears = AcademicYear::orderBy('start_date', 'desc')->get();
+        
+        return view('admin.calendar.edit', compact('calendar', 'eventTypes', 'currentYear', 'academicYears'));
     }
 
     /**
@@ -204,13 +215,13 @@ class CalendarController extends Controller
             })
             ->get()
             ->map(function($event) {
-                return [
+                $eventData = [
                     'id' => $event->id,
                     'title' => $event->title,
                     'start' => $event->start_date->format('Y-m-d'),
                     'end' => $event->end_date ? $event->end_date->format('Y-m-d') : null,
                     'allDay' => $event->is_all_day,
-                    'color' => $event->color,
+                    'color' => $event->color ?: '#3B82F6', // Default color if null
                     'textColor' => '#ffffff',
                     'extendedProps' => [
                         'description' => $event->description,
@@ -219,6 +230,9 @@ class CalendarController extends Controller
                         'formatted_type' => $event->formatted_event_type,
                     ]
                 ];
+                
+                \Log::info('Event data:', $eventData);
+                return $eventData;
             });
 
         return response()->json($events);

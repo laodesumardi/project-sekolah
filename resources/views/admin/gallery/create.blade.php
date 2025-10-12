@@ -109,11 +109,12 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 @error('category') border-red-500 @enderror"
                                     required>
                                 <option value="">Pilih Kategori</option>
-                                <option value="general" {{ old('category') === 'general' ? 'selected' : '' }}>General</option>
-                                <option value="kegiatan" {{ old('category') === 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
-                                <option value="prestasi" {{ old('category') === 'prestasi' ? 'selected' : '' }}>Prestasi</option>
-                                <option value="fasilitas" {{ old('category') === 'fasilitas' ? 'selected' : '' }}>Fasilitas</option>
-                                <option value="event" {{ old('category') === 'event' ? 'selected' : '' }}>Event</option>
+                                <option value="academic" {{ old('category') === 'academic' ? 'selected' : '' }}>Akademik</option>
+                                <option value="sports" {{ old('category') === 'sports' ? 'selected' : '' }}>Olahraga</option>
+                                <option value="events" {{ old('category') === 'events' ? 'selected' : '' }}>Acara</option>
+                                <option value="facilities" {{ old('category') === 'facilities' ? 'selected' : '' }}>Fasilitas</option>
+                                <option value="activities" {{ old('category') === 'activities' ? 'selected' : '' }}>Kegiatan</option>
+                                <option value="other" {{ old('category') === 'other' ? 'selected' : '' }}>Lainnya</option>
                             </select>
                             @error('category')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

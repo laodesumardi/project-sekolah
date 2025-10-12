@@ -7,7 +7,6 @@ use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
 
 class GalleryController extends Controller
 {
@@ -65,7 +64,7 @@ class GalleryController extends Controller
             'description' => 'nullable|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'alt_text' => 'nullable|string|max:255',
-            'category' => 'required|in:general,kegiatan,prestasi,fasilitas,event',
+            'category' => 'required|in:academic,sports,events,facilities,activities,other',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
         ]);
@@ -80,21 +79,26 @@ class GalleryController extends Controller
             // Store original image
             $image->storeAs('public/gallery', $imageName);
             
-            // Create thumbnail
-            $thumbnail = Image::make($image)->resize(300, 300, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+            // Create thumbnail directory if not exists
+            if (!Storage::exists('public/gallery/thumbnails')) {
+                Storage::makeDirectory('public/gallery/thumbnails');
+            }
             
+            // Copy original as thumbnail for now (TODO: Implement proper image resizing later)
             $thumbnailName = 'thumb_' . $imageName;
-            $thumbnail->save(storage_path('app/public/gallery/thumbnails/' . $thumbnailName));
+            $sourcePath = storage_path('app/public/gallery/' . $imageName);
+            $destPath = storage_path('app/public/gallery/thumbnails/' . $thumbnailName);
+            
+            if (file_exists($sourcePath)) {
+                copy($sourcePath, $destPath);
+            }
             
             $data['image'] = $imageName;
             $data['thumbnail'] = $thumbnailName;
             
             // Get image info
             $data['file_size'] = $image->getSize();
-            $data['dimensions'] = $image->getWidth() . 'x' . $image->getHeight();
+            $data['dimensions'] = 'Unknown'; // TODO: Implement proper image dimension detection
         }
 
         Gallery::create($data);
@@ -129,7 +133,7 @@ class GalleryController extends Controller
             'description' => 'nullable|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'alt_text' => 'nullable|string|max:255',
-            'category' => 'required|in:general,kegiatan,prestasi,fasilitas,event',
+            'category' => 'required|in:academic,sports,events,facilities,activities,other',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean',
         ]);
@@ -150,21 +154,26 @@ class GalleryController extends Controller
             // Store original image
             $image->storeAs('public/gallery', $imageName);
             
-            // Create thumbnail
-            $thumbnail = Image::make($image)->resize(300, 300, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+            // Create thumbnail directory if not exists
+            if (!Storage::exists('public/gallery/thumbnails')) {
+                Storage::makeDirectory('public/gallery/thumbnails');
+            }
             
+            // Copy original as thumbnail for now (TODO: Implement proper image resizing later)
             $thumbnailName = 'thumb_' . $imageName;
-            $thumbnail->save(storage_path('app/public/gallery/thumbnails/' . $thumbnailName));
+            $sourcePath = storage_path('app/public/gallery/' . $imageName);
+            $destPath = storage_path('app/public/gallery/thumbnails/' . $thumbnailName);
+            
+            if (file_exists($sourcePath)) {
+                copy($sourcePath, $destPath);
+            }
             
             $data['image'] = $imageName;
             $data['thumbnail'] = $thumbnailName;
             
             // Get image info
             $data['file_size'] = $image->getSize();
-            $data['dimensions'] = $image->getWidth() . 'x' . $image->getHeight();
+            $data['dimensions'] = 'Unknown'; // TODO: Implement proper image dimension detection
         }
 
         $gallery->update($data);
@@ -198,7 +207,7 @@ class GalleryController extends Controller
         $request->validate([
             'images' => 'required|array|max:20',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:10240',
-            'category' => 'required|in:general,kegiatan,prestasi,fasilitas,event',
+            'category' => 'required|in:academic,sports,events,facilities,activities,other',
             'title_prefix' => 'nullable|string|max:100',
         ]);
 
@@ -212,14 +221,19 @@ class GalleryController extends Controller
                 // Store original image
                 $image->storeAs('public/gallery', $imageName);
                 
-                // Create thumbnail
-                $thumbnail = Image::make($image)->resize(300, 300, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
+                // Create thumbnail directory if not exists
+                if (!Storage::exists('public/gallery/thumbnails')) {
+                    Storage::makeDirectory('public/gallery/thumbnails');
+                }
                 
+                // Copy original as thumbnail for now (TODO: Implement proper image resizing later)
                 $thumbnailName = 'thumb_' . $imageName;
-                $thumbnail->save(storage_path('app/public/gallery/thumbnails/' . $thumbnailName));
+                $sourcePath = storage_path('app/public/gallery/' . $imageName);
+                $destPath = storage_path('app/public/gallery/thumbnails/' . $thumbnailName);
+                
+                if (file_exists($sourcePath)) {
+                    copy($sourcePath, $destPath);
+                }
                 
                 Gallery::create([
                     'title' => ($request->title_prefix ? $request->title_prefix . ' ' : '') . ($index + 1),
@@ -227,7 +241,7 @@ class GalleryController extends Controller
                     'thumbnail' => $thumbnailName,
                     'category' => $request->category,
                     'file_size' => $image->getSize(),
-                    'dimensions' => $image->getWidth() . 'x' . $image->getHeight(),
+                    'dimensions' => 'Unknown', // TODO: Implement proper image dimension detection
                     'sort_order' => $uploadedCount,
                 ]);
                 

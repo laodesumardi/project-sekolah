@@ -71,7 +71,7 @@ class NewsController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|exists:news_categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'excerpt' => 'nullable|string|max:500',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
@@ -91,32 +91,66 @@ class NewsController extends Controller
 
         // Handle image upload
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-            
-            // Store original image
-            $image->storeAs('public/news', $imageName);
-            
-            // Create thumbnail directory if not exists
-            if (!file_exists(storage_path('app/public/news/thumbnails'))) {
-                mkdir(storage_path('app/public/news/thumbnails'), 0755, true);
-            }
-            
-            // For now, just copy the original image as thumbnail
-            // TODO: Implement proper image resizing later
-            $thumbnailName = 'thumb_' . $imageName;
-            $sourcePath = storage_path('app/public/news/' . $imageName);
-            $destPath = storage_path('app/public/news/thumbnails/' . $thumbnailName);
-            
-            if (file_exists($sourcePath)) {
-                if (!copy($sourcePath, $destPath)) {
-                    \Log::warning("Failed to copy thumbnail for news image: {$imageName}");
+            try {
+                \Log::info("Image upload started for new news");
+                
+                $image = $request->file('image');
+                $originalName = $image->getClientOriginalName();
+                $extension = $image->getClientOriginalExtension();
+                $imageName = time() . '_' . Str::slug($request->title) . '.' . $extension;
+                
+                \Log::info("Original file: {$originalName}, Extension: {$extension}, New name: {$imageName}");
+                \Log::info("File size: " . $image->getSize() . " bytes");
+                \Log::info("File MIME type: " . $image->getMimeType());
+                
+                // Ensure directory exists
+                $newsDir = storage_path('app/public/news');
+                if (!file_exists($newsDir)) {
+                    mkdir($newsDir, 0755, true);
+                    \Log::info("Created news directory: {$newsDir}");
                 }
-            } else {
-                \Log::warning("Source image not found for thumbnail: {$sourcePath}");
+                
+                // Check if directory is writable
+                if (!is_writable($newsDir)) {
+                    \Log::error("Directory not writable: {$newsDir}");
+                    return back()->withErrors(['image' => 'Direktori tidak dapat ditulis.']);
+                }
+                
+                // Store original image using direct file operations
+                $filePath = $newsDir . '/' . $imageName;
+                $moved = $image->move($newsDir, $imageName);
+                
+                if ($moved && file_exists($filePath)) {
+                    \Log::info("Image stored successfully: {$filePath}");
+                    
+                    // Create thumbnail directory if not exists
+                    $thumbDir = storage_path('app/public/news/thumbnails');
+                    if (!file_exists($thumbDir)) {
+                        mkdir($thumbDir, 0755, true);
+                        \Log::info("Created thumbnails directory: {$thumbDir}");
+                    }
+                    
+                    // Copy original as thumbnail for now
+                    $thumbnailName = 'thumb_' . $imageName;
+                    $sourcePath = $filePath;
+                    $destPath = $thumbDir . '/' . $thumbnailName;
+                    
+                    if (copy($sourcePath, $destPath)) {
+                        \Log::info("Successfully created thumbnail for: {$imageName}");
+                    } else {
+                        \Log::warning("Failed to copy thumbnail for news image: {$imageName}");
+                    }
+                    
+                    $data['image'] = $imageName;
+                    \Log::info("Image uploaded successfully: {$imageName}");
+                } else {
+                    \Log::error("Failed to move file to: {$filePath}");
+                    return back()->withErrors(['image' => 'Gagal memindahkan file gambar.']);
+                }
+            } catch (\Exception $e) {
+                \Log::error("Image upload error: " . $e->getMessage());
+                return back()->withErrors(['image' => 'Terjadi kesalahan saat mengupload gambar: ' . $e->getMessage()]);
             }
-            
-            $data['image'] = $imageName;
         }
 
         // Handle publish status
@@ -174,7 +208,7 @@ class NewsController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|exists:news_categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'excerpt' => 'nullable|string|max:500',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
@@ -196,38 +230,73 @@ class NewsController extends Controller
 
         // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image
-            if ($news->image) {
-                Storage::delete('public/news/' . $news->image);
-                Storage::delete('public/news/thumbnails/thumb_' . $news->image);
-            }
-
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-            
-            // Store original image
-            $image->storeAs('public/news', $imageName);
-            
-            // Create thumbnail directory if not exists
-            if (!file_exists(storage_path('app/public/news/thumbnails'))) {
-                mkdir(storage_path('app/public/news/thumbnails'), 0755, true);
-            }
-            
-            // For now, just copy the original image as thumbnail
-            // TODO: Implement proper image resizing later
-            $thumbnailName = 'thumb_' . $imageName;
-            $sourcePath = storage_path('app/public/news/' . $imageName);
-            $destPath = storage_path('app/public/news/thumbnails/' . $thumbnailName);
-            
-            if (file_exists($sourcePath)) {
-                if (!copy($sourcePath, $destPath)) {
-                    \Log::warning("Failed to copy thumbnail for news image: {$imageName}");
+            try {
+                \Log::info("Image upload started for news: {$news->id}");
+                
+                // Delete old image
+                if ($news->image) {
+                    Storage::delete('public/news/' . $news->image);
+                    Storage::delete('public/news/thumbnails/thumb_' . $news->image);
+                    \Log::info("Deleted old image: {$news->image}");
                 }
-            } else {
-                \Log::warning("Source image not found for thumbnail: {$sourcePath}");
+
+                $image = $request->file('image');
+                $originalName = $image->getClientOriginalName();
+                $extension = $image->getClientOriginalExtension();
+                $imageName = time() . '_' . Str::slug($request->title) . '.' . $extension;
+                
+                \Log::info("Original file: {$originalName}, Extension: {$extension}, New name: {$imageName}");
+                \Log::info("File size: " . $image->getSize() . " bytes");
+                \Log::info("File MIME type: " . $image->getMimeType());
+                
+                // Ensure directory exists
+                $newsDir = storage_path('app/public/news');
+                if (!file_exists($newsDir)) {
+                    mkdir($newsDir, 0755, true);
+                    \Log::info("Created news directory: {$newsDir}");
+                }
+                
+                // Check if directory is writable
+                if (!is_writable($newsDir)) {
+                    \Log::error("Directory not writable: {$newsDir}");
+                    return back()->withErrors(['image' => 'Direktori tidak dapat ditulis.']);
+                }
+                
+                // Store original image using direct file operations
+                $filePath = $newsDir . '/' . $imageName;
+                $moved = $image->move($newsDir, $imageName);
+                
+                if ($moved && file_exists($filePath)) {
+                    \Log::info("Image stored successfully: {$filePath}");
+                    
+                    // Create thumbnail directory if not exists
+                    $thumbDir = storage_path('app/public/news/thumbnails');
+                    if (!file_exists($thumbDir)) {
+                        mkdir($thumbDir, 0755, true);
+                        \Log::info("Created thumbnails directory: {$thumbDir}");
+                    }
+                    
+                    // Copy original as thumbnail for now
+                    $thumbnailName = 'thumb_' . $imageName;
+                    $sourcePath = $filePath;
+                    $destPath = $thumbDir . '/' . $thumbnailName;
+                    
+                    if (copy($sourcePath, $destPath)) {
+                        \Log::info("Successfully created thumbnail for: {$imageName}");
+                    } else {
+                        \Log::warning("Failed to copy thumbnail for news image: {$imageName}");
+                    }
+                    
+                    $data['image'] = $imageName;
+                    \Log::info("Image uploaded successfully: {$imageName}");
+                } else {
+                    \Log::error("Failed to move file to: {$filePath}");
+                    return back()->withErrors(['image' => 'Gagal memindahkan file gambar.']);
+                }
+            } catch (\Exception $e) {
+                \Log::error("Image upload error: " . $e->getMessage());
+                return back()->withErrors(['image' => 'Terjadi kesalahan saat mengupload gambar: ' . $e->getMessage()]);
             }
-            
-            $data['image'] = $imageName;
         }
 
         // Handle publish status

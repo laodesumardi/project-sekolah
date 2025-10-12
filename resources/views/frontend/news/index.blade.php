@@ -103,7 +103,8 @@
                                     <div class="flex-shrink-0">
                                         <img src="{{ $recent->image_url }}" 
                                              alt="{{ $recent->title }}"
-                                             class="w-12 h-12 object-cover rounded">
+                                             class="w-12 h-12 object-cover rounded"
+                                             onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiM5Q0EzQUYiLz4KPHRleHQgeD0iMjAwIiB5PSIxNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2QjcyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiI+TmV3cyBJbWFnZTwvdGV4dD4KPC9zdmc+';">
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <a href="{{ route('news.show', $recent) }}" 
@@ -129,7 +130,8 @@
                                 <div class="aspect-w-16 aspect-h-9">
                                     <img src="{{ $article->image_url }}" 
                                          alt="{{ $article->title }}"
-                                         class="w-full h-48 object-cover">
+                                         class="w-full h-48 object-cover"
+                                         onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiM5Q0EzQUYiLz4KPHRleHQgeD0iMjAwIiB5PSIxNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2QjcyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiI+TmV3cyBJbWFnZTwvdGV4dD4KPC9zdmc+';">
                                 </div>
 
                                 <!-- Content -->

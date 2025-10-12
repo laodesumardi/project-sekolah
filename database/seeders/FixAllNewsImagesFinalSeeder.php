@@ -7,7 +7,7 @@ use App\Models\News;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
-class UpdateNewsImagesSeeder extends Seeder
+class FixAllNewsImagesFinalSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -20,16 +20,7 @@ class UpdateNewsImagesSeeder extends Seeder
         foreach ($allNews as $news) {
             $this->command->info("Processing news: {$news->title}");
             
-            // Check if image exists in storage
-            if ($news->image) {
-                $imagePath = storage_path('app/public/news/' . $news->image);
-                if (file_exists($imagePath)) {
-                    $this->command->info("Image exists: {$news->image}");
-                    continue;
-                }
-            }
-
-            // Create a new image
+            // Always create a new image to ensure it works
             $imageName = 'news-' . $news->id . '-' . time() . '.jpg';
             $newImagePath = storage_path('app/public/news/' . $imageName);
             
@@ -52,6 +43,10 @@ class UpdateNewsImagesSeeder extends Seeder
                 // Update the news record
                 $news->update(['image' => $imageName]);
                 $this->command->info("Created new image: {$imageName}");
+                
+                // Test the image URL
+                $imageUrl = $news->fresh()->image_url;
+                $this->command->info("Image URL: {$imageUrl}");
             } else {
                 $this->command->error("Failed to create image for: {$news->title}");
             }
@@ -59,6 +54,13 @@ class UpdateNewsImagesSeeder extends Seeder
             imagedestroy($image);
         }
 
-        $this->command->info('Updated images for ' . $allNews->count() . ' news articles');
+        $this->command->info('Fixed images for ' . $allNews->count() . ' news articles');
+        
+        // Test all image URLs
+        $this->command->info('Testing all image URLs...');
+        foreach (News::all() as $news) {
+            $url = $news->image_url;
+            $this->command->info("News: {$news->title} - URL: {$url}");
+        }
     }
 }

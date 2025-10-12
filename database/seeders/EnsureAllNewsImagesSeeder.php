@@ -7,7 +7,7 @@ use App\Models\News;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
-class UpdateNewsImagesSeeder extends Seeder
+class EnsureAllNewsImagesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -20,12 +20,15 @@ class UpdateNewsImagesSeeder extends Seeder
         foreach ($allNews as $news) {
             $this->command->info("Processing news: {$news->title}");
             
-            // Check if image exists in storage
+            // Check if current image exists
+            $currentImagePath = null;
             if ($news->image) {
-                $imagePath = storage_path('app/public/news/' . $news->image);
-                if (file_exists($imagePath)) {
-                    $this->command->info("Image exists: {$news->image}");
+                $currentImagePath = storage_path('app/public/news/' . $news->image);
+                if (file_exists($currentImagePath)) {
+                    $this->command->info("Current image exists: {$news->image}");
                     continue;
+                } else {
+                    $this->command->info("Current image not found: {$news->image}");
                 }
             }
 
@@ -52,6 +55,10 @@ class UpdateNewsImagesSeeder extends Seeder
                 // Update the news record
                 $news->update(['image' => $imageName]);
                 $this->command->info("Created new image: {$imageName}");
+                
+                // Test the image URL
+                $imageUrl = $news->fresh()->image_url;
+                $this->command->info("Image URL: {$imageUrl}");
             } else {
                 $this->command->error("Failed to create image for: {$news->title}");
             }
@@ -59,6 +66,6 @@ class UpdateNewsImagesSeeder extends Seeder
             imagedestroy($image);
         }
 
-        $this->command->info('Updated images for ' . $allNews->count() . ' news articles');
+        $this->command->info('Fixed images for ' . $allNews->count() . ' news articles');
     }
 }

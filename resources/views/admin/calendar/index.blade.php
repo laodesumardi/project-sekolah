@@ -251,7 +251,78 @@
     @method('DELETE')
 </form>
 
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+<style>
+/* Ensure event colors are displayed */
+.fc-event {
+    border: none !important;
+    border-radius: 4px !important;
+    opacity: 1 !important;
+}
+
+.fc-event .fc-event-title {
+    color: white !important;
+    font-weight: 500 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
+}
+
+.fc-event .fc-event-main {
+    background-color: inherit !important;
+}
+
+/* Force event colors */
+.fc-event[style*="background-color"] {
+    background-color: inherit !important;
+}
+
+/* Event type specific colors as fallback */
+.fc-event[data-event-type="exam"] {
+    background-color: #DC2626 !important;
+    border-color: #DC2626 !important;
+}
+
+.fc-event[data-event-type="activity"] {
+    background-color: #2563EB !important;
+    border-color: #2563EB !important;
+}
+
+.fc-event[data-event-type="holiday"] {
+    background-color: #16A34A !important;
+    border-color: #16A34A !important;
+}
+
+.fc-event[data-event-type="deadline"] {
+    background-color: #D97706 !important;
+    border-color: #D97706 !important;
+}
+
+/* Override any conflicting styles */
+.fc .fc-event {
+    background-color: inherit !important;
+    border-color: inherit !important;
+}
+
+/* FullCalendar v5 specific overrides */
+.fc-event-main {
+    background-color: inherit !important;
+}
+
+.fc-event-main-frame {
+    background-color: inherit !important;
+}
+
+/* Force event colors with higher specificity */
+.fc-event[style*="background-color"] {
+    background-color: inherit !important;
+}
+
+/* Ensure event colors are not overridden */
+.fc-event.fc-event-start.fc-event-end {
+    background-color: inherit !important;
+    border-color: inherit !important;
+}
+</style>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const calendarEl = document.getElementById('calendar');
@@ -262,13 +333,45 @@ document.addEventListener('DOMContentLoaded', function() {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
-        events: '/api/calendar/events',
+        events: {
+            url: '{{ route("admin.calendar.events") }}',
+            method: 'GET',
+            failure: function() {
+                console.error('Failed to load events');
+            }
+        },
+        eventDidMount: function(info) {
+            console.log('Event mounted:', info.event.title, 'Color:', info.event.color);
+            console.log('Event element:', info.el);
+            console.log('Event element style:', info.el.style.cssText);
+            
+            // Force apply event color
+            if (info.event.color) {
+                console.log('Applying color:', info.event.color);
+                info.el.style.setProperty('background-color', info.event.color, 'important');
+                info.el.style.setProperty('border-color', info.event.color, 'important');
+                info.el.style.setProperty('color', '#ffffff', 'important');
+                
+                // Also apply to all child elements
+                const childElements = info.el.querySelectorAll('*');
+                childElements.forEach(child => {
+                    child.style.setProperty('background-color', info.event.color, 'important');
+                });
+            }
+            
+            // Add event type data attribute for CSS
+            if (info.event.extendedProps.event_type) {
+                info.el.setAttribute('data-event-type', info.event.extendedProps.event_type);
+            }
+            
+            console.log('Final element style:', info.el.style.cssText);
+        },
         eventClick: function(info) {
             showEventModal(info.event);
         },
         dateClick: function(info) {
             // Create new event on date click
-            window.location.href = `/admin/calendar/create?date=${info.dateStr}`;
+            window.location.href = `{{ route('admin.calendar.create') }}?date=${info.dateStr}`;
         },
         eventDrop: function(info) {
             // Handle event drag and drop
@@ -277,10 +380,32 @@ document.addEventListener('DOMContentLoaded', function() {
         eventResize: function(info) {
             // Handle event resize
             updateEventDate(info.event);
+        },
+        selectable: true,
+        selectMirror: true,
+        select: function(info) {
+            // Create new event on date selection
+            window.location.href = `{{ route('admin.calendar.create') }}?start_date=${info.startStr}&end_date=${info.endStr}`;
         }
     });
     
     calendar.render();
+    
+    // Force apply colors after render
+    setTimeout(function() {
+        const events = document.querySelectorAll('.fc-event');
+        events.forEach(event => {
+            const eventId = event.getAttribute('data-event-id');
+            if (eventId) {
+                // Find the event data from calendar
+                const eventObj = calendar.getEventById(eventId);
+                if (eventObj && eventObj.color) {
+                    event.style.setProperty('background-color', eventObj.color, 'important');
+                    event.style.setProperty('border-color', eventObj.color, 'important');
+                }
+            }
+        });
+    }, 1000);
 
     // View toggle functionality
     const calendarViewBtn = document.getElementById('calendarViewBtn');
@@ -364,7 +489,7 @@ function closeEventModal() {
 }
 
 function updateEventDate(event) {
-    fetch(`/api/calendar/events/${event.id}`, {
+    fetch(`{{ route('admin.calendar.events.update', '') }}/${event.id}`, {
         method: 'PUT',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),

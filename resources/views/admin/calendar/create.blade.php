@@ -52,8 +52,8 @@
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent @error('event_type') border-red-500 @enderror"
                             required>
                         <option value="">Pilih Tipe Event</option>
-                        @foreach($eventTypes as $type)
-                            <option value="{{ $type }}" {{ old('event_type') === $type ? 'selected' : '' }}>{{ ucfirst($type) }}</option>
+                        @foreach($eventTypes as $key => $value)
+                            <option value="{{ $key }}" {{ old('event_type') === $key ? 'selected' : '' }}>{{ $value }}</option>
                         @endforeach
                     </select>
                     @error('event_type')
