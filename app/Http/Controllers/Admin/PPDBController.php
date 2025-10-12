@@ -8,6 +8,7 @@ use App\Models\RegistrationSetting;
 use App\Models\AcademicYear;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PPDBController extends Controller
 {
@@ -133,7 +134,159 @@ class PPDBController extends Controller
 
         $registrations = $query->orderBy('created_at', 'desc')->paginate(20);
 
-        return view('admin.ppdb.index', compact('registrations'));
+        // Statistics for the view
+        $totalRegistrations = Registration::where('academic_year_id', $currentYear->id)->count();
+        $pendingCount = Registration::where('academic_year_id', $currentYear->id)
+            ->where('status', 'pending')->count();
+        $acceptedCount = Registration::where('academic_year_id', $currentYear->id)
+            ->where('status', 'accepted')->count();
+        $rejectedCount = Registration::where('academic_year_id', $currentYear->id)
+            ->where('status', 'rejected')->count();
+
+        return view('admin.ppdb.index', compact(
+            'registrations',
+            'totalRegistrations',
+            'pendingCount',
+            'acceptedCount',
+            'rejectedCount'
+        ));
+    }
+
+    /**
+     * Store a new registration.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'full_name' => 'required|string|max:255',
+            'nisn' => 'required|string|max:20|unique:registrations,nisn',
+            'birth_place' => 'required|string|max:255',
+            'birth_date' => 'required|date',
+            'gender' => 'required|in:male,female',
+            'religion' => 'required|string|max:50',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255|unique:registrations,email',
+            'address' => 'required|string',
+            'registration_path' => 'required|in:regular,achievement,affirmation',
+            'status' => 'nullable|in:pending,verified,accepted,rejected,reserved',
+        ]);
+
+        $currentYear = AcademicYear::where('is_active', true)->first();
+        
+        // Generate registration number
+        $year = date('Y');
+        $lastRegistration = Registration::where('academic_year_id', $currentYear->id)
+            ->where('registration_number', 'like', "PPDB{$year}%")
+            ->orderBy('registration_number', 'desc')
+            ->first();
+        
+        $sequence = 1;
+        if ($lastRegistration) {
+            $lastSequence = (int) substr($lastRegistration->registration_number, -4);
+            $sequence = $lastSequence + 1;
+        }
+        
+        $registrationNumber = "PPDB{$year}" . str_pad($sequence, 4, '0', STR_PAD_LEFT);
+
+        $registration = Registration::create([
+            'academic_year_id' => $currentYear->id,
+            'registration_number' => $registrationNumber,
+            'full_name' => $request->full_name,
+            'nisn' => $request->nisn,
+            'birth_place' => $request->birth_place,
+            'birth_date' => $request->birth_date,
+            'gender' => $request->gender,
+            'religion' => $request->religion,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'registration_path' => $request->registration_path,
+            'status' => $request->status ?? 'pending',
+        ]);
+
+        // Log activity
+        $registration->activities()->create([
+            'activity_type' => 'created',
+            'description' => 'Pendaftar baru ditambahkan oleh admin',
+            'metadata' => [
+                'admin_id' => auth()->id(),
+                'registration_path' => $request->registration_path,
+            ],
+            'user_id' => auth()->id(),
+        ]);
+
+        return back()->with('success', 'Pendaftar berhasil ditambahkan.');
+    }
+
+    /**
+     * Show edit form.
+     */
+    public function edit(Registration $registration)
+    {
+        return response()->json([
+            'full_name' => $registration->full_name,
+            'nisn' => $registration->nisn,
+            'birth_place' => $registration->birth_place,
+            'birth_date' => $registration->birth_date->format('Y-m-d'),
+            'gender' => $registration->gender,
+            'religion' => $registration->religion,
+            'phone' => $registration->phone,
+            'email' => $registration->email,
+            'address' => $registration->address,
+            'registration_path' => $registration->registration_path,
+            'status' => $registration->status,
+        ]);
+    }
+
+    /**
+     * Update registration.
+     */
+    public function update(Request $request, Registration $registration)
+    {
+        $request->validate([
+            'full_name' => 'required|string|max:255',
+            'nisn' => 'required|string|max:20|unique:registrations,nisn,' . $registration->id,
+            'birth_place' => 'required|string|max:255',
+            'birth_date' => 'required|date',
+            'gender' => 'required|in:male,female',
+            'religion' => 'required|string|max:50',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255|unique:registrations,email,' . $registration->id,
+            'address' => 'required|string',
+            'registration_path' => 'required|in:regular,achievement,affirmation',
+            'status' => 'nullable|in:pending,verified,accepted,rejected,reserved',
+        ]);
+
+        $oldStatus = $registration->status;
+        
+        $registration->update([
+            'full_name' => $request->full_name,
+            'nisn' => $request->nisn,
+            'birth_place' => $request->birth_place,
+            'birth_date' => $request->birth_date,
+            'gender' => $request->gender,
+            'religion' => $request->religion,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'address' => $request->address,
+            'registration_path' => $request->registration_path,
+            'status' => $request->status ?? $registration->status,
+        ]);
+
+        // Log activity if status changed
+        if ($oldStatus !== $registration->status) {
+            $registration->activities()->create([
+                'activity_type' => 'status_changed',
+                'description' => "Status berubah dari {$oldStatus} menjadi {$registration->status}",
+                'metadata' => [
+                    'old_status' => $oldStatus,
+                    'new_status' => $registration->status,
+                ],
+                'user_id' => auth()->id(),
+            ]);
+        }
+
+        return back()->with('success', 'Data pendaftar berhasil diupdate.');
     }
 
     /**
@@ -223,6 +376,45 @@ class PPDBController extends Controller
     }
 
     /**
+     * Bulk delete registrations.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'registration_ids' => 'required|array',
+            'registration_ids.*' => 'exists:registrations,id',
+        ]);
+
+        $count = 0;
+        foreach ($request->registration_ids as $id) {
+            $registration = Registration::find($id);
+            if ($registration) {
+                // Delete documents
+                foreach ($registration->documents as $document) {
+                    \Storage::disk('public')->delete($document->file_path);
+                }
+
+                // Delete payments
+                foreach ($registration->payments as $payment) {
+                    if ($payment->payment_proof) {
+                        \Storage::disk('public')->delete('payments/' . $payment->payment_proof);
+                    }
+                }
+
+                // Delete photo
+                if ($registration->photo) {
+                    \Storage::disk('public')->delete("registrations/{$registration->registration_number}/{$registration->photo}");
+                }
+
+                $registration->delete();
+                $count++;
+            }
+        }
+
+        return back()->with('success', "{$count} pendaftar berhasil dihapus.");
+    }
+
+    /**
      * Delete registration.
      */
     public function destroy(Registration $registration)
@@ -290,5 +482,117 @@ class PPDBController extends Controller
         ];
 
         return response()->json($stats);
+    }
+
+    /**
+     * Handle quick registration from admin settings page.
+     */
+    public function quickRegister(Request $request)
+    {
+        $currentYear = AcademicYear::where('is_active', true)->first();
+        
+        if (!$currentYear) {
+            return back()->with('error', 'Tahun akademik aktif tidak ditemukan.');
+        }
+
+        $setting = RegistrationSetting::where('academic_year_id', $currentYear->id)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$setting || !$setting->isRegistrationOpen()) {
+            return back()->with('error', 'Pendaftaran PPDB belum dibuka atau sudah ditutup.');
+        }
+
+        $request->validate([
+            'registration_path' => 'required|in:regular,achievement,affirmation',
+            'full_name' => 'required|string|max:255',
+            'nik' => 'required|string|max:16|min:16',
+            'nisn' => 'required|string|max:10|min:10',
+            'birth_place' => 'required|string|max:100',
+            'birth_date' => 'required|date',
+            'gender' => 'required|in:L,P',
+            'father_name' => 'required|string|max:255',
+            'mother_name' => 'required|string|max:255',
+            'father_occupation' => 'nullable|string|max:100',
+            'mother_occupation' => 'nullable|string|max:100',
+            'parent_phone' => 'required|string|max:15',
+            'address' => 'required|string|max:500',
+            'achievement_name' => 'nullable|string|max:255',
+            'achievement_level' => 'nullable|string|max:50',
+            'achievement_year' => 'nullable|integer|min:2010|max:2025',
+            'achievement_rank' => 'nullable|string|max:100',
+        ]);
+
+        // Check quota
+        $currentCount = Registration::where('academic_year_id', $currentYear->id)
+            ->where('registration_path', $request->registration_path)
+            ->count();
+
+        $quotaField = 'quota_' . $request->registration_path;
+        if ($currentCount >= $setting->$quotaField) {
+            return back()->with('error', "Kuota jalur {$request->registration_path} sudah penuh.");
+        }
+
+        // Check for duplicate NIK or NISN
+        $existingNik = Registration::where('nik', $request->nik)->first();
+        if ($existingNik) {
+            return back()->with('error', 'NIK sudah terdaftar sebelumnya.');
+        }
+
+        $existingNisn = Registration::where('nisn', $request->nisn)->first();
+        if ($existingNisn) {
+            return back()->with('error', 'NISN sudah terdaftar sebelumnya.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Generate registration number
+            $year = date('Y');
+            $pathCode = strtoupper(substr($request->registration_path, 0, 3));
+            $lastNumber = Registration::where('academic_year_id', $currentYear->id)
+                ->where('registration_path', $request->registration_path)
+                ->count() + 1;
+            $registrationNumber = "PPDB-{$year}-{$pathCode}-" . str_pad($lastNumber, 4, '0', STR_PAD_LEFT);
+
+            // Create registration
+            $registration = Registration::create([
+                'academic_year_id' => $currentYear->id,
+                'registration_number' => $registrationNumber,
+                'registration_path' => $request->registration_path,
+                'full_name' => $request->full_name,
+                'nik' => $request->nik,
+                'nisn' => $request->nisn,
+                'birth_place' => $request->birth_place,
+                'birth_date' => $request->birth_date,
+                'gender' => $request->gender,
+                'father_name' => $request->father_name,
+                'mother_name' => $request->mother_name,
+                'father_occupation' => $request->father_occupation,
+                'mother_occupation' => $request->mother_occupation,
+                'parent_phone' => $request->parent_phone,
+                'address' => $request->address,
+                'status' => 'pending',
+                'registered_by' => auth()->id(),
+            ]);
+
+            // Add achievement data if achievement path
+            if ($request->registration_path === 'achievement' && $request->achievement_name) {
+                $registration->update([
+                    'achievement_name' => $request->achievement_name,
+                    'achievement_level' => $request->achievement_level,
+                    'achievement_year' => $request->achievement_year,
+                    'achievement_rank' => $request->achievement_rank,
+                ]);
+            }
+
+            DB::commit();
+
+            return back()->with('success', "Pendaftaran berhasil! Nomor pendaftaran: {$registrationNumber}");
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
+        }
     }
 }

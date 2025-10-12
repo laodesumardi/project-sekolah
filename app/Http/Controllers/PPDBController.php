@@ -23,7 +23,7 @@ class PPDBController extends Controller
         }
 
         $setting = RegistrationSetting::where('academic_year_id', $currentYear->id)
-            ->where('is_open', true)
+            ->where('is_active', true)
             ->first();
 
         if (!$setting) {
@@ -52,10 +52,10 @@ class PPDBController extends Controller
         }
 
         $setting = RegistrationSetting::where('academic_year_id', $currentYear->id)
-            ->where('is_open', true)
+            ->where('is_active', true)
             ->first();
 
-        if (!$setting || !$setting->isCurrentlyOpen()) {
+        if (!$setting || !$setting->isRegistrationOpen()) {
             return redirect()->route('ppdb.index')
                 ->with('error', 'Pendaftaran PPDB belum dibuka atau sudah ditutup.');
         }
@@ -70,10 +70,10 @@ class PPDBController extends Controller
     {
         $currentYear = AcademicYear::where('is_active', true)->first();
         $setting = RegistrationSetting::where('academic_year_id', $currentYear->id)
-            ->where('is_open', true)
+            ->where('is_active', true)
             ->first();
 
-        if (!$setting || !$setting->isCurrentlyOpen()) {
+        if (!$setting || !$setting->isRegistrationOpen()) {
             return response()->json(['error' => 'Pendaftaran sudah ditutup.'], 400);
         }
 
@@ -95,10 +95,10 @@ class PPDBController extends Controller
     {
         $currentYear = AcademicYear::where('is_active', true)->first();
         $setting = RegistrationSetting::where('academic_year_id', $currentYear->id)
-            ->where('is_open', true)
+            ->where('is_active', true)
             ->first();
 
-        if (!$setting || !$setting->isCurrentlyOpen()) {
+        if (!$setting || !$setting->isRegistrationOpen()) {
             return redirect()->route('ppdb.index')
                 ->with('error', 'Pendaftaran PPDB sudah ditutup.');
         }

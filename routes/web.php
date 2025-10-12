@@ -83,7 +83,6 @@ Route::get('/akademik', function () {
     return redirect()->route('academic.curriculum');
 })->name('akademik');
 
-Route::get('/ppdb', [PPDBController::class, 'index'])->name('ppdb');
 
 Route::get('/kontak', function () {
     return view('frontend.contact.index');
@@ -116,12 +115,17 @@ Route::middleware(['auth', 'active'])->group(function () {
                 Route::prefix('ppdb')->name('ppdb.')->group(function () {
                     Route::get('/dashboard', [\App\Http\Controllers\Admin\PPDBController::class, 'dashboard'])->name('dashboard');
                     Route::get('/pendaftar', [\App\Http\Controllers\Admin\PPDBController::class, 'index'])->name('index');
+                    Route::post('/pendaftar', [\App\Http\Controllers\Admin\PPDBController::class, 'store'])->name('store');
+                    Route::get('/pendaftar/{registration}/edit', [\App\Http\Controllers\Admin\PPDBController::class, 'edit'])->name('edit');
+                    Route::put('/pendaftar/{registration}', [\App\Http\Controllers\Admin\PPDBController::class, 'update'])->name('update');
                     Route::get('/pendaftar/{registration}', [\App\Http\Controllers\Admin\PPDBController::class, 'show'])->name('show');
                     Route::put('/pendaftar/{registration}/status', [\App\Http\Controllers\Admin\PPDBController::class, 'updateStatus'])->name('update-status');
                     Route::post('/pendaftar/bulk-status', [\App\Http\Controllers\Admin\PPDBController::class, 'bulkUpdateStatus'])->name('bulk-status');
+                    Route::post('/pendaftar/bulk-delete', [\App\Http\Controllers\Admin\PPDBController::class, 'bulkDelete'])->name('bulk-delete');
                     Route::delete('/pendaftar/{registration}', [\App\Http\Controllers\Admin\PPDBController::class, 'destroy'])->name('destroy');
                     Route::get('/export', [\App\Http\Controllers\Admin\PPDBController::class, 'export'])->name('export');
                     Route::get('/statistics', [\App\Http\Controllers\Admin\PPDBController::class, 'statistics'])->name('statistics');
+                    Route::post('/quick-register', [\App\Http\Controllers\Admin\PPDBController::class, 'quickRegister'])->name('quick-register');
                 });
 
                 // PPDB Settings

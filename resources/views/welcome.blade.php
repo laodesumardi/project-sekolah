@@ -19,7 +19,7 @@
                     berprestasi, dan berakhlak mulia untuk masa depan yang gemilang.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="{{ route('ppdb') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    <a href="{{ route('ppdb.index') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
                         Daftar Sekarang
                     </a>
                     <a href="{{ route('about') }}" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105">
@@ -133,7 +133,7 @@
             dan wujudkan impian pendidikan terbaik untuk masa depan mereka.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{{ route('ppdb') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+            <a href="{{ route('ppdb.index') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
                 Daftar PPDB 2024
             </a>
             <a href="{{ route('kontak') }}" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105">

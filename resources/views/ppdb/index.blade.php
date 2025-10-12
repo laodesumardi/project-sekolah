@@ -15,7 +15,7 @@
                 Penerimaan Peserta Didik Baru SMP Negeri 01 Namrole
             </p>
             
-            @if($setting->isCurrentlyOpen())
+            @if($setting->isRegistrationOpen())
                 <!-- Countdown Timer -->
                 <div class="bg-white/20 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-2xl mx-auto">
                     <h3 class="text-2xl font-semibold mb-4">Pendaftaran Berakhir Dalam:</h3>
@@ -102,7 +102,7 @@
                     <div>Kuota: {{ number_format($setting->quota_achievement) }} siswa</div>
                     <div>Biaya: Rp {{ number_format($setting->registration_fee, 0, ',', '.') }}</div>
                 </div>
-                @if($setting->isCurrentlyOpen())
+                @if($setting->isRegistrationOpen())
                     <a href="{{ route('ppdb.form') }}?path=achievement" 
                        class="inline-flex items-center px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg transition-colors duration-200">
                         Daftar Sekarang
@@ -129,7 +129,7 @@
                     <div>Kuota: {{ number_format($setting->quota_regular) }} siswa</div>
                     <div>Biaya: Rp {{ number_format($setting->registration_fee, 0, ',', '.') }}</div>
                 </div>
-                @if($setting->isCurrentlyOpen())
+                @if($setting->isRegistrationOpen())
                     <a href="{{ route('ppdb.form') }}?path=regular" 
                        class="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors duration-200">
                         Daftar Sekarang
@@ -156,7 +156,7 @@
                     <div>Kuota: {{ number_format($setting->quota_affirmation) }} siswa</div>
                     <div>Biaya: Rp {{ number_format($setting->registration_fee, 0, ',', '.') }}</div>
                 </div>
-                @if($setting->isCurrentlyOpen())
+                @if($setting->isRegistrationOpen())
                     <a href="{{ route('ppdb.form') }}?path=affirmation" 
                        class="inline-flex items-center px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors duration-200">
                         Daftar Sekarang
@@ -566,7 +566,7 @@
             Jangan lewatkan kesempatan untuk bergabung dengan SMP Negeri 01 Namrole
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            @if($setting->isCurrentlyOpen())
+            @if($setting->isRegistrationOpen())
                 <a href="{{ route('ppdb.form') }}" 
                    class="inline-flex items-center px-8 py-4 bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-xl rounded-lg transition-colors duration-200 shadow-lg">
                     <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
