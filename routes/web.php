@@ -28,9 +28,9 @@ Route::get('/fasilitas/{facility}', [FacilityController::class, 'show'])->name('
 Route::prefix('ppdb')->name('ppdb.')->group(function () {
     Route::get('/', [PPDBController::class, 'index'])->name('index');
     Route::get('/daftar', [PPDBController::class, 'form'])->name('form');
-    Route::post('/daftar/step/{step}', [PPDBController::class, 'storeStep'])->name('store-step');
     Route::post('/daftar/submit', [PPDBController::class, 'submit'])->name('submit');
     Route::get('/konfirmasi/{registration_number}', [PPDBController::class, 'confirmation'])->name('confirmation');
+    Route::get('/download-form/{registration_number}', [PPDBController::class, 'downloadForm'])->name('download-form');
     Route::get('/status', [PPDBController::class, 'statusForm'])->name('status');
     Route::post('/status', [PPDBController::class, 'checkStatus'])->name('check-status');
     Route::get('/pengumuman', [PPDBController::class, 'announcement'])->name('announcement');
