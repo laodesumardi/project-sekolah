@@ -8,11 +8,10 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\AcademicController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -89,6 +88,25 @@ Route::get('/kontak', function () {
 })->name('kontak');
 
 Route::middleware(['auth', 'active'])->group(function () {
+    // Dashboard untuk semua user
+    Route::get('/dashboard', function () {
+        $user = auth()->user();
+        
+        // Redirect berdasarkan role
+        switch ($user->role) {
+            case 'admin':
+                return redirect()->route('admin.dashboard');
+            case 'teacher':
+                return redirect()->route('guru.dashboard');
+            case 'student':
+                return redirect()->route('siswa.dashboard');
+            case 'parent':
+                return redirect()->route('orangtua.dashboard');
+            default:
+                return redirect()->route('admin.dashboard');
+        }
+    })->name('dashboard');
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

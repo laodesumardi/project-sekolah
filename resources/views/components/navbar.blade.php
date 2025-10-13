@@ -100,13 +100,77 @@
                 justify-content: center;
                 align-items: center;
                 flex: 1;
-                margin-left: 5rem;
+                margin-left: 8rem;
+                margin-right: 3.5rem;
+                gap: 0.1rem;
             }
             
             .navbar-actions {
                 position: absolute;
-                right: -2rem;
+                right: -2.5rem;
                 flex-shrink: 0;
+            }
+            
+            /* Consistent spacing for all menu items */
+            .navbar-menu a {
+                margin: 0;
+            }
+            
+            /* Desktop dropdown styling */
+            .group:hover .group-hover\\:opacity-100 {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+                animation: dropdownSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            
+            .group:hover .group-hover\\:visible {
+                visibility: visible;
+            }
+            
+            /* Dropdown animation */
+            @keyframes dropdownSlideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            /* Dropdown item hover effects */
+            .group .group-hover\\:opacity-100 a:hover {
+                background-color: #eff6ff;
+                color: #2563eb;
+                transform: translateX(4px);
+            }
+            
+            /* Active state for dropdown items */
+            .group .group-hover\\:opacity-100 a.active {
+                background-color: #eff6ff;
+                color: #2563eb;
+                border-left: 3px solid #3b82f6;
+            }
+            
+            /* Desktop dropdown styling - same as mobile */
+            .group .group-hover\\:opacity-100 a {
+                display: flex;
+                align-items: center;
+                padding: 12px 16px;
+                transition: all 0.2s ease;
+            }
+            
+            .group .group-hover\\:opacity-100 a:hover {
+                background-color: #f9fafb;
+                color: #3b82f6;
+            }
+            
+            .group .group-hover\\:opacity-100 a.active {
+                background-color: #eff6ff;
+                color: #2563eb;
+                border-left: 4px solid #3b82f6;
             }
         }
         
@@ -174,6 +238,42 @@
             border-left: 4px solid #3b82f6;
         }
         
+        /* Mobile dropdown styles */
+        .mobile-dropdown {
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .mobile-dropdown button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            width: 100%;
+            text-decoration: none;
+        }
+        
+        .mobile-dropdown button:hover {
+            background-color: #f9fafb;
+            color: #3b82f6;
+        }
+        
+        .mobile-dropdown-content {
+            background-color: #f9fafb;
+            border-left: 4px solid #e5e7eb;
+        }
+        
+        .mobile-dropdown-content .mobile-menu-item {
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .mobile-dropdown-content .mobile-menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .mobile-dropdown-content .mobile-menu-item:hover {
+            background-color: #f3f4f6;
+        }
+        
+        
         /* Hamburger animation */
         .hamburger {
             width: 24px;
@@ -237,7 +337,7 @@
             </div>
 
             <!-- Desktop Navigation -->
-            <div class="navbar-menu hidden lg:flex items-center space-x-6">
+            <div class="navbar-menu hidden lg:flex items-center space-x-4">
                 <a href="{{ route('home') }}" class="navbar-link text-primary-500 hover:text-primary-600 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('home') ? 'text-primary-600 active' : '' }}">
                     Home
                 </a>
@@ -249,13 +349,48 @@
                         Akademik
                     </a>
                     <!-- Dropdown Menu -->
-                    <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <div class="py-1">
-                            <a href="{{ route('academic.curriculum') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Kurikulum</a>
-                            <a href="{{ route('academic.extracurriculars') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Ekstrakurikuler</a>
-                            <a href="{{ route('academic.teachers') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Tenaga Pendidik</a>
-                            <a href="{{ route('academic.calendar') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Kalender Akademik</a>
-                            <a href="{{ route('academic.achievements') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Prestasi</a>
+                    <div class="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform translate-y-1 group-hover:translate-y-0">
+                        <div class="py-2">
+                            <a href="{{ route('academic.curriculum') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 {{ request()->routeIs('academic.curriculum') ? 'bg-primary-50 text-primary-600' : '' }}">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                    </svg>
+                                    <span>Kurikulum</span>
+                                </div>
+                            </a>
+                            <a href="{{ route('academic.extracurriculars') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 {{ request()->routeIs('academic.extracurriculars') ? 'bg-primary-50 text-primary-600' : '' }}">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    </svg>
+                                    <span>Ekstrakurikuler</span>
+                                </div>
+                            </a>
+                            <a href="{{ route('academic.teachers') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 {{ request()->routeIs('academic.teachers') ? 'bg-primary-50 text-primary-600' : '' }}">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                    <span>Tenaga Pendidik</span>
+                                </div>
+                            </a>
+                            <a href="{{ route('academic.calendar') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 {{ request()->routeIs('academic.calendar') ? 'bg-primary-50 text-primary-600' : '' }}">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    <span>Kalender Akademik</span>
+                                </div>
+                            </a>
+                            <a href="{{ route('academic.achievements') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 {{ request()->routeIs('academic.achievements') ? 'bg-primary-50 text-primary-600' : '' }}">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                                    </svg>
+                                    <span>Prestasi</span>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -274,13 +409,22 @@
                 <a href="{{ route('news') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('news*') ? 'text-primary-600 active' : '' }}">
                     Berita
                 </a>
+                <a href="{{ route('kontak') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('kontak*') ? 'text-primary-600 active' : '' }}">
+                    Kontak
+                </a>
             </div>
 
             <!-- Desktop CTA Button -->
             <div class="navbar-actions hidden lg:block">
+                @auth
+                    <a href="{{ route('dashboard') }}" class="login-btn bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 shadow-md hover:shadow-lg">
+                        Dashboard
+                    </a>
+                @else
                 <a href="{{ route('login') }}" class="login-btn bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 shadow-md hover:shadow-lg">
                     Portal Login
                 </a>
+                @endauth
             </div>
 
             <!-- Mobile menu button -->
@@ -318,14 +462,59 @@
                     </div>
                 </a>
                 
-                <a href="{{ route('academic.curriculum') }}" class="mobile-menu-item {{ request()->routeIs('academic.*') ? 'active' : '' }}">
+                <!-- Akademik Dropdown for Mobile -->
+                <div class="mobile-dropdown">
+                    <button class="mobile-menu-item w-full text-left flex items-center" data-dropdown="academic-dropdown" type="button">
                     <div class="flex items-center space-x-3">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                         </svg>
                         <span>Akademik</span>
+                        </div>
+                    </button>
+                    <div class="mobile-dropdown-content hidden" id="academic-dropdown">
+                        <a href="{{ route('academic.curriculum') }}" class="mobile-menu-item pl-8 {{ request()->routeIs('academic.curriculum') ? 'active' : '' }}">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                                <span>Kurikulum</span>
+                            </div>
+                        </a>
+                        <a href="{{ route('academic.extracurriculars') }}" class="mobile-menu-item pl-8 {{ request()->routeIs('academic.extracurriculars') ? 'active' : '' }}">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                <span>Ekstrakurikuler</span>
+                            </div>
+                        </a>
+                        <a href="{{ route('academic.teachers') }}" class="mobile-menu-item pl-8 {{ request()->routeIs('academic.teachers') ? 'active' : '' }}">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                                <span>Tenaga Pendidik</span>
+                            </div>
+                        </a>
+                        <a href="{{ route('academic.calendar') }}" class="mobile-menu-item pl-8 {{ request()->routeIs('academic.calendar') ? 'active' : '' }}">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <span>Kalender Akademik</span>
+                            </div>
+                        </a>
+                        <a href="{{ route('academic.achievements') }}" class="mobile-menu-item pl-8 {{ request()->routeIs('academic.achievements') ? 'active' : '' }}">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                                </svg>
+                                <span>Prestasi</span>
                     </div>
                 </a>
+                    </div>
+                </div>
                 
                 <a href="{{ route('facilities') }}" class="mobile-menu-item {{ request()->routeIs('facilities*') ? 'active' : '' }}">
                     <div class="flex items-center space-x-3">
@@ -371,13 +560,28 @@
                         <span>Berita</span>
                     </div>
                 </a>
+                
+                <a href="{{ route('kontak') }}" class="mobile-menu-item {{ request()->routeIs('kontak*') ? 'active' : '' }}">
+                    <div class="flex items-center space-x-3">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span>Kontak</span>
+                    </div>
+                </a>
             </nav>
 
             <!-- Mobile CTA Button -->
             <div class="mt-4 pt-4 border-t border-gray-200">
+                @auth
+                    <a href="{{ route('dashboard') }}" class="w-full bg-primary-500 hover:bg-primary-600 text-white block px-4 py-3 rounded-lg text-base font-medium text-center transition-colors duration-200">
+                        Dashboard
+                    </a>
+                @else
                 <a href="{{ route('login') }}" class="w-full bg-primary-500 hover:bg-primary-600 text-white block px-4 py-3 rounded-lg text-base font-medium text-center transition-colors duration-200">
                     Portal Login
                 </a>
+                @endauth
             </div>
         </div>
     </div>
@@ -407,9 +611,24 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Mobile dropdown toggle function
+    function toggleMobileDropdown(dropdownId) {
+        const dropdown = document.getElementById(dropdownId);
+        
+        if (dropdown) {
+            // Toggle dropdown visibility
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+    }
+    
     // Make functions globally available
     window.toggleMobileMenu = toggleMobileMenu;
     window.closeMobileMenu = closeMobileMenu;
+    window.toggleMobileDropdown = toggleMobileDropdown;
     
     // Handle dropdown hover for desktop
     const dropdownGroups = document.querySelectorAll('.group');
@@ -428,12 +647,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Close mobile menu when clicking on menu items
-    const mobileMenuItems = document.querySelectorAll('.mobile-menu-item');
+    // Close mobile menu when clicking on menu items (except dropdown buttons)
+    const mobileMenuItems = document.querySelectorAll('.mobile-menu-item:not([data-dropdown])');
     mobileMenuItems.forEach(item => {
         item.addEventListener('click', function() {
             closeMobileMenu();
         });
+    });
+    
+    // Handle mobile dropdown buttons
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('[data-dropdown]')) {
+            e.preventDefault();
+            e.stopPropagation();
+            const button = e.target.closest('[data-dropdown]');
+            const dropdownId = button.getAttribute('data-dropdown');
+            toggleMobileDropdown(dropdownId);
+        }
+    });
+    
+    // Prevent dropdown from closing when clicking on submenu items
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.mobile-dropdown-content')) {
+            e.stopPropagation();
+        }
     });
     
     // Close mobile menu when clicking outside

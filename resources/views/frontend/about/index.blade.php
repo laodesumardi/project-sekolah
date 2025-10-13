@@ -174,6 +174,220 @@
         </div>
     </div>
 </section>
+
+<!-- Fasilitas Sekolah Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Fasilitas Sekolah</h2>
+            <p class="text-lg text-gray-600">Fasilitas modern untuk mendukung proses pembelajaran yang optimal</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Laboratorium Komputer -->
+            <div class="text-center bg-gray-50 rounded-lg p-6">
+                <div class="w-16 h-16 bg-blue-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Laboratorium Komputer</h3>
+                <p class="text-gray-600">40 unit komputer dengan spesifikasi modern untuk pembelajaran IT</p>
+            </div>
+            
+            <!-- Laboratorium IPA -->
+            <div class="text-center bg-gray-50 rounded-lg p-6">
+                <div class="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Laboratorium IPA</h3>
+                <p class="text-gray-600">Peralatan lengkap untuk praktikum fisika, kimia, dan biologi</p>
+            </div>
+            
+            <!-- Perpustakaan -->
+            <div class="text-center bg-gray-50 rounded-lg p-6">
+                <div class="w-16 h-16 bg-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Perpustakaan Digital</h3>
+                <p class="text-gray-600">Koleksi buku dan akses digital untuk mendukung pembelajaran</p>
+            </div>
+            
+            <!-- Lapangan Olahraga -->
+            <div class="text-center bg-gray-50 rounded-lg p-6">
+                <div class="w-16 h-16 bg-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Lapangan Olahraga</h3>
+                <p class="text-gray-600">Lapangan basket, voli, dan futsal untuk kegiatan olahraga</p>
+            </div>
+            
+            <!-- Ruang Multimedia -->
+            <div class="text-center bg-gray-50 rounded-lg p-6">
+                <div class="w-16 h-16 bg-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Ruang Multimedia</h3>
+                <p class="text-gray-600">Ruang presentasi dengan teknologi audio visual modern</p>
+            </div>
+            
+            <!-- Kantin Sekolah -->
+            <div class="text-center bg-gray-50 rounded-lg p-6">
+                <div class="w-16 h-16 bg-yellow-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Kantin Sehat</h3>
+                <p class="text-gray-600">Menyediakan makanan sehat dan bergizi untuk siswa</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Prestasi & Pencapaian Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Prestasi & Pencapaian</h2>
+            <p class="text-lg text-gray-600">Berbagai prestasi yang telah diraih oleh siswa dan sekolah</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Olimpiade Sains -->
+            <div class="text-center bg-white rounded-lg shadow-lg p-6">
+                <div class="w-16 h-16 bg-yellow-400 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Olimpiade Sains</h3>
+                <p class="text-3xl font-bold text-yellow-500 mb-2">15</p>
+                <p class="text-gray-600">Medali emas tingkat kabupaten</p>
+            </div>
+            
+            <!-- Lomba Debat -->
+            <div class="text-center bg-white rounded-lg shadow-lg p-6">
+                <div class="w-16 h-16 bg-blue-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Lomba Debat</h3>
+                <p class="text-3xl font-bold text-blue-500 mb-2">8</p>
+                <p class="text-gray-600">Juara tingkat provinsi</p>
+            </div>
+            
+            <!-- Olahraga -->
+            <div class="text-center bg-white rounded-lg shadow-lg p-6">
+                <div class="w-16 h-16 bg-green-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Olahraga</h3>
+                <p class="text-3xl font-bold text-green-500 mb-2">12</p>
+                <p class="text-gray-600">Kejuaraan tingkat kabupaten</p>
+            </div>
+            
+            <!-- Seni & Budaya -->
+            <div class="text-center bg-white rounded-lg shadow-lg p-6">
+                <div class="w-16 h-16 bg-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Seni & Budaya</h3>
+                <p class="text-3xl font-bold text-purple-500 mb-2">6</p>
+                <p class="text-gray-600">Festival tingkat provinsi</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Kontak & Lokasi Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Kontak & Lokasi</h2>
+            <p class="text-lg text-gray-600">Informasi kontak dan lokasi sekolah</p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Informasi Kontak -->
+            <div class="space-y-6">
+                <div class="flex items-start">
+                    <div class="w-12 h-12 bg-primary-500 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-1">Alamat</h3>
+                        <p class="text-gray-600">Jl. Pendidikan No. 123, Namrole, Kabupaten Buru Selatan, Maluku</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="w-12 h-12 bg-primary-500 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-1">Telepon</h3>
+                        <p class="text-gray-600">(0913) 1234567</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="w-12 h-12 bg-primary-500 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-1">Email</h3>
+                        <p class="text-gray-600">info@smpn01namrole.sch.id</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="w-12 h-12 bg-primary-500 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-1">Jam Operasional</h3>
+                        <p class="text-gray-600">Senin - Jumat: 07:00 - 15:00 WIB</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Peta Lokasi -->
+            <div class="bg-gray-200 rounded-lg h-96 flex items-center justify-center">
+                <div class="text-center">
+                    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <p class="text-gray-500">Peta Lokasi Sekolah</p>
+                    <p class="text-sm text-gray-400">Jl. Pendidikan No. 123, Namrole</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 @endsection
 
 @push('scripts')

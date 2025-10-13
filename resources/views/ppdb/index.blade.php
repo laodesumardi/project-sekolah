@@ -625,37 +625,89 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Countdown Timer
     function updateCountdown() {
-        const endDate = new Date('{{ $setting->end_date->format('Y-m-d H:i:s') }}').getTime();
-        const now = new Date().getTime();
-        const distance = endDate - now;
-
-        if (distance < 0) {
-            const countdownElement = document.getElementById('countdown');
-            if (countdownElement) {
-                countdownElement.innerHTML = '<div class="text-2xl font-bold">Pendaftaran Sudah Ditutup</div>';
+        try {
+            // Get the end date from the server
+            const endDateString = '{{ $setting->end_date->format('Y-m-d H:i:s') }}';
+            const endDate = new Date(endDateString).getTime();
+            
+            // Check if date is valid
+            if (isNaN(endDate)) {
+                console.error('Invalid end date:', endDateString);
+                return;
             }
-            return;
+            const now = new Date().getTime();
+            const distance = endDate - now;
+
+            console.log('End Date String:', endDateString);
+            console.log('End Date:', new Date(endDateString));
+            console.log('Current Date:', new Date());
+            console.log('Distance (ms):', distance);
+            console.log('Distance (days):', distance / (1000 * 60 * 60 * 24));
+
+            // Check if countdown elements exist
+            const daysElement = document.getElementById('days');
+            const hoursElement = document.getElementById('hours');
+            const minutesElement = document.getElementById('minutes');
+            const secondsElement = document.getElementById('seconds');
+
+            console.log('Countdown elements found:', {
+                days: !!daysElement,
+                hours: !!hoursElement,
+                minutes: !!minutesElement,
+                seconds: !!secondsElement
+            });
+
+            if (distance < 0) {
+                const countdownElement = document.getElementById('countdown');
+                if (countdownElement) {
+                    countdownElement.innerHTML = '<div class="text-2xl font-bold text-red-500">Pendaftaran Sudah Ditutup</div>';
+                }
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            console.log('Countdown values:', { days, hours, minutes, seconds });
+
+            // Update the display
+            if (daysElement) {
+                daysElement.innerHTML = days.toString().padStart(2, '0');
+                console.log('Updated days:', daysElement.innerHTML);
+            }
+            if (hoursElement) {
+                hoursElement.innerHTML = hours.toString().padStart(2, '0');
+                console.log('Updated hours:', hoursElement.innerHTML);
+            }
+            if (minutesElement) {
+                minutesElement.innerHTML = minutes.toString().padStart(2, '0');
+                console.log('Updated minutes:', minutesElement.innerHTML);
+            }
+            if (secondsElement) {
+                secondsElement.innerHTML = seconds.toString().padStart(2, '0');
+                console.log('Updated seconds:', secondsElement.innerHTML);
+            }
+        } catch (error) {
+            console.error('Countdown timer error:', error);
         }
-
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        const daysElement = document.getElementById('days');
-        const hoursElement = document.getElementById('hours');
-        const minutesElement = document.getElementById('minutes');
-        const secondsElement = document.getElementById('seconds');
-
-        if (daysElement) daysElement.innerHTML = days.toString().padStart(2, '0');
-        if (hoursElement) hoursElement.innerHTML = hours.toString().padStart(2, '0');
-        if (minutesElement) minutesElement.innerHTML = minutes.toString().padStart(2, '0');
-        if (secondsElement) secondsElement.innerHTML = seconds.toString().padStart(2, '0');
     }
 
     // Update countdown every second
     setInterval(updateCountdown, 1000);
+    
+    // Initial call
     updateCountdown();
+    
+    // Fallback: If countdown doesn't work, show a message
+    setTimeout(function() {
+        const daysElement = document.getElementById('days');
+        if (daysElement && daysElement.innerHTML === '00') {
+            console.log('Countdown may not be working properly');
+            // You can add a fallback message here if needed
+        }
+    }, 2000);
 
     // FAQ Toggle - Ultra Simple Version
     function initFAQ() {

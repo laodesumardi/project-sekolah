@@ -37,6 +37,14 @@ class News extends Model
     }
 
     /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    /**
      * Get the category that owns the news.
      */
     public function category(): BelongsTo

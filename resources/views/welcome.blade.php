@@ -4,7 +4,7 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="relative overflow-hidden" style="background: linear-gradient(135deg, #0a1628 0%, #13315c 100%); min-height: 100vh; background-attachment: fixed;">
+<section class="relative overflow-hidden gradient-hero min-h-screen">
     <div class="absolute inset-0" style="background: rgba(0, 0, 0, 0.2);"></div>
     <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'2\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
@@ -124,6 +124,236 @@
     </div>
 </section>
 
+<!-- Berita Terbaru Section -->
+<section id="berita" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-primary-500 mb-4">Berita Terbaru</h2>
+            <p class="text-xl text-gray-600">Informasi dan berita terkini dari sekolah</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @forelse($latestNews as $news)
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <img src="{{ $news->image_url }}" alt="{{ $news->title }}" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ $news->title }}</h3>
+                    <p class="text-gray-600 text-sm mb-4">{{ $news->excerpt }}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">{{ $news->published_at->format('d M Y') }}</span>
+                        <a href="{{ route('news.show', $news->slug) }}" class="text-primary-500 hover:text-primary-600 font-medium">Baca Selengkapnya</a>
+                    </div>
+                </div>
+            </div>
+            @empty
+            <!-- Fallback content when no news available -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <img src="{{ asset('Screenshot 2025-10-08 152932.png') }}" alt="Berita 1" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Pembukaan PPDB 2024</h3>
+                    <p class="text-gray-600 text-sm mb-4">Pendaftaran Peserta Didik Baru (PPDB) tahun 2024 telah dibuka. Segera daftarkan putra-putri Anda...</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">12 Oktober 2024</span>
+                        <a href="#" class="text-primary-500 hover:text-primary-600 font-medium">Baca Selengkapnya</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <img src="{{ asset('Screenshot 2025-10-08 152954.png') }}" alt="Berita 2" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Prestasi Siswa di Olimpiade</h3>
+                    <p class="text-gray-600 text-sm mb-4">Siswa SMP Negeri 01 Namrole berhasil meraih prestasi membanggakan dalam olimpiade sains...</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">10 Oktober 2024</span>
+                        <a href="#" class="text-primary-500 hover:text-primary-600 font-medium">Baca Selengkapnya</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <img src="{{ asset('logo.png') }}" alt="Berita 3" class="w-full h-48 object-contain bg-gray-100">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Kegiatan Ekstrakurikuler</h3>
+                    <p class="text-gray-600 text-sm mb-4">Berbagai kegiatan ekstrakurikuler menarik tersedia untuk mengembangkan bakat dan minat siswa...</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500">8 Oktober 2024</span>
+                        <a href="#" class="text-primary-500 hover:text-primary-600 font-medium">Baca Selengkapnya</a>
+                    </div>
+                </div>
+            </div>
+            @endforelse
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{{ route('news') }}" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                Lihat Semua Berita
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Galeri Section -->
+<section id="galeri" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-primary-500 mb-4">Galeri Sekolah</h2>
+            <p class="text-xl text-gray-600">Momen-momen berharga di SMP Negeri 01 Namrole</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            @forelse($galleryItems as $gallery)
+            <div class="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <img src="{{ $gallery->image_url }}" alt="{{ $gallery->title ?? 'Galeri' }}" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300">
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                    <svg class="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                    </svg>
+                </div>
+                @if($gallery->title)
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                    <h4 class="text-white font-semibold text-sm">{{ $gallery->title }}</h4>
+                </div>
+                @endif
+            </div>
+            @empty
+            <!-- Fallback content when no gallery available -->
+            <div class="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <img src="{{ asset('Screenshot 2025-10-08 152932.png') }}" alt="Galeri 1" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300">
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                    <svg class="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <img src="{{ asset('Screenshot 2025-10-08 152954.png') }}" alt="Galeri 2" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300">
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                    <svg class="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <img src="{{ asset('WhatsApp Image 2025-10-08 at 09.18.28_33273b6c.jpg') }}" alt="Galeri 3" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300">
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                    <svg class="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <img src="{{ asset('WhatsApp Image 2025-10-08 at 09.18.28_9b2fa8f6.jpg') }}" alt="Galeri 4" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300">
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                    <svg class="h-8 w-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                    </svg>
+                </div>
+            </div>
+            @endforelse
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{{ route('gallery') }}" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                Lihat Galeri Lengkap
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Kontak Section -->
+<section id="kontak" class="py-20 bg-light">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-primary-500 mb-4">Hubungi Kami</h2>
+            <p class="text-xl text-gray-600">Kami siap membantu dan menjawab pertanyaan Anda</p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <!-- Informasi Kontak -->
+            <div class="space-y-8">
+                <div class="flex items-start space-x-4">
+                    <div class="bg-primary-500 p-3 rounded-full">
+                        <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Alamat</h3>
+                        <p class="text-gray-600">Jl. Pendidikan No. 123<br>Namrole, Maluku</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-4">
+                    <div class="bg-primary-500 p-3 rounded-full">
+                        <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Telepon</h3>
+                        <p class="text-gray-600">(0910) 123456</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-4">
+                    <div class="bg-primary-500 p-3 rounded-full">
+                        <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Email</h3>
+                        <p class="text-gray-600">info@smpn01namrole.sch.id</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-4">
+                    <div class="bg-primary-500 p-3 rounded-full">
+                        <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Jam Operasional</h3>
+                        <p class="text-gray-600">Senin - Jumat: 07:00 - 16:00<br>Sabtu: 07:00 - 12:00</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Kontak -->
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-6">Kirim Pesan</h3>
+                <form class="space-y-6">
+                    <div>
+                        <label for="nama" class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                        <input type="text" id="nama" name="nama" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="Masukkan nama lengkap">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="Masukkan email">
+                    </div>
+                    <div>
+                        <label for="telepon" class="block text-sm font-medium text-gray-700 mb-2">Telepon</label>
+                        <input type="tel" id="telepon" name="telepon" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="Masukkan nomor telepon">
+                    </div>
+                    <div>
+                        <label for="pesan" class="block text-sm font-medium text-gray-700 mb-2">Pesan</label>
+                        <textarea id="pesan" name="pesan" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="Tuliskan pesan Anda"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        Kirim Pesan
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- CTA Section -->
 <section class="py-20 bg-primary-500">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -136,7 +366,7 @@
             <a href="{{ route('ppdb.index') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
                 Daftar PPDB 2024
             </a>
-            <a href="{{ route('kontak') }}" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105">
+            <a href="#kontak" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105">
                 Hubungi Kami
             </a>
         </div>

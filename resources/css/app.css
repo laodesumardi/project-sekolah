@@ -6,9 +6,25 @@
 @layer base {
     html {
         scroll-behavior: smooth;
+        scroll-padding-top: 80px;
     }
     body {
         font-family: 'Poppins', 'Inter', sans-serif;
+        overflow-x: hidden;
+    }
+    
+    /* Optimize scrolling performance */
+    * {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Reduce motion for users who prefer it */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
     }
 }
 
@@ -63,33 +79,48 @@
 }
 
 @layer utilities {
-    /* Animation utilities */
+    /* Animation utilities with performance optimization */
     .animate-fade-in {
         animation: fadeIn 0.6s ease-out;
+        will-change: transform, opacity;
     }
     .animate-slide-up {
         animation: slideUp 0.6s ease-out;
+        will-change: transform, opacity;
     }
     .animate-slide-in-left {
         animation: slideInLeft 0.6s ease-out;
+        will-change: transform, opacity;
     }
     .animate-slide-in-right {
         animation: slideInRight 0.6s ease-out;
+        will-change: transform, opacity;
     }
     .animate-bounce-in {
         animation: bounceIn 0.8s ease-out;
+        will-change: transform, opacity;
     }
     .animate-pulse-slow {
         animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
-
-    /* Hover effects */
+    
+    /* Performance optimized hover effects */
     .hover-lift {
         @apply transition-transform duration-300 hover:-translate-y-2;
+        will-change: transform;
     }
     .hover-glow {
         @apply transition-shadow duration-300 hover:shadow-2xl;
+        will-change: box-shadow;
     }
+    
+    /* GPU acceleration for smooth animations */
+    .gpu-accelerated {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+    }
+
 
     /* Custom scrollbar */
     .scrollbar-custom::-webkit-scrollbar {
