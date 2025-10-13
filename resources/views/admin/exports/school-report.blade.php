@@ -208,7 +208,7 @@
 
     <div class="footer">
         <p>Laporan ini dibuat secara otomatis oleh sistem SMP Negeri 01 Namrole</p>
-        <p>Untuk informasi lebih lanjut, hubungi: (021) 123-4567 | info@smpn01namrole.sch.id</p>
+        <p>Untuk informasi lebih lanjut, hubungi: {{ $homepageSetting->contact_phone ?? '(021) 123-4567' }} | {{ $homepageSetting->contact_email ?? 'info@smpn01namrole.sch.id' }}</p>
     </div>
 </body>
 </html>

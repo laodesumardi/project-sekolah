@@ -19,6 +19,8 @@ Route::get('/dashboard', function () {
 
 // Frontend Routes
 Route::get('/tentang-kami', [AboutController::class, 'index'])->name('about');
+Route::get('/kontak', [\App\Http\Controllers\ContactController::class, 'index'])->name('contact');
+Route::get('/akreditasi', [\App\Http\Controllers\AccreditationController::class, 'index'])->name('accreditation');
 Route::get('/fasilitas', [FacilityController::class, 'index'])->name('facilities');
 Route::get('/fasilitas/{facility}', [FacilityController::class, 'show'])->name('facilities.show');
 
@@ -83,9 +85,6 @@ Route::get('/akademik', function () {
 })->name('akademik');
 
 
-Route::get('/kontak', function () {
-    return view('frontend.contact.index');
-})->name('kontak');
 
 Route::middleware(['auth', 'active'])->group(function () {
     // Dashboard untuk semua user
@@ -116,6 +115,17 @@ Route::middleware(['auth', 'active'])->group(function () {
                 Route::get('/dashboard', function () {
                     return view('admin.dashboard');
                 })->name('dashboard');
+
+                // Homepage Settings Management
+                Route::get('/homepage-settings', [\App\Http\Controllers\Admin\HomepageSettingController::class, 'index'])->name('homepage-settings.index');
+                Route::get('/homepage-settings/edit', [\App\Http\Controllers\Admin\HomepageSettingController::class, 'edit'])->name('homepage-settings.edit');
+                Route::put('/homepage-settings', [\App\Http\Controllers\Admin\HomepageSettingController::class, 'update'])->name('homepage-settings.update');
+                Route::post('/homepage-settings/ajax-update', [\App\Http\Controllers\Admin\HomepageSettingController::class, 'updateAjax'])->name('homepage-settings.ajax-update');
+
+                // About Page Settings Management
+                Route::get('/about-page-settings', [\App\Http\Controllers\Admin\AboutPageSettingController::class, 'index'])->name('about-page-settings.index');
+                Route::get('/about-page-settings/edit', [\App\Http\Controllers\Admin\AboutPageSettingController::class, 'edit'])->name('about-page-settings.edit');
+                Route::put('/about-page-settings', [\App\Http\Controllers\Admin\AboutPageSettingController::class, 'update'])->name('about-page-settings.update');
 
                 // Facilities Management
                 Route::resource('facilities', \App\Http\Controllers\Admin\FacilityController::class);

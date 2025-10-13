@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\News;
 use App\Models\Gallery;
+use App\Models\HomepageSetting;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -13,6 +14,9 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // Get homepage settings
+        $homepageSetting = HomepageSetting::getActive();
+
         // Get latest 3 published news
         $latestNews = News::published()
             ->with(['category', 'author'])
@@ -34,6 +38,6 @@ class HomeController extends Controller
             ->limit(1)
             ->first();
 
-        return view('welcome', compact('latestNews', 'galleryItems', 'featuredNews'));
+        return view('welcome', compact('homepageSetting', 'latestNews', 'galleryItems', 'featuredNews'));
     }
 }

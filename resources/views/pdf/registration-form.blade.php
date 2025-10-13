@@ -457,7 +457,7 @@
 
     <div class="footer">
         <p>Formulir ini dicetak pada {{ now()->format('d F Y, H:i') }}</p>
-        <p>Untuk informasi lebih lanjut, hubungi: (021) 1234-5678 atau email: ppdb@smpn01namrole.sch.id</p>
+        <p>Untuk informasi lebih lanjut, hubungi: {{ $homepageSetting->contact_phone ?? '(021) 1234-5678' }} atau email: {{ $homepageSetting->contact_email ?? 'ppdb@smpn01namrole.sch.id' }}</p>
     </div>
 </body>
 </html>

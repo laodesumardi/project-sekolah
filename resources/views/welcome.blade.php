@@ -10,31 +10,42 @@
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div class="text-white animate-fade-in">
-                <h1 class="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
-                    Selamat Datang di<br>
-                    <span class="text-yellow-300">SMP Negeri 01 Namrole</span>
+                <h1 class="text-3xl lg:text-5xl font-bold mb-6 leading-tight">
+                    {{ $homepageSetting->hero_title ?? 'Selamat Datang di' }}<br>
+                    <span class="text-yellow-300">{{ $homepageSetting->hero_subtitle ?? 'SMP Negeri 01 Namrole' }}</span>
                 </h1>
                 <p class="text-xl lg:text-2xl mb-8 text-gray-200 leading-relaxed">
-                    Menjadi sekolah unggulan yang membentuk generasi berkarakter, 
-                    berprestasi, dan berakhlak mulia untuk masa depan yang gemilang.
+                    {{ $homepageSetting->hero_description ?? 'Menjadi sekolah unggulan yang membentuk generasi berkarakter, berprestasi, dan berakhlak mulia untuk masa depan yang gemilang.' }}
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="{{ route('ppdb.index') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
-                        Daftar Sekarang
-                    </a>
-                    <a href="{{ route('about') }}" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105">
-                        Pelajari Lebih Lanjut
-                    </a>
+                    @if($homepageSetting && $homepageSetting->hero_button_1_text)
+                        <a href="{{ $homepageSetting->hero_button_1_url ?? route('ppdb.index') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            {{ $homepageSetting->hero_button_1_text }}
+                        </a>
+                    @else
+                        <a href="{{ route('ppdb.index') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            Daftar Sekarang
+                        </a>
+                    @endif
+                    
+                    @if($homepageSetting && $homepageSetting->hero_button_2_text)
+                        <a href="{{ $homepageSetting->hero_button_2_url ?? route('about') }}" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105">
+                            {{ $homepageSetting->hero_button_2_text }}
+                        </a>
+                    @else
+                        <a href="{{ route('about') }}" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105">
+                            Pelajari Lebih Lanjut
+                        </a>
+                    @endif
                 </div>
                                         </div>
             <div class="animate-slide-up">
                 <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
-                    <img src="{{ asset('logo.png') }}" alt="Sekolah Illustration" class="w-full h-64 object-contain">
+                    <img src="{{ $homepageSetting && $homepageSetting->school_image ? $homepageSetting->school_image_url : asset('images/placeholder-school.jpg') }}" alt="Gambar Sekolah" class="w-full h-64 object-cover rounded-lg">
                     <div class="text-center mt-6">
-                        <h3 class="text-2xl font-bold text-white mb-2">Visi Sekolah</h3>
+                        <h3 class="text-2xl font-bold text-white mb-2">{{ $homepageSetting->vision_title ?? 'Visi Sekolah' }}</h3>
                         <p class="text-gray-200">
-                            "Terwujudnya sekolah yang unggul dalam prestasi, 
-                            berkarakter, dan berakhlak mulia"
+                            "{{ $homepageSetting->vision_description ?? 'Terwujudnya sekolah yang unggul dalam prestasi, berkarakter, dan berakhlak mulia' }}"
                                             </p>
                                         </div>
                                     </div>
@@ -71,6 +82,67 @@
         </div>
     </div>
 </section>
+
+<!-- Informasi Kepala Sekolah Section -->
+@if($homepageSetting && $homepageSetting->principal_name)
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-primary-500 mb-4">Kepala Sekolah</h2>
+            <p class="text-xl text-gray-600">Pemimpin yang berdedikasi untuk kemajuan pendidikan</p>
+        </div>
+        
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 p-8">
+                    <!-- Foto Kepala Sekolah -->
+                    <div class="lg:col-span-1 flex justify-center">
+                        <div class="relative">
+                            @if($homepageSetting->principal_photo)
+                                <img src="{{ $homepageSetting->principal_photo_url }}" alt="{{ $homepageSetting->principal_name }}" class="w-64 h-64 object-cover rounded-2xl shadow-lg">
+                            @else
+                                <div class="w-64 h-64 bg-primary-500 rounded-2xl shadow-lg flex items-center justify-center">
+                                    <div class="text-center text-white">
+                                        <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                        </svg>
+                                        <p class="text-lg font-semibold">Foto Kepala Sekolah</p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    
+                    <!-- Informasi Kepala Sekolah -->
+                    <div class="lg:col-span-2">
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-3xl font-bold text-gray-900 mb-2">{{ $homepageSetting->principal_name }}</h3>
+                                <p class="text-xl text-primary-500 font-semibold">{{ $homepageSetting->principal_title ?? 'Kepala Sekolah' }}</p>
+                            </div>
+                            
+                            @if($homepageSetting->principal_message)
+                            <div class="bg-gray-50 rounded-lg p-6">
+                                <div class="flex items-start">
+                                    <svg class="w-6 h-6 text-primary-500 mr-3 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h4v10h-10z"/>
+                                    </svg>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Pesan Kepala Sekolah</h4>
+                                        <p class="text-gray-600 leading-relaxed italic">"{{ $homepageSetting->principal_message }}"</p>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endif
 
 <!-- Statistik Section -->
 <section class="py-20 bg-light">
@@ -123,6 +195,59 @@
         </div>
     </div>
 </section>
+
+<!-- Accreditation Section -->
+@if($homepageSetting && $homepageSetting->accreditation_grade)
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-primary-500 mb-4">Akreditasi Sekolah</h2>
+            <p class="text-xl text-gray-600">Pengakuan kualitas pendidikan yang telah diraih</p>
+        </div>
+        
+        <div class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Accreditation Grade -->
+                <div class="text-center bg-white rounded-lg shadow-lg p-8 border-2 border-gray-100">
+                    <div class="w-24 h-24 bg-green-500 rounded-full mx-auto mb-6 flex items-center justify-center">
+                        <span class="text-white text-4xl font-bold">{{ $homepageSetting->accreditation_grade ?? 'A' }}</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Akreditasi {{ $homepageSetting->accreditation_grade ?? 'A' }}</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        {{ $homepageSetting->accreditation_description ?? 'Predikat sangat baik dalam standar pendidikan nasional' }}
+                    </p>
+                </div>
+
+                <!-- Accreditation Certificate -->
+                <div class="text-center bg-white rounded-lg shadow-lg p-8 border-2 border-gray-100">
+                    @if($homepageSetting->accreditation_certificate)
+                        <div class="w-24 h-24 bg-yellow-400 rounded-full mx-auto mb-6 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                    @else
+                        <div class="w-24 h-24 bg-yellow-400 rounded-full mx-auto mb-6 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                    @endif
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Sertifikat Akreditasi</h3>
+                    <p class="text-gray-600 leading-relaxed">
+                        Berlaku hingga {{ $homepageSetting->accreditation_valid_until ?? '2025' }}
+                    </p>
+                    @if($homepageSetting->accreditation_certificate)
+                        <div class="mt-6">
+                            <img src="{{ $homepageSetting->accreditation_certificate_url }}" alt="Sertifikat Akreditasi" class="w-32 h-32 object-cover rounded-lg mx-auto border-2 border-gray-200">
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endif
 
 <!-- Berita Terbaru Section -->
 <section id="berita" class="py-20 bg-gray-50">
@@ -284,7 +409,7 @@
                     </div>
                     <div>
                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Alamat</h3>
-                        <p class="text-gray-600">Jl. Pendidikan No. 123<br>Namrole, Maluku</p>
+                        <p class="text-gray-600">{{ $homepageSetting->contact_address ?? 'Jl. Pendidikan No. 123, Namrole, Maluku' }}</p>
                     </div>
                 </div>
                 
@@ -296,7 +421,7 @@
                     </div>
                     <div>
                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Telepon</h3>
-                        <p class="text-gray-600">(0910) 123456</p>
+                        <p class="text-gray-600">{{ $homepageSetting->contact_phone ?? '(0910) 123456' }}</p>
                     </div>
                 </div>
                 
@@ -308,7 +433,7 @@
                     </div>
                     <div>
                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Email</h3>
-                        <p class="text-gray-600">info@smpn01namrole.sch.id</p>
+                        <p class="text-gray-600">{{ $homepageSetting->contact_email ?? 'info@smpn01namrole.sch.id' }}</p>
                     </div>
                 </div>
                 
@@ -354,6 +479,30 @@
     </div>
 </section>
 
+<!-- Organization Structure Section -->
+@if($homepageSetting && $homepageSetting->organization_structure_title)
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-primary-500 mb-4">{{ $homepageSetting->organization_structure_title ?? 'Struktur Organisasi' }}</h2>
+            @if($homepageSetting->organization_structure_description)
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">{{ $homepageSetting->organization_structure_description }}</p>
+            @endif
+        </div>
+        
+        @if($homepageSetting->organization_structure_image)
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="text-center">
+                <img src="{{ $homepageSetting->organization_structure_image_url }}" 
+                     alt="{{ $homepageSetting->organization_structure_title ?? 'Struktur Organisasi' }}" 
+                     class="w-full max-w-4xl mx-auto object-contain rounded-lg border-2 border-gray-200 shadow-lg">
+            </div>
+        </div>
+        @endif
+    </div>
+</section>
+@endif
+
 <!-- CTA Section -->
 <section class="py-20 bg-primary-500">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -365,9 +514,6 @@
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="{{ route('ppdb.index') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
                 Daftar PPDB 2024
-            </a>
-            <a href="#kontak" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105">
-                Hubungi Kami
             </a>
         </div>
     </div>

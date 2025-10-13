@@ -50,148 +50,30 @@
     </div>
 </section>
 
-<!-- Organizational Structure -->
-<section class="py-16">
+
+<!-- Organizational Structure Image -->
+<section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Struktur Organisasi Perpustakaan</h2>
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Gambar Struktur Organisasi Perpustakaan</h2>
             <p class="text-gray-600 max-w-2xl mx-auto">
-                Struktur organisasi yang terorganisir untuk memberikan layanan perpustakaan yang optimal
+                Visualisasi lengkap struktur organisasi perpustakaan SMP Negeri 01 Namrole
             </p>
         </div>
-
-        <!-- Leadership Level -->
-        <div class="mb-12">
-            <h3 class="text-2xl font-semibold text-center mb-8 text-primary-600">Pimpinan & Komite</h3>
-            <div class="flex flex-wrap justify-center gap-8">
-                <!-- Kepala Sekolah -->
-                <div class="bg-primary-50 p-6 rounded-lg shadow-md text-center max-w-xs">
-                    <div class="w-24 h-24 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-user-tie text-3xl text-primary-600"></i>
-                    </div>
-                    <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['leadership']['kepala_sekolah']['name'] }}</h4>
-                    <p class="text-primary-600 font-medium mb-3">{{ $libraryStructure['leadership']['kepala_sekolah']['position'] }}</p>
-                    <p class="text-sm text-gray-600">{{ $libraryStructure['leadership']['kepala_sekolah']['description'] }}</p>
+        
+        <div class="max-w-6xl mx-auto">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="text-center">
+                    <img src="{{ asset($libraryStructureImage) }}" 
+                         alt="Struktur Organisasi Perpustakaan SMP Negeri 01 Namrole" 
+                         class="w-full max-w-5xl mx-auto object-contain rounded-lg border-2 border-gray-200 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 </div>
-
-                <!-- Komite -->
-                <div class="bg-gray-50 p-6 rounded-lg shadow-md text-center max-w-xs">
-                    <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-users text-3xl text-gray-600"></i>
-                    </div>
-                    <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['leadership']['komite']['name'] }}</h4>
-                    <p class="text-gray-600 font-medium mb-3">{{ $libraryStructure['leadership']['komite']['position'] }}</p>
-                    <p class="text-sm text-gray-600">{{ $libraryStructure['leadership']['komite']['description'] }}</p>
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600 text-sm">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Klik gambar untuk melihat dalam ukuran penuh
+                    </p>
                 </div>
-            </div>
-        </div>
-
-        <!-- Management Level -->
-        <div class="mb-12">
-            <h3 class="text-2xl font-semibold text-center mb-8 text-primary-600">Manajemen Perpustakaan</h3>
-            <div class="flex flex-wrap justify-center gap-8">
-                <!-- Kepala Perpustakaan -->
-                <div class="bg-primary-50 p-6 rounded-lg shadow-md text-center max-w-xs">
-                    <div class="w-24 h-24 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-user-cog text-3xl text-primary-600"></i>
-                    </div>
-                    <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['management']['kepala_perpustakaan']['name'] }}</h4>
-                    <p class="text-primary-600 font-medium mb-3">{{ $libraryStructure['management']['kepala_perpustakaan']['position'] }}</p>
-                    <p class="text-sm text-gray-600">{{ $libraryStructure['management']['kepala_perpustakaan']['description'] }}</p>
-                </div>
-
-                <!-- Dewan Guru -->
-                <div class="bg-primary-50 p-6 rounded-lg shadow-md text-center max-w-xs">
-                    <div class="w-24 h-24 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-chalkboard-teacher text-3xl text-primary-600"></i>
-                    </div>
-                    <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['management']['dewan_guru']['name'] }}</h4>
-                    <p class="text-primary-600 font-medium mb-3">{{ $libraryStructure['management']['dewan_guru']['position'] }}</p>
-                    <p class="text-sm text-gray-600">{{ $libraryStructure['management']['dewan_guru']['description'] }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Services Level -->
-        <div class="mb-12">
-            <h3 class="text-2xl font-semibold text-center mb-8 text-primary-600">Layanan Perpustakaan</h3>
-            <div class="grid md:grid-cols-3 gap-6">
-                <!-- Layanan Teknis -->
-                <div class="bg-primary-50 p-6 rounded-lg shadow-md text-center">
-                    <div class="w-20 h-20 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-cogs text-2xl text-primary-600"></i>
-                    </div>
-                    <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['services']['layanan_teknis']['name'] }}</h4>
-                    <p class="text-primary-600 font-medium mb-3">{{ $libraryStructure['services']['layanan_teknis']['position'] }}</p>
-                    <p class="text-sm text-gray-600">{{ $libraryStructure['services']['layanan_teknis']['description'] }}</p>
-                </div>
-
-                <!-- Layanan Pemustaka -->
-                <div class="bg-primary-50 p-6 rounded-lg shadow-md text-center">
-                    <div class="w-20 h-20 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-user-friends text-2xl text-primary-600"></i>
-                    </div>
-                    <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['services']['layanan_pemustaka']['name'] }}</h4>
-                    <p class="text-primary-600 font-medium mb-3">{{ $libraryStructure['services']['layanan_pemustaka']['position'] }}</p>
-                    <p class="text-sm text-gray-600">{{ $libraryStructure['services']['layanan_pemustaka']['description'] }}</p>
-                </div>
-
-                <!-- Koordinator Literasi -->
-                <div class="bg-primary-50 p-6 rounded-lg shadow-md text-center">
-                    <div class="w-20 h-20 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-book-reader text-2xl text-primary-600"></i>
-                    </div>
-                    <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['services']['koordinator_literasi']['name'] }}</h4>
-                    <p class="text-primary-600 font-medium mb-3">{{ $libraryStructure['services']['koordinator_literasi']['position'] }}</p>
-                    <p class="text-sm text-gray-600">{{ $libraryStructure['services']['koordinator_literasi']['description'] }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Ambassadors Level -->
-        <div class="mb-12">
-            <h3 class="text-2xl font-semibold text-center mb-8 text-primary-600">Duta Literasi</h3>
-            <div class="grid md:grid-cols-3 gap-6">
-                <!-- Duta Literasi Siswa -->
-                <div class="bg-primary-50 p-6 rounded-lg shadow-md text-center">
-                    <div class="w-20 h-20 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-graduation-cap text-2xl text-primary-600"></i>
-                    </div>
-                    <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['ambassadors']['duta_siswa']['name'] }}</h4>
-                    <p class="text-primary-600 font-medium mb-3">{{ $libraryStructure['ambassadors']['duta_siswa']['position'] }}</p>
-                    <p class="text-sm text-gray-600">{{ $libraryStructure['ambassadors']['duta_siswa']['description'] }}</p>
-                </div>
-
-                <!-- Duta Literasi Tenaga Kependidikan -->
-                <div class="bg-primary-50 p-6 rounded-lg shadow-md text-center">
-                    <div class="w-20 h-20 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-user-tie text-2xl text-primary-600"></i>
-                    </div>
-                    <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['ambassadors']['duta_tendik']['name'] }}</h4>
-                    <p class="text-primary-600 font-medium mb-3">{{ $libraryStructure['ambassadors']['duta_tendik']['position'] }}</p>
-                    <p class="text-sm text-gray-600">{{ $libraryStructure['ambassadors']['duta_tendik']['description'] }}</p>
-                </div>
-
-                <!-- Duta Literasi Guru -->
-                <div class="bg-primary-50 p-6 rounded-lg shadow-md text-center">
-                    <div class="w-20 h-20 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-chalkboard-teacher text-2xl text-primary-600"></i>
-                    </div>
-                    <h4 class="font-semibold text-lg mb-2">{{ $libraryStructure['ambassadors']['duta_guru']['name'] }}</h4>
-                    <p class="text-primary-600 font-medium mb-3">{{ $libraryStructure['ambassadors']['duta_guru']['position'] }}</p>
-                    <p class="text-sm text-gray-600">{{ $libraryStructure['ambassadors']['duta_guru']['description'] }}</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Library Users -->
-        <div class="text-center">
-            <div class="bg-primary-50 p-8 rounded-lg shadow-md max-w-md mx-auto">
-                <div class="w-24 h-24 bg-primary-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <i class="fas fa-users text-3xl text-primary-600"></i>
-                </div>
-                <h4 class="font-semibold text-xl mb-2">Pengguna Perpustakaan</h4>
-                <p class="text-gray-600">Siswa, Guru, dan Staf SMP Negeri 01 Namrole</p>
             </div>
         </div>
     </div>
@@ -221,26 +103,6 @@
     </div>
 </section>
 
-<!-- Collections -->
-<section class="py-16">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Koleksi Perpustakaan</h2>
-            <p class="text-gray-600 max-w-2xl mx-auto">
-                Berbagai jenis koleksi yang tersedia untuk mendukung pembelajaran dan pengembangan literasi
-            </p>
-        </div>
-
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($collections as $type => $description)
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-semibold mb-3 text-primary-600 capitalize">{{ str_replace('_', ' ', $type) }}</h3>
-                <p class="text-gray-600">{{ $description }}</p>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
 
 <!-- Contact Information -->
 <section class="py-16 bg-primary-600 text-white">
@@ -250,18 +112,40 @@
             <div class="grid md:grid-cols-3 gap-8 mt-8">
                 <div>
                     <h3 class="text-xl font-semibold mb-2">Jam Operasional</h3>
-                    <p class="text-primary-100">Senin - Jumat: 07.00 - 15.00 WIT</p>
-                    <p class="text-primary-100">Sabtu: 08.00 - 12.00 WIT</p>
+                    @if($homepageSetting && $homepageSetting->library_operational_hours_weekdays)
+                        <p class="text-primary-100">{{ $homepageSetting->library_operational_hours_weekdays }}</p>
+                    @else
+                        <p class="text-primary-100">Senin - Jumat: 07.00 - 15.00 WIT</p>
+                    @endif
+                    
+                    @if($homepageSetting && $homepageSetting->library_operational_hours_saturday)
+                        <p class="text-primary-100">{{ $homepageSetting->library_operational_hours_saturday }}</p>
+                    @else
+                        <p class="text-primary-100">Sabtu: 08.00 - 12.00 WIT</p>
+                    @endif
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold mb-2">Lokasi</h3>
-                    <p class="text-primary-100">Gedung Perpustakaan</p>
-                    <p class="text-primary-100">SMP Negeri 01 Namrole</p>
+                    @if($homepageSetting && $homepageSetting->library_location)
+                        <p class="text-primary-100">{{ $homepageSetting->library_location }}</p>
+                    @else
+                        <p class="text-primary-100">Gedung Perpustakaan</p>
+                        <p class="text-primary-100">SMP Negeri 01 Namrole</p>
+                    @endif
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold mb-2">Kontak</h3>
-                    <p class="text-primary-100">Email: perpustakaan@smpn01namrole.sch.id</p>
-                    <p class="text-primary-100">Telp: (0913) 123456</p>
+                    @if($homepageSetting && $homepageSetting->library_email)
+                        <p class="text-primary-100">Email: {{ $homepageSetting->library_email }}</p>
+                    @else
+                        <p class="text-primary-100">Email: perpustakaan@smpn01namrole.sch.id</p>
+                    @endif
+                    
+                    @if($homepageSetting && $homepageSetting->library_phone)
+                        <p class="text-primary-100">Telp: {{ $homepageSetting->library_phone }}</p>
+                    @else
+                        <p class="text-primary-100">Telp: (0913) 123456</p>
+                    @endif
                 </div>
             </div>
         </div>

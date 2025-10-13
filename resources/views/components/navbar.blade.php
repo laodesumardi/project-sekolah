@@ -391,6 +391,14 @@
                                     <span>Prestasi</span>
                                 </div>
                             </a>
+                            <a href="{{ route('accreditation') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 {{ request()->routeIs('accreditation') ? 'bg-primary-50 text-primary-600' : '' }}">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <span>Akreditasi</span>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -409,7 +417,7 @@
                 <a href="{{ route('news') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('news*') ? 'text-primary-600 active' : '' }}">
                     Berita
                 </a>
-                <a href="{{ route('kontak') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('kontak*') ? 'text-primary-600 active' : '' }}">
+                <a href="{{ route('contact') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('contact*') ? 'text-primary-600 active' : '' }}">
                     Kontak
                 </a>
             </div>
@@ -511,8 +519,16 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
                                 </svg>
                                 <span>Prestasi</span>
-                    </div>
-                </a>
+                            </div>
+                        </a>
+                        <a href="{{ route('accreditation') }}" class="mobile-menu-item pl-8 {{ request()->routeIs('accreditation') ? 'active' : '' }}">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>Akreditasi</span>
+                            </div>
+                        </a>
                     </div>
                 </div>
                 
@@ -561,7 +577,7 @@
                     </div>
                 </a>
                 
-                <a href="{{ route('kontak') }}" class="mobile-menu-item {{ request()->routeIs('kontak*') ? 'active' : '' }}">
+                <a href="{{ route('contact') }}" class="mobile-menu-item {{ request()->routeIs('contact*') ? 'active' : '' }}">
                     <div class="flex items-center space-x-3">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

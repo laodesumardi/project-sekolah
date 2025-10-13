@@ -34,9 +34,7 @@
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900 mb-2">Alamat</h3>
                             <p class="text-gray-600">
-                                Jl. Pendidikan No. 123<br>
-                                Kelurahan Namrole, Kecamatan Namrole<br>
-                                Kabupaten Buru Selatan, Maluku 97511
+                                {{ $homepageSetting->contact_address ?? 'Jl. Pendidikan No. 123, Kelurahan Namrole, Kecamatan Namrole, Kabupaten Buru Selatan, Maluku 97511' }}
                             </p>
                         </div>
                     </div>
@@ -52,8 +50,7 @@
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900 mb-2">Telepon</h3>
                             <p class="text-gray-600">
-                                (0913) 1234567<br>
-                                (0913) 7654321
+                                {{ $homepageSetting->contact_phone ?? '(0913) 1234567' }}
                             </p>
                         </div>
                     </div>
@@ -69,8 +66,7 @@
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900 mb-2">Email</h3>
                             <p class="text-gray-600">
-                                info@smpn01namrole.sch.id<br>
-                                admin@smpn01namrole.sch.id
+                                {{ $homepageSetting->contact_email ?? 'info@smpn01namrole.sch.id' }}
                             </p>
                         </div>
                     </div>

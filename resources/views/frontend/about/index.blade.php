@@ -11,8 +11,8 @@
 
 <!-- Page Header -->
 <x-page-header 
-    title="Tentang Kami" 
-    subtitle="Mengenal lebih dekat SMP Negeri 01 Namrole" 
+    title="{{ $homepageSetting->about_page_title ?? 'Tentang Kami' }}" 
+    subtitle="{{ $homepageSetting->about_page_description ? Str::limit($homepageSetting->about_page_description, 100) : 'Mengenal lebih dekat SMP Negeri 01 Namrole' }}" 
 />
 
 <!-- Visi & Misi Section -->
@@ -34,7 +34,7 @@
                 </div>
                 <h3 class="text-2xl font-bold text-gray-900 mb-4">Visi</h3>
                 <p class="text-gray-600 leading-relaxed">
-                    "Menjadi sekolah unggulan yang menghasilkan lulusan berkarakter, berprestasi, dan berdaya saing global"
+                    "{{ $homepageSetting->about_page_vision ?? 'Menjadi sekolah unggulan yang menghasilkan lulusan berkarakter, berprestasi, dan berdaya saing global' }}"
                 </p>
             </div>
             
@@ -46,9 +46,13 @@
                     </svg>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-900 mb-4">Misi</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    "Menyelenggarakan pendidikan berkualitas tinggi, membentuk karakter siswa yang unggul, dan mengembangkan potensi siswa secara optimal"
-                </p>
+                <div class="text-gray-600 leading-relaxed">
+                    @if($homepageSetting && $homepageSetting->about_page_mission)
+                        {!! nl2br(e($homepageSetting->about_page_mission)) !!}
+                    @else
+                        "Menyelenggarakan pendidikan berkualitas tinggi, membentuk karakter siswa yang unggul, dan mengembangkan potensi siswa secara optimal"
+                    @endif
+                </div>
             </div>
         </div>
     </div>
@@ -61,6 +65,16 @@
             <h2 class="text-3xl font-bold text-gray-900 mb-4">Sejarah Sekolah</h2>
             <p class="text-lg text-gray-600">Perjalanan panjang SMP Negeri 01 Namrole dalam dunia pendidikan</p>
         </div>
+        
+        @if($homepageSetting && $homepageSetting->about_page_history)
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="prose prose-lg max-w-none">
+                    {!! nl2br(e($homepageSetting->about_page_history)) !!}
+                </div>
+            </div>
+        </div>
+        @else
         
         <div class="relative">
             <!-- Timeline Line -->
@@ -99,25 +113,48 @@
                 />
             </div>
         </div>
+        @endif
     </div>
 </section>
 
 <!-- Struktur Organisasi Section -->
+@if($homepageSetting && $homepageSetting->organization_structure_title)
 <section class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Struktur Organisasi</h2>
-            <p class="text-lg text-gray-600">Tim kepemimpinan yang berdedikasi untuk kemajuan sekolah</p>
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">{{ $homepageSetting->organization_structure_title ?? 'Struktur Organisasi' }}</h2>
+            @if($homepageSetting->organization_structure_description)
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">{{ $homepageSetting->organization_structure_description }}</p>
+            @else
+                <p class="text-lg text-gray-600">Tim kepemimpinan yang berdedikasi untuk kemajuan sekolah</p>
+            @endif
         </div>
         
+        @if($homepageSetting->organization_structure_image)
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="text-center">
+                <img src="{{ $homepageSetting->organization_structure_image_url }}" 
+                     alt="{{ $homepageSetting->organization_structure_title ?? 'Struktur Organisasi' }}" 
+                     class="w-full max-w-4xl mx-auto object-contain rounded-lg border-2 border-gray-200 shadow-lg">
+            </div>
+        </div>
+        @else
+        <!-- Fallback: Show individual team members if no organization chart image -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Kepala Sekolah -->
             <div class="text-center bg-gray-50 rounded-lg p-6">
-                <div class="w-24 h-24 bg-primary-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <span class="text-white text-2xl font-bold">KS</span>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">Kepala Sekolah</h3>
-                <p class="text-gray-600">Dr. Ahmad Wijaya, M.Pd</p>
+                @if($homepageSetting && $homepageSetting->about_page_principal_photo)
+                    <img src="{{ $homepageSetting->about_page_principal_photo_url }}" alt="Kepala Sekolah" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover">
+                @else
+                    <div class="w-24 h-24 bg-primary-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <span class="text-white text-2xl font-bold">KS</span>
+                    </div>
+                @endif
+                <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $homepageSetting->about_page_principal_title ?? 'Kepala Sekolah' }}</h3>
+                <p class="text-gray-600">{{ $homepageSetting->about_page_principal_name ?? 'Dr. Ahmad Wijaya, M.Pd' }}</p>
+                @if($homepageSetting && $homepageSetting->about_page_principal_message)
+                    <p class="text-sm text-gray-500 mt-2 italic">"{{ Str::limit($homepageSetting->about_page_principal_message, 100) }}"</p>
+                @endif
             </div>
             
             <!-- Wakil Kepala Sekolah -->
@@ -138,8 +175,10 @@
                 <p class="text-gray-600">Budi Santoso, S.Pd</p>
             </div>
         </div>
+        @endif
     </div>
 </section>
+@endif
 
 <!-- Akreditasi Section -->
 <section class="py-16 bg-gray-50">
@@ -149,6 +188,44 @@
             <p class="text-lg text-gray-600">Pengakuan kualitas pendidikan yang telah diraih</p>
         </div>
         
+        @if($homepageSetting && $homepageSetting->accreditation_grade)
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Badge Akreditasi -->
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-32 h-32 bg-green-500 text-white rounded-full mb-6">
+                    <span class="text-4xl font-bold">{{ $homepageSetting->accreditation_grade ?? 'A' }}</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Akreditasi {{ $homepageSetting->accreditation_grade ?? 'A' }}</h3>
+                <p class="text-gray-600">{{ $homepageSetting->accreditation_description ?? 'Predikat sangat baik dalam standar pendidikan nasional' }}</p>
+            </div>
+            
+            <!-- Sertifikat -->
+            <div class="text-center">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    @if($homepageSetting->accreditation_certificate)
+                        <div class="w-24 h-24 bg-yellow-400 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                    @else
+                        <div class="w-24 h-24 bg-yellow-400 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                    @endif
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Sertifikat Akreditasi</h3>
+                    <p class="text-gray-600">Berlaku hingga {{ $homepageSetting->accreditation_valid_until ?? '2025' }}</p>
+                    @if($homepageSetting->accreditation_certificate)
+                        <div class="mt-6">
+                            <img src="{{ $homepageSetting->accreditation_certificate_url }}" alt="Sertifikat Akreditasi" class="w-32 h-32 object-cover rounded-lg mx-auto border-2 border-gray-200">
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @else
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Badge Akreditasi -->
             <div class="text-center">
@@ -172,6 +249,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </section>
 
@@ -183,6 +261,70 @@
             <p class="text-lg text-gray-600">Fasilitas modern untuk mendukung proses pembelajaran yang optimal</p>
         </div>
         
+        @if($homepageSetting && $homepageSetting->about_page_facilities_description)
+        <div class="max-w-4xl mx-auto mb-12">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="prose prose-lg max-w-none">
+                    {!! nl2br(e($homepageSetting->about_page_facilities_description)) !!}
+                </div>
+            </div>
+        </div>
+        @endif
+        
+        @if($facilities->count() > 0)
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @foreach($facilities as $facility)
+            <div class="text-center bg-gray-50 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300">
+                <!-- Facility Image -->
+                <div class="relative h-32 overflow-hidden rounded-lg mb-4">
+                    <img src="{{ $facility->image_url }}" 
+                         alt="{{ $facility->name }}" 
+                         class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                    @if($facility->category)
+                        <div class="absolute top-2 left-2">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white bg-opacity-90 text-blue-800 shadow-sm">
+                                {{ $facility->category->name }}
+                            </span>
+                        </div>
+                    @endif
+                </div>
+                
+                <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $facility->name }}</h3>
+                <p class="text-gray-600 text-sm mb-4">{{ Str::limit($facility->description, 80) }}</p>
+                
+                <!-- Facility Details -->
+                <div class="space-y-2">
+                    @if($facility->capacity)
+                        <div class="flex items-center justify-center text-sm text-gray-500">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+                            </svg>
+                            Kapasitas: {{ $facility->capacity }} orang
+                        </div>
+                    @endif
+                    
+                    <div class="flex items-center justify-center text-sm {{ $facility->is_available ? 'text-green-600' : 'text-red-600' }}">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        {{ $facility->is_available ? 'Tersedia' : 'Tidak Tersedia' }}
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        
+        <!-- View All Facilities Link -->
+        <div class="text-center mt-12">
+            <a href="{{ route('facilities') }}" 
+               class="inline-flex items-center px-6 py-3 bg-primary-500 text-white font-medium rounded-lg hover:bg-primary-600 transition-colors duration-200">
+                Lihat Semua Fasilitas
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+        </div>
+        @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Laboratorium Komputer -->
             <div class="text-center bg-gray-50 rounded-lg p-6">
@@ -250,6 +392,7 @@
                 <p class="text-gray-600">Menyediakan makanan sehat dan bergizi untuk siswa</p>
             </div>
         </div>
+        @endif
     </div>
 </section>
 
@@ -261,6 +404,87 @@
             <p class="text-lg text-gray-600">Berbagai prestasi yang telah diraih oleh siswa dan sekolah</p>
         </div>
         
+        @if($homepageSetting && $homepageSetting->about_page_achievements)
+        <div class="max-w-4xl mx-auto mb-12">
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <div class="prose prose-lg max-w-none">
+                    {!! nl2br(e($homepageSetting->about_page_achievements)) !!}
+                </div>
+            </div>
+        </div>
+        @endif
+        
+        @if($achievements->count() > 0)
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            @foreach($achievements as $achievement)
+            <div class="text-center bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+                <!-- Achievement Icon based on category -->
+                <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center
+                    @if($achievement->category == 'akademik') bg-yellow-400
+                    @elseif($achievement->category == 'olahraga') bg-green-500
+                    @elseif($achievement->category == 'seni') bg-purple-500
+                    @elseif($achievement->category == 'teknologi') bg-blue-500
+                    @else bg-gray-500
+                    @endif">
+                    @if($achievement->category == 'akademik')
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    @elseif($achievement->category == 'olahraga')
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    @elseif($achievement->category == 'seni')
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                        </svg>
+                    @elseif($achievement->category == 'teknologi')
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    @else
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    @endif
+                </div>
+                
+                <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $achievement->title }}</h3>
+                <p class="text-3xl font-bold mb-2
+                    @if($achievement->category == 'akademik') text-yellow-500
+                    @elseif($achievement->category == 'olahraga') text-green-500
+                    @elseif($achievement->category == 'seni') text-purple-500
+                    @elseif($achievement->category == 'teknologi') text-blue-500
+                    @else text-gray-500
+                    @endif">
+                    {{ $achievement->rank ?? '1' }}
+                </p>
+                <p class="text-gray-600 text-sm mb-2">{{ $achievement->formatted_level }}</p>
+                <p class="text-gray-500 text-xs">{{ $achievement->date->format('M Y') }}</p>
+                
+                @if($achievement->certificate_image)
+                <div class="mt-4">
+                    <img src="{{ $achievement->certificate_url }}" 
+                         alt="Sertifikat {{ $achievement->title }}" 
+                         class="w-16 h-16 object-cover rounded-lg mx-auto border-2 border-gray-200">
+                </div>
+                @endif
+            </div>
+            @endforeach
+        </div>
+        
+        <!-- View All Achievements Link -->
+        <div class="text-center mt-12">
+            <a href="{{ route('academic.achievements') }}" 
+               class="inline-flex items-center px-6 py-3 bg-primary-500 text-white font-medium rounded-lg hover:bg-primary-600 transition-colors duration-200">
+                Lihat Semua Prestasi
+                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </a>
+        </div>
+        @else
+        <!-- Fallback: Show static achievements if no database data -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <!-- Olimpiade Sains -->
             <div class="text-center bg-white rounded-lg shadow-lg p-6">
@@ -310,6 +534,7 @@
                 <p class="text-gray-600">Festival tingkat provinsi</p>
             </div>
         </div>
+        @endif
     </div>
 </section>
 
@@ -333,7 +558,7 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-1">Alamat</h3>
-                        <p class="text-gray-600">Jl. Pendidikan No. 123, Namrole, Kabupaten Buru Selatan, Maluku</p>
+                        <p class="text-gray-600">{{ $homepageSetting->contact_address ?? 'Jl. Pendidikan No. 123, Namrole, Kabupaten Buru Selatan, Maluku' }}</p>
                     </div>
                 </div>
                 
@@ -345,7 +570,7 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-1">Telepon</h3>
-                        <p class="text-gray-600">(0913) 1234567</p>
+                        <p class="text-gray-600">{{ $homepageSetting->contact_phone ?? '(0913) 1234567' }}</p>
                     </div>
                 </div>
                 
@@ -357,7 +582,7 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-1">Email</h3>
-                        <p class="text-gray-600">info@smpn01namrole.sch.id</p>
+                        <p class="text-gray-600">{{ $homepageSetting->contact_email ?? 'info@smpn01namrole.sch.id' }}</p>
                     </div>
                 </div>
                 

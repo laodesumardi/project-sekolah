@@ -50,22 +50,56 @@
         @if($facilities->count() > 0)
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($facilities as $facility)
-                    <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $facility->name }}</h3>
-                        @if($facility->category)
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-2">
-                                {{ $facility->category->name }}
-                            </span>
-                        @endif
-                        <p class="text-gray-600 text-sm mb-4">{{ Str::limit($facility->description, 100) }}</p>
-                        @if($facility->capacity)
-                            <div class="flex items-center text-sm text-gray-500">
-                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
-                                </svg>
-                                Kapasitas: {{ $facility->capacity }} orang
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                        <!-- Facility Image -->
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="{{ $facility->image_url }}" 
+                                 alt="{{ $facility->name }}" 
+                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                            @if($facility->category)
+                                <div class="absolute top-4 left-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white bg-opacity-90 text-blue-800 shadow-sm">
+                                        {{ $facility->category->name }}
+                                    </span>
+                                </div>
+                            @endif
+                        </div>
+                        
+                        <!-- Facility Content -->
+                        <div class="p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ $facility->name }}</h3>
+                            <p class="text-gray-600 text-sm mb-4">{{ Str::limit($facility->description, 100) }}</p>
+                            
+                            <!-- Facility Details -->
+                            <div class="space-y-2">
+                                @if($facility->capacity)
+                                    <div class="flex items-center text-sm text-gray-500">
+                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+                                        </svg>
+                                        Kapasitas: {{ $facility->capacity }} orang
+                                    </div>
+                                @endif
+                                
+                                <div class="flex items-center text-sm text-gray-500">
+                                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    {{ $facility->is_available ? 'Tersedia' : 'Tidak Tersedia' }}
+                                </div>
                             </div>
-                        @endif
+                            
+                            <!-- View Details Button -->
+                            <div class="mt-4">
+                                <a href="{{ route('facilities.show', $facility) }}" 
+                                   class="inline-flex items-center px-4 py-2 bg-primary-500 text-white text-sm font-medium rounded-md hover:bg-primary-600 transition-colors duration-200">
+                                    Lihat Detail
+                                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 @endforeach
             </div>
