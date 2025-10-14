@@ -14,6 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
             'active' => \App\Http\Middleware\CheckActive::class,
+            'student' => \App\Http\Middleware\CheckStudentRole::class,
+            'teacher' => \App\Http\Middleware\CheckTeacherRole::class,
+            'track.session' => \App\Http\Middleware\TrackLoginSession::class,
+            'track.teacher.activity' => \App\Http\Middleware\TrackTeacherActivity::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

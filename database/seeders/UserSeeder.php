@@ -2,8 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Models\Profile;
+use App\Models\Teacher;
+use App\Models\SchoolClass;
+use App\Models\AcademicYear;
 
 class UserSeeder extends Seeder
 {
@@ -12,262 +17,169 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1 Admin User
-        $admin = \App\Models\User::create([
-            'name' => 'Admin Sekolah',
-            'email' => 'admin@smpn01namrole.sch.id',
-            'password' => bcrypt('password123'),
-            'role' => 'admin',
-            'phone' => '081234567890',
-            'address' => 'Jl. Pendidikan No. 1, Namrole',
+        // Create Academic Year first
+        $academicYear = AcademicYear::firstOrCreate([
+            'name' => '2024/2025',
+            'start_date' => '2024-07-01',
+            'end_date' => '2025-06-30',
             'is_active' => true,
+        ]);
+
+        // Create School Class
+        $schoolClass = SchoolClass::firstOrCreate([
+            'name' => 'Kelas 7A',
+            'academic_year_id' => $academicYear->id,
+        ]);
+
+        // Create Admin User
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@sekolah.sch.id'],
+            [
+                'name' => 'Administrator',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        echo "✅ Admin user: admin@sekolah.sch.id / password\n";
+
+        // Create Teacher User
+        $teacher = User::firstOrCreate(
+            ['email' => 'guru@sekolah.sch.id'],
+            [
+                'name' => 'Guru Matematika',
+                'password' => Hash::make('password'),
+                'role' => 'teacher',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Create Teacher Profile
+        $teacherProfile = Teacher::firstOrCreate(
+            ['user_id' => $teacher->id],
+            [
+                'nip' => '196001011990031001',
+                'nik' => '196001011990031001',
+                'birth_place' => 'Jakarta',
+                'birth_date' => '1960-01-01',
+                'gender' => 'L',
+                'religion' => 'Islam',
+                'address' => 'Jl. Pendidikan No. 123, Jakarta',
+                'phone' => '081234567890',
+                'employment_status' => 'PNS',
+                'join_date' => '1990-01-01',
+                'education_level' => 'S1',
+                'major' => 'Matematika',
+                'university' => 'Universitas Indonesia',
+                'graduation_year' => 1985,
+                'certification_number' => '1234567890',
+                'bio' => 'Guru matematika berpengalaman dengan passion mengajar yang tinggi.',
+                'is_active' => true,
+                'subject' => 'Matematika',
+                'education' => 'S1 Matematika',
+            ]
+        );
+
+        echo "✅ Teacher user: guru@sekolah.sch.id / password\n";
+
+        // Create Student User
+        $student = User::firstOrCreate(
+            ['email' => 'siswa@sekolah.sch.id'],
+            [
+                'name' => 'Siswa Kelas 7A',
+                'password' => Hash::make('password'),
+                'role' => 'student',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Create Student Profile
+        $studentProfile = Profile::firstOrCreate(
+            ['user_id' => $student->id],
+            [
+                'nis' => '2024001',
+                'nisn' => '1234567890',
+                'class_id' => $schoolClass->id,
+                'academic_year_id' => $academicYear->id,
+                'gender' => 'L',
+                'birth_place' => 'Jakarta',
+                'birth_date' => '2010-01-01',
+                'parent_name' => 'Orang Tua Siswa',
+                'parent_phone' => '081234567890',
+                'phone' => '081234567891',
+                'address' => 'Jl. Siswa No. 456, Jakarta',
+            ]
+        );
+
+        echo "✅ Student user: siswa@sekolah.sch.id / password\n";
+
+        // Create additional test users
+        $this->createAdditionalUsers($academicYear, $schoolClass);
+    }
+
+    private function createAdditionalUsers($academicYear, $schoolClass)
+    {
+        // Additional Teacher
+        $teacher2 = User::create([
+            'name' => 'Guru Bahasa Indonesia',
+            'email' => 'guru2@sekolah.sch.id',
+            'password' => Hash::make('password'),
+            'role' => 'teacher',
             'email_verified_at' => now(),
         ]);
 
-        // 5 Teacher Users
-        $teachers = [
+        Teacher::firstOrCreate(
+            ['user_id' => $teacher2->id],
             [
-                'name' => 'Budi Santoso, S.Pd',
-                'email' => 'budi.santoso@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'teacher',
+                'nip' => '196501011990031002',
+                'nik' => '196501011990031002',
+                'birth_place' => 'Bandung',
+                'birth_date' => '1965-01-01',
+                'gender' => 'P',
+                'religion' => 'Islam',
+                'address' => 'Jl. Pendidikan No. 456, Bandung',
                 'phone' => '081234567891',
-                'address' => 'Jl. Guru No. 1, Namrole',
+                'employment_status' => 'PNS',
+                'join_date' => '1990-01-01',
+                'education_level' => 'S1',
+                'major' => 'Bahasa Indonesia',
+                'university' => 'Universitas Padjadjaran',
+                'graduation_year' => 1987,
+                'certification_number' => '1234567891',
+                'bio' => 'Guru bahasa Indonesia yang kreatif dan inovatif.',
                 'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Siti Rahayu, S.Pd',
-                'email' => 'siti.rahayu@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'teacher',
-                'phone' => '081234567892',
-                'address' => 'Jl. Guru No. 2, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Ahmad Wijaya, S.Pd',
-                'email' => 'ahmad.wijaya@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'teacher',
-                'phone' => '081234567893',
-                'address' => 'Jl. Guru No. 3, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Maria Magdalena, S.Pd',
-                'email' => 'maria.magdalena@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'teacher',
-                'phone' => '081234567894',
-                'address' => 'Jl. Guru No. 4, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Joko Susilo, S.Pd',
-                'email' => 'joko.susilo@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'teacher',
-                'phone' => '081234567895',
-                'address' => 'Jl. Guru No. 5, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-        ];
+                'subject' => 'Bahasa Indonesia',
+                'education' => 'S1 Bahasa Indonesia',
+            ]
+        );
 
-        $teacherUsers = [];
-        foreach ($teachers as $teacher) {
-            $teacherUsers[] = \App\Models\User::create($teacher);
-        }
+        echo "✅ Additional teacher created: guru2@sekolah.sch.id / password\n";
 
-        // 10 Student Users
-        $students = [
-            [
-                'name' => 'Andi Pratama',
-                'email' => 'andi.pratama@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'student',
-                'phone' => '081234567896',
-                'address' => 'Jl. Siswa No. 1, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Sari Indah',
-                'email' => 'sari.indah@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'student',
-                'phone' => '081234567897',
-                'address' => 'Jl. Siswa No. 2, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Rizki Ramadhan',
-                'email' => 'rizki.ramadhan@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'student',
-                'phone' => '081234567898',
-                'address' => 'Jl. Siswa No. 3, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Putri Sari',
-                'email' => 'putri.sari@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'student',
-                'phone' => '081234567899',
-                'address' => 'Jl. Siswa No. 4, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Dedi Kurniawan',
-                'email' => 'dedi.kurniawan@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'student',
-                'phone' => '081234567900',
-                'address' => 'Jl. Siswa No. 5, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Lina Marlina',
-                'email' => 'lina.marlina@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'student',
-                'phone' => '081234567901',
-                'address' => 'Jl. Siswa No. 6, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Fajar Nugroho',
-                'email' => 'fajar.nugroho@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'student',
-                'phone' => '081234567902',
-                'address' => 'Jl. Siswa No. 7, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Maya Sari',
-                'email' => 'maya.sari@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'student',
-                'phone' => '081234567903',
-                'address' => 'Jl. Siswa No. 8, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Rudi Hartono',
-                'email' => 'rudi.hartono@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'student',
-                'phone' => '081234567904',
-                'address' => 'Jl. Siswa No. 9, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Nina Wulandari',
-                'email' => 'nina.wulandari@smpn01namrole.sch.id',
-                'password' => bcrypt('password123'),
-                'role' => 'student',
-                'phone' => '081234567905',
-                'address' => 'Jl. Siswa No. 10, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-        ];
+        // Additional Student
+        $student2 = User::create([
+            'name' => 'Siswa Kelas 7B',
+            'email' => 'siswa2@sekolah.sch.id',
+            'password' => Hash::make('password'),
+            'role' => 'student',
+            'email_verified_at' => now(),
+        ]);
 
-        $studentUsers = [];
-        foreach ($students as $student) {
-            $studentUsers[] = \App\Models\User::create($student);
-        }
+        Profile::create([
+            'user_id' => $student2->id,
+            'nis' => '2024002',
+            'nisn' => '1234567891',
+            'class_id' => $schoolClass->id,
+            'academic_year_id' => $academicYear->id,
+            'gender' => 'P',
+            'birth_place' => 'Surabaya',
+            'birth_date' => '2010-05-15',
+            'parent_name' => 'Orang Tua Siswa 2',
+            'parent_phone' => '081234567892',
+            'phone' => '081234567893',
+            'address' => 'Jl. Siswa No. 789, Surabaya',
+        ]);
 
-        // 2 Parent Users
-        $parents = [
-            [
-                'name' => 'Bapak Andi',
-                'email' => 'bapak.andi@gmail.com',
-                'password' => bcrypt('password123'),
-                'role' => 'parent',
-                'phone' => '081234567906',
-                'address' => 'Jl. Orang Tua No. 1, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-            [
-                'name' => 'Ibu Sari',
-                'email' => 'ibu.sari@gmail.com',
-                'password' => bcrypt('password123'),
-                'role' => 'parent',
-                'phone' => '081234567907',
-                'address' => 'Jl. Orang Tua No. 2, Namrole',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ],
-        ];
-
-        $parentUsers = [];
-        foreach ($parents as $parent) {
-            $parentUsers[] = \App\Models\User::create($parent);
-        }
-
-        // Create Teacher Profiles
-        $teacherData = [
-            ['nip' => '196512151990031001', 'subject' => 'Matematika', 'education' => 'S1 Matematika', 'join_date' => '1990-03-01'],
-            ['nip' => '196803201990032002', 'subject' => 'Bahasa Indonesia', 'education' => 'S1 Bahasa Indonesia', 'join_date' => '1990-03-01'],
-            ['nip' => '197005151990031003', 'subject' => 'IPA', 'education' => 'S1 Biologi', 'join_date' => '1990-03-01'],
-            ['nip' => '197208201990032004', 'subject' => 'IPS', 'education' => 'S1 Sejarah', 'join_date' => '1990-03-01'],
-            ['nip' => '197510251990031005', 'subject' => 'Bahasa Inggris', 'education' => 'S1 Bahasa Inggris', 'join_date' => '1990-03-01'],
-        ];
-
-        foreach ($teacherUsers as $index => $teacher) {
-            \App\Models\Teacher::create([
-                'user_id' => $teacher->id,
-                'nip' => $teacherData[$index]['nip'],
-                'subject' => $teacherData[$index]['subject'],
-                'education' => $teacherData[$index]['education'],
-                'join_date' => $teacherData[$index]['join_date'],
-            ]);
-        }
-
-        // Create Student Profiles
-        $studentData = [
-            ['nis' => '2024001', 'nisn' => '0012345678', 'gender' => 'L', 'birth_place' => 'Namrole', 'birth_date' => '2009-01-15', 'parent_name' => 'Bapak Andi', 'parent_phone' => '081234567906'],
-            ['nis' => '2024002', 'nisn' => '0012345679', 'gender' => 'P', 'birth_place' => 'Namrole', 'birth_date' => '2009-02-20', 'parent_name' => 'Ibu Sari', 'parent_phone' => '081234567907'],
-            ['nis' => '2024003', 'nisn' => '0012345680', 'gender' => 'L', 'birth_place' => 'Namrole', 'birth_date' => '2009-03-10', 'parent_name' => 'Bapak Rudi', 'parent_phone' => '081234567908'],
-            ['nis' => '2024004', 'nisn' => '0012345681', 'gender' => 'P', 'birth_place' => 'Namrole', 'birth_date' => '2009-04-05', 'parent_name' => 'Ibu Maya', 'parent_phone' => '081234567909'],
-            ['nis' => '2024005', 'nisn' => '0012345682', 'gender' => 'L', 'birth_place' => 'Namrole', 'birth_date' => '2009-05-12', 'parent_name' => 'Bapak Dedi', 'parent_phone' => '081234567910'],
-            ['nis' => '2024006', 'nisn' => '0012345683', 'gender' => 'P', 'birth_place' => 'Namrole', 'birth_date' => '2009-06-18', 'parent_name' => 'Ibu Lina', 'parent_phone' => '081234567911'],
-            ['nis' => '2024007', 'nisn' => '0012345684', 'gender' => 'L', 'birth_place' => 'Namrole', 'birth_date' => '2009-07-25', 'parent_name' => 'Bapak Fajar', 'parent_phone' => '081234567912'],
-            ['nis' => '2024008', 'nisn' => '0012345685', 'gender' => 'P', 'birth_place' => 'Namrole', 'birth_date' => '2009-08-30', 'parent_name' => 'Ibu Maya', 'parent_phone' => '081234567913'],
-            ['nis' => '2024009', 'nisn' => '0012345686', 'gender' => 'L', 'birth_place' => 'Namrole', 'birth_date' => '2009-09-14', 'parent_name' => 'Bapak Rudi', 'parent_phone' => '081234567914'],
-            ['nis' => '2024010', 'nisn' => '0012345687', 'gender' => 'P', 'birth_place' => 'Namrole', 'birth_date' => '2009-10-22', 'parent_name' => 'Ibu Nina', 'parent_phone' => '081234567915'],
-        ];
-
-        $academicYear = \App\Models\AcademicYear::where('is_active', true)->first();
-        
-        foreach ($studentUsers as $index => $student) {
-            \App\Models\Profile::create([
-                'user_id' => $student->id,
-                'nis' => $studentData[$index]['nis'],
-                'nisn' => $studentData[$index]['nisn'],
-                'academic_year_id' => $academicYear->id,
-                'gender' => $studentData[$index]['gender'],
-                'birth_place' => $studentData[$index]['birth_place'],
-                'birth_date' => $studentData[$index]['birth_date'],
-                'parent_name' => $studentData[$index]['parent_name'],
-                'parent_phone' => $studentData[$index]['parent_phone'],
-            ]);
-        }
+        echo "✅ Additional student created: siswa2@sekolah.sch.id / password\n";
     }
 }
