@@ -363,7 +363,7 @@
             <!-- Logo & School Name -->
             <div class="navbar-logo">
                 <a href="{{ route('home') }}" class="flex items-center space-x-3">
-                    <img src="{{ asset('logo.png') }}" alt="Logo SMP Negeri 01 Namrole" class="h-10 w-10 object-contain">
+                    <img src="{{ \App\Helpers\ImageHelper::getLogoUrl() }}" alt="Logo SMP Negeri 01 Namrole" class="h-10 w-10 object-contain" onerror="this.src='{{ asset('images/placeholder-image.jpg') }}'">
                     <div>
                         <h1 class="text-lg sm:text-xl font-bold text-primary-500">SMP Negeri 01</h1>
                         <p class="text-xs sm:text-sm text-gray-600">Namrole</p>

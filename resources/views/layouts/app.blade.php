@@ -8,8 +8,8 @@
     <title>@yield('title', 'SMP Negeri 01 Namrole')</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ \App\Helpers\ImageHelper::getLogoUrl() }}">
+    <link rel="icon" type="image/x-icon" href="{{ \App\Helpers\ImageHelper::getFaviconUrl() }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
