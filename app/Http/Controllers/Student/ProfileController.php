@@ -79,7 +79,7 @@ class ProfileController extends Controller
             'address' => 'nullable|string|max:500',
             'birth_place' => 'nullable|string|max:100',
             'birth_date' => 'nullable|date',
-            'gender' => 'nullable|string|in:male,female',
+            'gender' => 'nullable|string|in:L,P',
             'religion' => 'nullable|string|max:50',
             'bio' => 'nullable|string|max:1000',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'

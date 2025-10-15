@@ -27,13 +27,14 @@ class RegistrationSettingSeeder extends Seeder
 
         RegistrationSetting::create([
             'academic_year_id' => $currentYear->id,
-            'start_date' => now()->addDays(7), // Mulai 7 hari dari sekarang
-            'end_date' => now()->addDays(37), // Berakhir 30 hari setelah mulai
-            'announcement_date' => now()->addDays(45), // Pengumuman 8 hari setelah tutup
+            'start_date' => now()->subDays(1), // Mulai kemarin (sudah dibuka)
+            'end_date' => now()->addDays(30), // Berakhir 30 hari dari sekarang
+            'announcement_date' => now()->addDays(32), // Pengumuman 2 hari setelah tutup (setelah end_date)
             'quota_regular' => 200,
             'quota_achievement' => 50,
             'quota_affirmation' => 30,
             'registration_fee' => 150000,
+            'is_active' => true,
             'is_open' => true,
             'information' => '<h3>Informasi PPDB Tahun Ajaran ' . $currentYear->year . '</h3>
             <p>Pendaftaran PPDB SMP Negeri 01 Namrole telah dibuka. Silakan ikuti langkah-langkah pendaftaran dengan benar.</p>

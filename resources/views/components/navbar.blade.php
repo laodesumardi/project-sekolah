@@ -6,11 +6,11 @@
             transition: all 0.3s ease;
             white-space: nowrap;
         }
-        
+
         .navbar-link:hover {
             transform: translateY(-1px);
         }
-        
+
         .navbar-link.active::after {
             content: '';
             position: absolute;
@@ -21,38 +21,38 @@
             height: 2px;
             background: var(--primary-600, #3b82f6);
         }
-        
+
         /* Mobile menu animation */
         #mobile-menu {
             transition: all 0.3s ease;
             transform: translateY(-10px);
             opacity: 0;
         }
-        
+
         #mobile-menu.show {
             transform: translateY(0);
             opacity: 1;
         }
-        
+
         /* Logo animation */
         .logo-container:hover .logo-icon {
             transform: scale(1.1);
         }
-        
+
         .logo-icon {
             transition: transform 0.3s ease;
         }
-        
+
         /* Button hover effects */
         .login-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
-        
+
         .login-btn {
             transition: all 0.3s ease;
         }
-        
+
         /* Responsive navbar container */
         .navbar-container {
             display: flex;
@@ -61,69 +61,69 @@
             position: relative;
             height: 4rem;
         }
-        
+
         /* Mobile responsive adjustments */
         @media (max-width: 1023px) {
             .navbar-container {
                 justify-content: space-between;
                 padding: 0.5rem 0;
             }
-            
+
             .navbar-logo {
                 position: static;
                 flex-shrink: 0;
             }
-            
+
             .navbar-logo h1 {
                 font-size: 1rem;
             }
-            
+
             .navbar-logo p {
                 font-size: 0.75rem;
             }
-            
+
             .navbar-menu {
                 display: none;
             }
-            
+
             .navbar-actions {
                 position: static;
                 flex-shrink: 0;
             }
         }
-        
+
         /* Extra small screens */
         @media (max-width: 480px) {
             .navbar-container {
                 padding: 0.25rem 0;
             }
-            
+
             .navbar-logo h1 {
                 font-size: 0.9rem;
             }
-            
+
             .navbar-logo p {
                 font-size: 0.7rem;
             }
-            
+
             .mobile-menu-item {
                 padding: 0.6rem 0.8rem;
                 font-size: 0.85rem;
             }
         }
-        
+
         /* Desktop layout */
         @media (min-width: 1024px) {
             .navbar-container {
                 justify-content: center;
             }
-            
+
             .navbar-logo {
                 position: absolute;
                 left: -2rem;
                 flex-shrink: 0;
             }
-            
+
             .navbar-menu {
                 display: flex;
                 justify-content: center;
@@ -133,18 +133,18 @@
                 margin-right: 3.5rem;
                 gap: 0.1rem;
             }
-            
+
             .navbar-actions {
                 position: absolute;
                 right: -2.5rem;
                 flex-shrink: 0;
             }
-            
+
             /* Consistent spacing for all menu items */
             .navbar-menu a {
                 margin: 0;
             }
-            
+
             /* Desktop dropdown styling */
             .group:hover .group-hover\\:opacity-100 {
                 opacity: 1;
@@ -152,11 +152,11 @@
                 transform: translateY(0);
                 animation: dropdownSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
-            
+
             .group:hover .group-hover\\:visible {
                 visibility: visible;
             }
-            
+
             /* Dropdown animation */
             @keyframes dropdownSlideIn {
                 from {
@@ -168,21 +168,21 @@
                     transform: translateY(0);
                 }
             }
-            
+
             /* Dropdown item hover effects */
             .group .group-hover\\:opacity-100 a:hover {
                 background-color: #eff6ff;
                 color: #2563eb;
                 transform: translateX(4px);
             }
-            
+
             /* Active state for dropdown items */
             .group .group-hover\\:opacity-100 a.active {
                 background-color: #eff6ff;
                 color: #2563eb;
                 border-left: 3px solid #3b82f6;
             }
-            
+
             /* Desktop dropdown styling - same as mobile */
             .group .group-hover\\:opacity-100 a {
                 display: flex;
@@ -190,19 +190,19 @@
                 padding: 12px 16px;
                 transition: all 0.2s ease;
             }
-            
+
             .group .group-hover\\:opacity-100 a:hover {
                 background-color: #f9fafb;
                 color: #3b82f6;
             }
-            
+
             .group .group-hover\\:opacity-100 a.active {
                 background-color: #eff6ff;
                 color: #2563eb;
                 border-left: 4px solid #3b82f6;
             }
         }
-        
+
         /* Mobile menu button */
         .mobile-menu-btn {
             display: block;
@@ -215,17 +215,17 @@
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         .mobile-menu-btn:hover {
             background-color: #f3f4f6;
         }
-        
+
         @media (min-width: 1024px) {
             .mobile-menu-btn {
                 display: none;
             }
         }
-        
+
         /* Mobile menu dropdown */
         .mobile-menu-dropdown {
             position: absolute;
@@ -243,13 +243,13 @@
             max-height: 80vh;
             overflow-y: auto;
         }
-        
+
         .mobile-menu-dropdown.show {
             transform: translateY(0);
             opacity: 1;
             visibility: visible;
         }
-        
+
         /* Mobile menu items */
         .mobile-menu-item {
             display: block;
@@ -261,23 +261,23 @@
             font-size: 0.9rem;
             line-height: 1.4;
         }
-        
+
         .mobile-menu-item:hover {
             background-color: #f9fafb;
             color: #3b82f6;
         }
-        
+
         .mobile-menu-item.active {
             background-color: #eff6ff;
             color: #2563eb;
             border-left: 4px solid #3b82f6;
         }
-        
+
         /* Mobile dropdown styles */
         .mobile-dropdown {
             border-bottom: 1px solid #f3f4f6;
         }
-        
+
         .mobile-dropdown button {
             border: none;
             background: none;
@@ -285,30 +285,30 @@
             width: 100%;
             text-decoration: none;
         }
-        
+
         .mobile-dropdown button:hover {
             background-color: #f9fafb;
             color: #3b82f6;
         }
-        
+
         .mobile-dropdown-content {
             background-color: #f9fafb;
             border-left: 4px solid #e5e7eb;
         }
-        
+
         .mobile-dropdown-content .mobile-menu-item {
             border-bottom: 1px solid #e5e7eb;
         }
-        
+
         .mobile-dropdown-content .mobile-menu-item:last-child {
             border-bottom: none;
         }
-        
+
         .mobile-dropdown-content .mobile-menu-item:hover {
             background-color: #f3f4f6;
         }
-        
-        
+
+
         /* Hamburger animation */
         .hamburger {
             width: 24px;
@@ -316,7 +316,7 @@
             position: relative;
             cursor: pointer;
         }
-        
+
         .hamburger span {
             display: block;
             position: absolute;
@@ -329,35 +329,35 @@
             transform: rotate(0deg);
             transition: .25s ease-in-out;
         }
-        
+
         .hamburger span:nth-child(1) {
             top: 0px;
         }
-        
+
         .hamburger span:nth-child(2) {
             top: 8px;
         }
-        
+
         .hamburger span:nth-child(3) {
             top: 16px;
         }
-        
+
         .hamburger.open span:nth-child(1) {
             top: 8px;
             transform: rotate(135deg);
         }
-        
+
         .hamburger.open span:nth-child(2) {
             opacity: 0;
             left: -60px;
         }
-        
+
         .hamburger.open span:nth-child(3) {
             top: 8px;
             transform: rotate(-135deg);
         }
     </style>
-    
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div class="navbar-container">
             <!-- Logo & School Name -->
@@ -447,48 +447,42 @@
                     PPDB
                 </a>
                 <div class="relative group">
-                    <button class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 flex items-center {{ request()->routeIs('library*') ? 'text-primary-600 active' : '' }}">
+                    <a href="{{ route('library') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('library*') ? 'text-primary-600 active' : '' }}">
                         Perpustakaan
-                        <svg class="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="absolute left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    </a>
+                    <!-- Dropdown Menu -->
+                    <div class="absolute left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform translate-y-1 group-hover:translate-y-0">
                         <div class="py-2">
-                            <a href="{{ route('library') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
-                                <svg class="w-5 h-5 mr-3 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                </svg>
-                                <div>
-                                    <div class="font-medium">Perpustakaan Digital</div>
-                                    <div class="text-sm text-gray-500">Akses koleksi digital</div>
+                            <a href="{{ route('library') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 {{ request()->routeIs('library*') ? 'bg-primary-50 text-primary-600' : '' }}">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                    </svg>
+                                    <span>Perpustakaan Digital</span>
                                 </div>
                             </a>
-                            <a href="https://saranaguru.erlanggaonline.co.id/user/login" target="_blank" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
-                                <svg class="w-5 h-5 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <div>
-                                    <div class="font-medium">Sarana Guru</div>
-                                    <div class="text-sm text-gray-500">Portal pembelajaran guru</div>
+                            <a href="https://saranaguru.erlanggaonline.co.id/user/login" target="_blank" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <span>Sarana Guru</span>
                                 </div>
                             </a>
-                            <a href="https://e-library.erlanggaonline.co.id/user/TWpVMk56RT0" target="_blank" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
-                                <svg class="w-5 h-5 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                </svg>
-                                <div>
-                                    <div class="font-medium">E-Library</div>
-                                    <div class="text-sm text-gray-500">Perpustakaan digital Erlangga</div>
+                            <a href="https://e-library.erlanggaonline.co.id/user/TWpVMk56RT0" target="_blank" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                    </svg>
+                                    <span>E-Library</span>
                                 </div>
                             </a>
-                            <a href="https://asesmen.erlanggaonline.co.id/" target="_blank" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
-                                <svg class="w-5 h-5 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M6 16h.01" />
-                                </svg>
-                                <div>
-                                    <div class="font-medium">Asesmen Online</div>
-                                    <div class="text-sm text-gray-500">Platform evaluasi pembelajaran</div>
+                            <a href="https://asesmen.erlanggaonline.co.id/" target="_blank" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M6 16h.01"/>
+                                    </svg>
+                                    <span>Asesmen Online</span>
                                 </div>
                             </a>
                         </div>
@@ -540,7 +534,7 @@
                         <span>Home</span>
                     </div>
                 </a>
-                
+
                 <a href="{{ route('about') }}" class="mobile-menu-item {{ request()->routeIs('about') ? 'active' : '' }}">
                     <div class="flex items-center space-x-3">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -549,7 +543,7 @@
                         <span>Tentang</span>
                     </div>
                 </a>
-                
+
                 <!-- Akademik Dropdown for Mobile -->
                 <div class="mobile-dropdown">
                     <button class="mobile-menu-item w-full text-left flex items-center" data-dropdown="academic-dropdown" type="button">
@@ -611,7 +605,7 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <a href="{{ route('facilities.index') }}" class="mobile-menu-item {{ request()->routeIs('facilities*') ? 'active' : '' }}">
                     <div class="flex items-center space-x-3">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -620,7 +614,7 @@
                         <span>Fasilitas</span>
                     </div>
                 </a>
-                
+
                 <a href="{{ route('gallery.index') }}" class="mobile-menu-item {{ request()->routeIs('gallery*') ? 'active' : '' }}">
                     <div class="flex items-center space-x-3">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -629,7 +623,7 @@
                         <span>Galeri</span>
                     </div>
                 </a>
-                
+
                 <a href="{{ route('ppdb.index') }}" class="mobile-menu-item {{ request()->routeIs('ppdb*') ? 'active' : '' }}">
                     <div class="flex items-center space-x-3">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -638,47 +632,53 @@
                         <span>PPDB</span>
                     </div>
                 </a>
-                
-                <div class="mobile-menu-item">
-                    <button onclick="toggleMobileDropdown('library-dropdown')" class="flex items-center justify-between w-full">
-                        <div class="flex items-center space-x-3">
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
-                            <span>Perpustakaan</span>
-                        </div>
-                        <svg class="h-4 w-4 transition-transform duration-200" id="library-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+
+                <!-- Perpustakaan Dropdown for Mobile -->
+                <div class="mobile-dropdown">
+                    <button class="mobile-menu-item w-full text-left flex items-center" data-dropdown="library-dropdown" type="button">
+                    <div class="flex items-center space-x-3">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                         </svg>
+                        <span>Perpustakaan</span>
+                        </div>
                     </button>
-                    <div id="library-dropdown" class="hidden ml-8 mt-2 space-y-2">
-                        <a href="{{ route('library') }}" class="flex items-center space-x-3 text-gray-600 hover:text-primary-500 py-2">
-                            <svg class="h-4 w-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
-                            <span>Perpustakaan Digital</span>
+                    <div class="mobile-dropdown-content hidden" id="library-dropdown">
+                        <a href="{{ route('library') }}" class="mobile-menu-item pl-8 {{ request()->routeIs('library*') ? 'active' : '' }}">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                                <span>Perpustakaan Digital</span>
+                            </div>
                         </a>
-                        <a href="https://saranaguru.erlanggaonline.co.id/user/login" target="_blank" class="flex items-center space-x-3 text-gray-600 hover:text-primary-500 py-2">
-                            <svg class="h-4 w-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <span>Sarana Guru</span>
+                        <a href="https://saranaguru.erlanggaonline.co.id/user/login" target="_blank" class="mobile-menu-item pl-8">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span>Sarana Guru</span>
+                            </div>
                         </a>
-                        <a href="https://e-library.erlanggaonline.co.id/user/TWpVMk56RT0" target="_blank" class="flex items-center space-x-3 text-gray-600 hover:text-primary-500 py-2">
-                            <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
-                            <span>E-Library</span>
+                        <a href="https://e-library.erlanggaonline.co.id/user/TWpVMk56RT0" target="_blank" class="mobile-menu-item pl-8">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                                <span>E-Library</span>
+                            </div>
                         </a>
-                        <a href="https://asesmen.erlanggaonline.co.id/" target="_blank" class="flex items-center space-x-3 text-gray-600 hover:text-primary-500 py-2">
-                            <svg class="h-4 w-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M6 16h.01" />
-                            </svg>
-                            <span>Asesmen Online</span>
+                        <a href="https://asesmen.erlanggaonline.co.id/" target="_blank" class="mobile-menu-item pl-8">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M6 16h.01"/>
+                                </svg>
+                                <span>Asesmen Online</span>
+                            </div>
                         </a>
                     </div>
                 </div>
-                
+
                 <a href="{{ route('news') }}" class="mobile-menu-item {{ request()->routeIs('news*') ? 'active' : '' }}">
                     <div class="flex items-center space-x-3">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -687,7 +687,7 @@
                         <span>Berita</span>
                     </div>
                 </a>
-                
+
                 <a href="{{ route('contact') }}" class="mobile-menu-item {{ request()->routeIs('contact*') ? 'active' : '' }}">
                     <div class="flex items-center space-x-3">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -720,29 +720,29 @@ document.addEventListener('DOMContentLoaded', function() {
     function toggleMobileMenu() {
         const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
         const hamburger = document.getElementById('hamburger');
-        
+
         if (mobileMenuDropdown && hamburger) {
             mobileMenuDropdown.classList.toggle('show');
             hamburger.classList.toggle('open');
         }
     }
-    
+
     // Close mobile menu
     function closeMobileMenu() {
         const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
         const hamburger = document.getElementById('hamburger');
-        
+
         if (mobileMenuDropdown && hamburger) {
             mobileMenuDropdown.classList.remove('show');
             hamburger.classList.remove('open');
         }
     }
-    
+
     // Mobile dropdown toggle function
     function toggleMobileDropdown(dropdownId) {
         const dropdown = document.getElementById(dropdownId);
         const arrow = document.getElementById(dropdownId.replace('-dropdown', '-arrow'));
-        
+
         if (dropdown) {
             // Toggle dropdown visibility
             if (dropdown.classList.contains('hidden')) {
@@ -758,12 +758,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-    
+
     // Make functions globally available
     window.toggleMobileMenu = toggleMobileMenu;
     window.closeMobileMenu = closeMobileMenu;
     window.toggleMobileDropdown = toggleMobileDropdown;
-    
+
     // Handle dropdown hover for desktop
     const dropdownGroups = document.querySelectorAll('.group');
     dropdownGroups.forEach(group => {
@@ -773,14 +773,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 dropdown.classList.remove('opacity-0', 'invisible');
                 dropdown.classList.add('opacity-100', 'visible');
             });
-            
+
             group.addEventListener('mouseleave', function() {
                 dropdown.classList.remove('opacity-100', 'visible');
                 dropdown.classList.add('opacity-0', 'invisible');
             });
         }
     });
-    
+
     // Close mobile menu when clicking on menu items (except dropdown buttons)
     const mobileMenuItems = document.querySelectorAll('.mobile-menu-item:not([data-dropdown])');
     mobileMenuItems.forEach(item => {
@@ -788,7 +788,7 @@ document.addEventListener('DOMContentLoaded', function() {
             closeMobileMenu();
         });
     });
-    
+
     // Handle mobile dropdown buttons
     document.addEventListener('click', function(e) {
         if (e.target.closest('[data-dropdown]')) {
@@ -799,27 +799,28 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleMobileDropdown(dropdownId);
         }
     });
-    
+
     // Prevent dropdown from closing when clicking on submenu items
     document.addEventListener('click', function(e) {
         if (e.target.closest('.mobile-dropdown-content')) {
             e.stopPropagation();
         }
     });
-    
+
     // Close mobile menu when clicking outside
     document.addEventListener('click', function(e) {
         const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
         const hamburger = document.getElementById('hamburger');
         const navbar = document.querySelector('nav');
-        
+
         if (mobileMenuDropdown && hamburger && navbar) {
             if (!navbar.contains(e.target) && mobileMenuDropdown.classList.contains('show')) {
                 closeMobileMenu();
             }
         }
     });
-    
+
+
     // Close mobile menu when pressing escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {

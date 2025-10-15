@@ -59,9 +59,9 @@ class PPDBSettingController extends Controller
     {
         $request->validate([
             'academic_year_id' => 'required|exists:academic_years,id',
-            'start_date' => 'required|date',
+            'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
-            'quota_regular' => 'required|integer|min:0',
+            'quota_regular' => 'required|integer|min:1',
             'quota_achievement' => 'required|integer|min:0',
             'quota_affirmation' => 'required|integer|min:0',
             'registration_fee' => 'required|numeric|min:0',
@@ -71,10 +71,12 @@ class PPDBSettingController extends Controller
         ], [
             'information.max' => 'Deskripsi PPDB tidak boleh lebih dari 2000 karakter.',
             'start_date.required' => 'Tanggal mulai pendaftaran harus diisi.',
+            'start_date.after_or_equal' => 'Tanggal mulai pendaftaran tidak boleh di masa lalu.',
             'end_date.required' => 'Tanggal selesai pendaftaran harus diisi.',
             'end_date.after' => 'Tanggal selesai harus setelah tanggal mulai.',
             'announcement_date.after' => 'Tanggal pengumuman harus setelah tanggal selesai pendaftaran.',
             'quota_regular.required' => 'Kuota jalur reguler harus diisi.',
+            'quota_regular.min' => 'Kuota jalur reguler minimal 1.',
             'quota_achievement.required' => 'Kuota jalur prestasi harus diisi.',
             'quota_affirmation.required' => 'Kuota jalur afirmasi harus diisi.',
             'registration_fee.required' => 'Biaya pendaftaran harus diisi.',

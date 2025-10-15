@@ -108,3 +108,4 @@ class SimpleClassSeeder extends Seeder
 
 
 
+

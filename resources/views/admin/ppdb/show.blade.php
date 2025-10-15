@@ -51,7 +51,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
-                        <p class="mt-1 text-sm text-gray-900">{{ $registration->gender === 'male' ? 'Laki-laki' : 'Perempuan' }}</p>
+                        <p class="mt-1 text-sm text-gray-900">{{ $registration->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Agama</label>

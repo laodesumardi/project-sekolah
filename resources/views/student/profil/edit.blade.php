@@ -125,8 +125,8 @@
                                 name="gender"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
                             <option value="">Pilih Jenis Kelamin</option>
-                            <option value="male" {{ $student->gender === 'male' ? 'selected' : '' }}>Laki-laki</option>
-                            <option value="female" {{ $student->gender === 'female' ? 'selected' : '' }}>Perempuan</option>
+                            <option value="L" {{ $student->gender === 'L' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="P" {{ $student->gender === 'P' ? 'selected' : '' }}>Perempuan</option>
                         </select>
                     </div>
                 </div>

@@ -15,26 +15,34 @@
                 Penerimaan Peserta Didik Baru SMP Negeri 01 Namrole
             </p>
             
-            @if($setting->isRegistrationOpen())
-                <!-- Countdown Timer -->
-                <div class="bg-white/20 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-2xl mx-auto">
-                    <h3 class="text-2xl font-semibold mb-4">Pendaftaran Berakhir Dalam:</h3>
-                    <div id="countdown" class="flex justify-center space-x-4 text-3xl font-bold">
-                        <div class="bg-white/30 rounded-lg p-4 min-w-[80px]">
-                            <div id="days" class="text-4xl">00</div>
-                            <div class="text-sm">Hari</div>
+            @php
+                $status = $setting->getRegistrationStatus();
+            @endphp
+
+            @if($status === 'open')
+                <!-- Registration Status Cards -->
+                <div class="status-cards-container mb-8 max-w-4xl mx-auto">
+                    <div class="status-cards-grid">
+                        <!-- Status Card -->
+                        <div class="status-card status-card-green">
+                            <div class="card-content">
+                                <div class="card-dot card-dot-green"></div>
+                                <div class="card-text">
+                                    <h3 class="card-title">Pendaftaran Sedang Berlangsung</h3>
+                                    <p class="card-subtitle">Berakhir dalam {{ $setting->getDaysUntilEnd() }} hari</p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="bg-white/30 rounded-lg p-4 min-w-[80px]">
-                            <div id="hours" class="text-4xl">00</div>
-                            <div class="text-sm">Jam</div>
-                        </div>
-                        <div class="bg-white/30 rounded-lg p-4 min-w-[80px]">
-                            <div id="minutes" class="text-4xl">00</div>
-                            <div class="text-sm">Menit</div>
-                        </div>
-                        <div class="bg-white/30 rounded-lg p-4 min-w-[80px]">
-                            <div id="seconds" class="text-4xl">00</div>
-                            <div class="text-sm">Detik</div>
+                        
+                        <!-- Period Card -->
+                        <div class="status-card status-card-blue">
+                            <div class="card-content">
+                                <div class="card-dot card-dot-blue"></div>
+                                <div class="card-text">
+                                    <h3 class="card-title">Periode Pendaftaran</h3>
+                                    <p class="card-subtitle">{{ $setting->start_date->format('d M Y') }} - {{ $setting->end_date->format('d M Y') }}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -46,10 +54,27 @@
                     </svg>
                     MULAI PENDAFTARAN
                 </a>
-            @else
-                <div class="bg-red-500/20 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-2xl mx-auto">
-                    <h3 class="text-2xl font-semibold mb-2">Pendaftaran Belum Dibuka</h3>
+            @elseif($status === 'not_started')
+                <div class="bg-yellow-500/20 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-2xl mx-auto">
+                    <h3 class="text-2xl font-semibold mb-2">Pendaftaran Belum Dimulai</h3>
                     <p class="text-lg">Pendaftaran akan dibuka pada {{ $setting->start_date->format('d F Y, H:i') }}</p>
+                    <p class="text-sm mt-2">Dimulai dalam {{ $setting->getDaysUntilStart() }} hari</p>
+                </div>
+            @elseif($status === 'ended')
+                <div class="bg-red-500/20 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-2xl mx-auto">
+                    <h3 class="text-2xl font-semibold mb-2">Pendaftaran Sudah Berakhir</h3>
+                    <p class="text-lg">Pendaftaran telah ditutup pada {{ $setting->end_date->format('d F Y, H:i') }}</p>
+                    <p class="text-sm mt-2">Sudah berakhir {{ $setting->end_date->diffInDays(now()) }} hari yang lalu</p>
+                </div>
+            @elseif($status === 'inactive')
+                <div class="bg-gray-500/20 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-2xl mx-auto">
+                    <h3 class="text-2xl font-semibold mb-2">Pendaftaran Tidak Aktif</h3>
+                    <p class="text-lg">Pendaftaran PPDB saat ini tidak aktif</p>
+                </div>
+            @else
+                <div class="bg-gray-500/20 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-2xl mx-auto">
+                    <h3 class="text-2xl font-semibold mb-2">Status Tidak Diketahui</h3>
+                    <p class="text-lg">Status pendaftaran tidak dapat ditentukan</p>
                 </div>
             @endif
         </div>
@@ -412,99 +437,128 @@
         visibility: hidden;
     }
 }
+
+/* Card-based Registration Status Styles - Exact Match */
+.status-cards-container {
+    margin: 0 auto;
+}
+
+.status-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+}
+
+.status-card {
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.status-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.status-card-green {
+    background: #f0fff0;
+    border: 1px solid rgba(34, 197, 94, 0.1);
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.05);
+}
+
+.status-card-blue {
+    background: #e0f2ff;
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.05);
+}
+
+.card-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.card-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 0.5rem;
+}
+
+.card-dot-green {
+    background: #22c55e;
+}
+
+.card-dot-blue {
+    background: #3b82f6;
+}
+
+.card-text {
+    flex: 1;
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+}
+
+.card-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 400;
+    line-height: 1.3;
+    margin: 0;
+}
+
+/* Simple Hover Effects */
+.status-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .status-cards-container {
+        margin: 0 1rem;
+    }
+    
+    .status-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .status-card {
+        padding: 1rem;
+    }
+    
+    .card-content {
+        gap: 0.5rem;
+    }
+    
+    .card-dot {
+        width: 6px;
+        height: 6px;
+        margin-top: 0.4rem;
+    }
+    
+    .card-title {
+        font-size: 0.9rem;
+    }
+    
+    .card-subtitle {
+        font-size: 0.8rem;
+    }
+}
 </style>
 @endpush
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Countdown Timer
-    function updateCountdown() {
-        try {
-            // Get the end date from the server
-            const endDateString = '{{ $setting->end_date->format('Y-m-d H:i:s') }}';
-            const endDate = new Date(endDateString).getTime();
-            
-            // Check if date is valid
-            if (isNaN(endDate)) {
-                console.error('Invalid end date:', endDateString);
-                return;
-            }
-            const now = new Date().getTime();
-            const distance = endDate - now;
 
-            console.log('End Date String:', endDateString);
-            console.log('End Date:', new Date(endDateString));
-            console.log('Current Date:', new Date());
-            console.log('Distance (ms):', distance);
-            console.log('Distance (days):', distance / (1000 * 60 * 60 * 24));
 
-            // Check if countdown elements exist
-            const daysElement = document.getElementById('days');
-            const hoursElement = document.getElementById('hours');
-            const minutesElement = document.getElementById('minutes');
-            const secondsElement = document.getElementById('seconds');
-
-            console.log('Countdown elements found:', {
-                days: !!daysElement,
-                hours: !!hoursElement,
-                minutes: !!minutesElement,
-                seconds: !!secondsElement
-            });
-
-            if (distance < 0) {
-                const countdownElement = document.getElementById('countdown');
-                if (countdownElement) {
-                    countdownElement.innerHTML = '<div class="text-2xl font-bold text-red-500">Pendaftaran Sudah Ditutup</div>';
-                }
-                return;
-            }
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            console.log('Countdown values:', { days, hours, minutes, seconds });
-
-            // Update the display
-            if (daysElement) {
-                daysElement.innerHTML = days.toString().padStart(2, '0');
-                console.log('Updated days:', daysElement.innerHTML);
-            }
-            if (hoursElement) {
-                hoursElement.innerHTML = hours.toString().padStart(2, '0');
-                console.log('Updated hours:', hoursElement.innerHTML);
-            }
-            if (minutesElement) {
-                minutesElement.innerHTML = minutes.toString().padStart(2, '0');
-                console.log('Updated minutes:', minutesElement.innerHTML);
-            }
-            if (secondsElement) {
-                secondsElement.innerHTML = seconds.toString().padStart(2, '0');
-                console.log('Updated seconds:', secondsElement.innerHTML);
-            }
-        } catch (error) {
-            console.error('Countdown timer error:', error);
-        }
-    }
-
-    // Update countdown every second
-    setInterval(updateCountdown, 1000);
-    
-    // Initial call
-    updateCountdown();
-    
-    // Fallback: If countdown doesn't work, show a message
-    setTimeout(function() {
-        const daysElement = document.getElementById('days');
-        if (daysElement && daysElement.innerHTML === '00') {
-            console.log('Countdown may not be working properly');
-            // You can add a fallback message here if needed
-        }
-    }, 2000);
-
-});
-</script>
-@endpush
 

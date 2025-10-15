@@ -66,7 +66,11 @@ class RegistrationSetting extends Model
         }
 
         $now = now();
-        return $now->between($this->start_date, $this->end_date);
+        $startDate = $this->start_date;
+        $endDate = $this->end_date;
+        
+        // Check if current time is between start and end date (inclusive)
+        return $now->gte($startDate) && $now->lte($endDate);
     }
 
     /**
@@ -79,5 +83,71 @@ class RegistrationSetting extends Model
         }
         
         return now()->gte($this->announcement_date);
+    }
+
+    /**
+     * Get registration status.
+     */
+    public function getRegistrationStatus(): string
+    {
+        if (!$this->is_active) {
+            return 'inactive';
+        }
+
+        if (!$this->start_date || !$this->end_date) {
+            return 'not_configured';
+        }
+
+        $now = now();
+        $startDate = $this->start_date;
+        $endDate = $this->end_date;
+
+        if ($now->lt($startDate)) {
+            return 'not_started';
+        }
+
+        if ($now->gt($endDate)) {
+            return 'ended';
+        }
+
+        return 'open';
+    }
+
+    /**
+     * Get days until registration starts.
+     */
+    public function getDaysUntilStart(): int
+    {
+        if (!$this->start_date) {
+            return 0;
+        }
+
+        $now = now();
+        $startDate = $this->start_date;
+
+        if ($now->gte($startDate)) {
+            return 0;
+        }
+
+        return $now->diffInDays($startDate);
+    }
+
+    /**
+     * Get days until registration ends.
+     */
+    public function getDaysUntilEnd(): int
+    {
+        if (!$this->end_date) {
+            return 0;
+        }
+
+        $now = now();
+        $endDate = $this->end_date;
+
+        if ($now->gt($endDate)) {
+            return 0;
+        }
+
+        return $now->diffInDays($endDate);
     }
 }

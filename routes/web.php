@@ -31,6 +31,7 @@ Route::get('/dashboard', function () {
 // Frontend Routes
 Route::get('/tentang-kami', [AboutController::class, 'index'])->name('about');
 Route::get('/kontak', [\App\Http\Controllers\ContactController::class, 'index'])->name('contact');
+Route::post('/kontak', [\App\Http\Controllers\MessageController::class, 'store'])->name('contact.message');
 Route::get('/akreditasi', [\App\Http\Controllers\AccreditationController::class, 'index'])->name('accreditation');
 
 // PPDB Routes
@@ -135,6 +136,14 @@ Route::middleware(['auth', 'active'])->group(function () {
     // Admin Routes
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+        
+        // Notifications
+        Route::get('/notifications', [\App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('notifications');
+        
+        // Messages Management
+        Route::get('/messages', [\App\Http\Controllers\Admin\MessageController::class, 'index'])->name('messages.index');
+        Route::get('/messages/{message}', [\App\Http\Controllers\Admin\MessageController::class, 'show'])->name('messages.show');
+        Route::delete('/messages/{message}', [\App\Http\Controllers\Admin\MessageController::class, 'destroy'])->name('messages.destroy');
 
         // Homepage Settings Management
         Route::get('/homepage-settings', [\App\Http\Controllers\Admin\HomepageSettingController::class, 'index'])->name('homepage-settings.index');
@@ -410,18 +419,5 @@ Route::middleware(['auth', 'active'])->group(function () {
     });
 });
 
-
-Route::get('/gambar/{nama}', function ($nama) {
-    $path = storage_path('app/public/' . $nama);
-
-    if (!file_exists($path)) {
-        abort(404);
-    }
-
-    $file = file_get_contents($path);
-    $type = mime_content_type($path);
-
-    return Response::make($file, 200)->header("Content-Type", $type);
-});
 
 require __DIR__ . '/auth.php';

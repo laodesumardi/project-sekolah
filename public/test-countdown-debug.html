@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Countdown Timer Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .countdown-container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .countdown-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .time-unit {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 100px;
+            text-align: center;
+        }
+        .time-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 5px;
+        }
+        .time-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .debug-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-family: monospace;
+            font-size: 12px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown-container">
+        <h2 class="countdown-title">Pendaftaran Berakhir Dalam:</h2>
+        <div id="countdown-timer" class="countdown-timer">
+            <div class="time-unit">
+                <div id="days" class="time-number">00</div>
+                <div class="time-label">Hari</div>
+            </div>
+            <div class="time-unit">
+                <div id="hours" class="time-number">00</div>
+                <div class="time-label">Jam</div>
+            </div>
+            <div class="time-unit">
+                <div id="minutes" class="time-number">00</div>
+                <div class="time-label">Menit</div>
+            </div>
+            <div class="time-unit">
+                <div id="seconds" class="time-number">00</div>
+                <div class="time-label">Detik</div>
+            </div>
+        </div>
+        
+        <div class="debug-info">
+            <div id="debug-info">
+                <div>Loading countdown timer...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test countdown timer with admin settings data
+        const endDateString = '2025-11-12 00:00:00'; // From admin settings
+        const endDate = new Date(endDateString);
+        
+        function updateDebugInfo() {
+            const now = new Date();
+            const timeLeft = endDate.getTime() - now.getTime();
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            document.getElementById('debug-info').innerHTML = `
+                <div>End Date: ${endDateString}</div>
+                <div>Current Time: ${now.toLocaleString()}</div>
+                <div>Time Left (ms): ${timeLeft}</div>
+                <div>Time Left (days): ${(timeLeft / (1000 * 60 * 60 * 24)).toFixed(2)}</div>
+                <div>Calculated: ${days}d ${hours}h ${minutes}m ${seconds}s</div>
+            `;
+        }
+        
+        function updateCountdown() {
+            const now = new Date();
+            const timeLeft = endDate.getTime() - now.getTime();
+            
+            if (timeLeft <= 0) {
+                document.getElementById('countdown-timer').innerHTML = 
+                    '<div class="text-2xl font-bold text-red-500 text-center">Pendaftaran Sudah Ditutup</div>';
+                return;
+            }
+            
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            
+            updateDebugInfo();
+        }
+        
+        // Start countdown immediately and update every second
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
