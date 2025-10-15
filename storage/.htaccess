@@ -5,19 +5,17 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
-    # Redirect to public storage
+    # Redirect to app/public
     RewriteRule ^(.*)$ app/public/$1 [L,QSA]
 </IfModule>
 
-# Security headers
-<IfModule mod_headers.c>
-    # Allow cross-origin requests for images
-    Header always set Access-Control-Allow-Origin "*"
-    Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
-    Header always set Access-Control-Allow-Headers "Content-Type"
-</IfModule>
+# Allow access to all files
+<Files "*">
+    Order Allow,Deny
+    Allow from all
+</Files>
 
-# File access permissions
+# File access permissions for images
 <FilesMatch "\.(jpg|jpeg|png|gif|svg|webp|ico|pdf|doc|docx|xls|xlsx|txt|zip)$">
     Order Allow,Deny
     Allow from all
