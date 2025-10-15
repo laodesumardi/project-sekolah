@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Storage Access</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Test Storage Access</h1>
+            
+            <div class="space-y-6">
+                <!-- Test Images -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Placeholder Images -->
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-blue-900 mb-3">Placeholder Images</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center space-x-3">
+                                <img src="images/placeholders/placeholder-principal.jpg" alt="Principal" 
+                                     class="w-12 h-12 rounded-full object-cover border-2 border-blue-300"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div style="display: none;" class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                                    <span class="text-gray-500 text-xs">❌</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Principal Placeholder</p>
+                                    <p class="text-xs text-gray-500">images/placeholders/placeholder-principal.jpg</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <img src="images/placeholders/placeholder-school.jpg" alt="School" 
+                                     class="w-12 h-12 rounded-lg object-cover border-2 border-blue-300"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div style="display: none;" class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                                    <span class="text-gray-500 text-xs">❌</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">School Placeholder</p>
+                                    <p class="text-xs text-gray-500">images/placeholders/placeholder-school.jpg</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <img src="images/placeholders/placeholder-org-chart.jpg" alt="Org Chart" 
+                                     class="w-12 h-12 rounded-lg object-cover border-2 border-blue-300"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div style="display: none;" class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                                    <span class="text-gray-500 text-xs">❌</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Org Chart Placeholder</p>
+                                    <p class="text-xs text-gray-500">images/placeholders/placeholder-org-chart.jpg</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Storage Images -->
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <h3 class="text-lg font-semibold text-green-900 mb-3">Storage Images</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center space-x-3">
+                                <img src="storage/images/placeholder-image.jpg" alt="Storage Image" 
+                                     class="w-12 h-12 rounded-lg object-cover border-2 border-green-300"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div style="display: none;" class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                                    <span class="text-gray-500 text-xs">❌</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Storage Image</p>
+                                    <p class="text-xs text-gray-500">storage/images/placeholder-image.jpg</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <img src="storage/about-page/principal.jpg" alt="Principal Photo" 
+                                     class="w-12 h-12 rounded-full object-cover border-2 border-green-300"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div style="display: none;" class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                                    <span class="text-gray-500 text-xs">❌</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Principal Photo</p>
+                                    <p class="text-xs text-gray-500">storage/about-page/principal.jpg</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center space-x-3">
+                                <img src="storage/achievements/trophy.jpg" alt="Trophy" 
+                                     class="w-12 h-12 rounded-lg object-cover border-2 border-green-300"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div style="display: none;" class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                                    <span class="text-gray-500 text-xs">❌</span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium">Trophy Image</p>
+                                    <p class="text-xs text-gray-500">storage/achievements/trophy.jpg</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Test URLs -->
+                <div class="bg-yellow-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-yellow-900 mb-3">Test URLs</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-3">
+                            <button onclick="testUrl('images/placeholders/placeholder-principal.jpg')" 
+                                    class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
+                                Test Principal
+                            </button>
+                            <span id="test-principal-result" class="text-sm"></span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <button onclick="testUrl('storage/images/placeholder-image.jpg')" 
+                                    class="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">
+                                Test Storage
+                            </button>
+                            <span id="test-storage-result" class="text-sm"></span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <button onclick="testUrl('storage/about-page/principal.jpg')" 
+                                    class="px-3 py-1 bg-purple-500 text-white rounded text-sm hover:bg-purple-600">
+                                Test Principal Photo
+                            </button>
+                            <span id="test-principal-photo-result" class="text-sm"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Status Information -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Status Information</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-sm font-medium">Current URL:</span>
+                            <span id="current-url" class="text-sm text-gray-600"></span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-sm font-medium">Storage Link:</span>
+                            <span id="storage-link-status" class="text-sm text-gray-600"></span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <span class="text-sm font-medium">HTAccess Files:</span>
+                            <span id="htaccess-status" class="text-sm text-gray-600"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test URL function
+        function testUrl(url) {
+            const resultId = 'test-' + url.split('/').pop().split('.')[0] + '-result';
+            const resultElement = document.getElementById(resultId);
+            
+            resultElement.textContent = 'Testing...';
+            resultElement.className = 'text-sm text-yellow-600';
+            
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        resultElement.textContent = '✅ OK (' + response.status + ')';
+                        resultElement.className = 'text-sm text-green-600';
+                    } else {
+                        resultElement.textContent = '❌ Error (' + response.status + ')';
+                        resultElement.className = 'text-sm text-red-600';
+                    }
+                })
+                .catch(error => {
+                    resultElement.textContent = '❌ Failed: ' + error.message;
+                    resultElement.className = 'text-sm text-red-600';
+                });
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current URL
+            document.getElementById('current-url').textContent = window.location.href;
+            
+            // Check storage link status
+            fetch('storage/')
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById('storage-link-status').textContent = '✅ Accessible';
+                        document.getElementById('storage-link-status').className = 'text-sm text-green-600';
+                    } else {
+                        document.getElementById('storage-link-status').textContent = '❌ Not accessible (' + response.status + ')';
+                        document.getElementById('storage-link-status').className = 'text-sm text-red-600';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('storage-link-status').textContent = '❌ Error: ' + error.message;
+                    document.getElementById('storage-link-status').className = 'text-sm text-red-600';
+                });
+            
+            // Check .htaccess files
+            fetch('storage/.htaccess')
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById('htaccess-status').textContent = '✅ Found';
+                        document.getElementById('htaccess-status').className = 'text-sm text-green-600';
+                    } else {
+                        document.getElementById('htaccess-status').textContent = '❌ Not found';
+                        document.getElementById('htaccess-status').className = 'text-sm text-red-600';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('htaccess-status').textContent = '❌ Error: ' + error.message;
+                    document.getElementById('htaccess-status').className = 'text-sm text-red-600';
+                });
+        });
+    </script>
+</body>
+</html>
