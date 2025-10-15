@@ -29,11 +29,21 @@
         
         <!-- Student Profile Mini -->
         <div class="flex items-center space-x-3 p-3 bg-white bg-opacity-10 rounded-lg">
-            <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->profile->profile_picture_url }}" alt="{{ Auth::user()->name }}">
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</p>
-                <p class="text-xs text-white text-opacity-75 truncate">{{ Auth::user()->profile->class->name ?? 'Kelas' }}</p>
-            </div>
+            @if(Auth::user()->profile)
+                <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->profile->profile_picture_url }}" alt="{{ Auth::user()->name }}">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</p>
+                    <p class="text-xs text-white text-opacity-75 truncate">{{ Auth::user()->profile->class->name ?? 'Kelas' }}</p>
+                </div>
+            @else
+                <div class="h-10 w-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+                    <i class="fas fa-user text-white text-lg"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</p>
+                    <p class="text-xs text-white text-opacity-75 truncate">Siswa</p>
+                </div>
+            @endif
         </div>
         
         <!-- Navigation -->
@@ -200,11 +210,21 @@
         
         <!-- Student Profile Mini -->
         <div class="flex items-center space-x-3 p-3 bg-white bg-opacity-10 rounded-lg">
-            <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->profile->profile_picture_url }}" alt="{{ Auth::user()->name }}">
-            <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</p>
-                <p class="text-xs text-white text-opacity-75 truncate">{{ Auth::user()->profile->class->name ?? 'Kelas' }}</p>
-            </div>
+            @if(Auth::user()->profile)
+                <img class="h-10 w-10 rounded-full" src="{{ Auth::user()->profile->profile_picture_url }}" alt="{{ Auth::user()->name }}">
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</p>
+                    <p class="text-xs text-white text-opacity-75 truncate">{{ Auth::user()->profile->class->name ?? 'Kelas' }}</p>
+                </div>
+            @else
+                <div class="h-10 w-10 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+                    <i class="fas fa-user text-white text-lg"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">{{ Auth::user()->name }}</p>
+                    <p class="text-xs text-white text-opacity-75 truncate">Siswa</p>
+                </div>
+            @endif
         </div>
         
         <!-- Navigation -->

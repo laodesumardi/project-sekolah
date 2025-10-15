@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckTeacherRole
@@ -15,19 +16,12 @@ class CheckTeacherRole
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Check if user is authenticated
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
-        // Check if user has teacher role
-        if (auth()->user()->role !== 'teacher') {
-            // Redirect based on user role
-            return match(auth()->user()->role) {
-                'admin' => redirect()->route('admin.dashboard'),
-                'student' => redirect()->route('student.dashboard'),
-                default => redirect()->route('home')
-            };
+        if (Auth::user()->role !== 'teacher') {
+            abort(403, 'Unauthorized access. Teacher role required.');
         }
 
         return $next($request);

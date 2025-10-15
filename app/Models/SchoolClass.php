@@ -38,4 +38,12 @@ class SchoolClass extends Model
     {
         return $this->hasMany(Profile::class, 'class_id');
     }
+
+    /**
+     * Get the teacher classes for this school class.
+     */
+    public function teacherClasses(): HasMany
+    {
+        return $this->hasMany(TeacherClass::class, 'class_id');
+    }
 }

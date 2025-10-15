@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Storage;
 
 class Teacher extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'nip',
@@ -21,192 +26,110 @@ class Teacher extends Model
         'employment_status',
         'join_date',
         'education_level',
+        'subject',
         'major',
         'university',
         'graduation_year',
-        'certification_number',
-        'cv_path',
         'bio',
         'photo',
         'is_active',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'birth_date' => 'date',
-            'join_date' => 'date',
-            'is_active' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'birth_date' => 'date',
+        'join_date' => 'date',
+        'is_active' => 'boolean',
+    ];
 
-    /**
-     * Get the user that owns the teacher.
-     */
+    protected $appends = [
+        'full_name',
+        'profile_picture_url',
+        'age',
+    ];
+
+    // Relationships
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the classes for the teacher.
-     */
-    public function classes(): HasMany
+    public function subjects(): BelongsToMany
     {
-        return $this->hasMany(SchoolClass::class, 'homeroom_teacher_id');
+        return $this->belongsToMany(Subject::class, 'teacher_subjects');
     }
 
-    /**
-     * Get the subjects that the teacher teaches.
-     */
-    public function subjects()
+    public function classes(): BelongsToMany
     {
-        return $this->belongsToMany(Subject::class, 'teacher_subjects')
-                    ->withPivot('is_primary')
-                    ->withTimestamps();
+        return $this->belongsToMany(SchoolClass::class, 'teacher_classes');
     }
 
-    /**
-     * Get the classes that the teacher teaches.
-     */
-    public function teachingClasses()
+    public function assignments(): HasMany
     {
-        return $this->belongsToMany(SchoolClass::class, 'teacher_classes', 'teacher_id', 'class_id')
-                    ->withPivot(['subject_id', 'academic_year_id', 'is_homeroom'])
-                    ->withTimestamps();
+        return $this->hasMany(Assignment::class);
     }
 
-    /**
-     * Get the teacher class assignments.
-     */
-    public function teacherClasses()
+    public function schedules(): HasMany
     {
-        return $this->hasMany(TeacherClass::class);
+        return $this->hasMany(Schedule::class);
     }
 
-    /**
-     * Get the documents for the teacher.
-     */
-    public function documents()
+    public function learningMaterials(): HasMany
+    {
+        return $this->hasMany(LearningMaterial::class);
+    }
+
+    public function documents(): HasMany
     {
         return $this->hasMany(TeacherDocument::class);
     }
 
-    /**
-     * Get the certifications for the teacher.
-     */
-    public function certifications()
+    public function certifications(): HasMany
     {
         return $this->hasMany(TeacherCertification::class);
     }
 
-    /**
-     * Get the activities for the teacher.
-     */
-    public function activities()
+    public function extracurriculars(): BelongsToMany
     {
-        return $this->hasMany(TeacherActivity::class);
+        return $this->belongsToMany(Extracurricular::class, 'teacher_extracurriculars');
     }
 
-    /**
-     * Get the full name from user.
-     */
-    public function getFullNameAttribute()
+    // Accessors
+    public function getFullNameAttribute(): string
     {
-        return $this->user->name;
+        return $this->user->name ?? 'Nama tidak tersedia';
     }
 
-    /**
-     * Get the email from user.
-     */
-    public function getEmailAttribute()
+    public function getProfilePictureUrlAttribute(): string
     {
-        return $this->user->email;
-    }
-
-    /**
-     * Get the profile picture URL.
-     */
-    public function getProfilePictureUrlAttribute()
-    {
-        if ($this->photo) {
-            return asset('storage/' . $this->photo);
+        if ($this->photo && Storage::disk('public')->exists($this->photo)) {
+            return Storage::disk('public')->url($this->photo);
         }
         
-        // Return default avatar
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->user->name) . '&background=13315c&color=fff&size=150';
+        return asset('images/default-avatar.png');
     }
 
-    /**
-     * Get the CV file URL.
-     */
-    public function getCvUrlAttribute()
+    public function getAgeAttribute(): int
     {
-        if ($this->cv_path) {
-            return asset('storage/' . $this->cv_path);
-        }
-        return null;
+        return $this->birth_date ? $this->birth_date->age : 0;
     }
 
-    /**
-     * Get the teaching years.
-     */
-    public function getTeachingYearsAttribute()
-    {
-        if ($this->join_date) {
-            return $this->join_date->diffInYears(now());
-        }
-        return 0;
-    }
-
-    /**
-     * Get the age from birth date.
-     */
-    public function getAgeAttribute()
-    {
-        if ($this->birth_date) {
-            return $this->birth_date->age;
-        }
-        return null;
-    }
-
-    /**
-     * Get the total students taught.
-     */
-    public function getTotalStudentsAttribute()
-    {
-        // Get all class IDs that this teacher teaches
-        $classIds = $this->teacherClasses()->pluck('class_id');
-        
-        // Count profiles in those classes
-        return Profile::whereIn('class_id', $classIds)->count();
-    }
-
-    /**
-     * Scope for active teachers.
-     */
+    // Scopes
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
 
-    /**
-     * Scope for teachers by subject.
-     */
     public function scopeBySubject($query, $subjectId)
     {
         return $query->whereHas('subjects', function ($q) use ($subjectId) {
-            $q->where('subject_id', $subjectId);
+            $q->where('subjects.id', $subjectId);
         });
     }
 
-    /**
-     * Scope for homeroom teachers.
-     */
-    public function scopeHomeroom($query)
+    public function scopeByClass($query, $classId)
     {
-        return $query->whereHas('teachingClasses', function ($q) {
-            $q->where('is_homeroom', true);
+        return $query->whereHas('classes', function ($q) use ($classId) {
+            $q->where('school_classes.id', $classId);
         });
     }
 }

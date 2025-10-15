@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TeacherSubject extends Model
 {
@@ -12,30 +13,20 @@ class TeacherSubject extends Model
     protected $fillable = [
         'teacher_id',
         'subject_id',
-        'is_primary',
+        'is_active',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'is_primary' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
 
-    /**
-     * Get the teacher that owns the subject.
-     */
-    public function teacher()
+    public function teacher(): BelongsTo
     {
         return $this->belongsTo(Teacher::class);
     }
 
-    /**
-     * Get the subject that belongs to the teacher.
-     */
-    public function subject()
+    public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);
     }
 }
-

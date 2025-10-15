@@ -221,7 +221,7 @@
                 </select>
             </div>
             <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-                <button type="submit" form="bulkActionForm" class="inline-flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200">
+                <button type="button" onclick="handleBulkAction()" class="inline-flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                     </svg>
@@ -493,30 +493,59 @@ function resetFilters() {
 
 function deleteNews(id) {
     console.log('Delete button clicked for news ID:', id);
-    if (confirm('Apakah Anda yakin ingin menghapus berita ini?')) {
-        console.log('User confirmed deletion');
-        // Create form for delete request
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/admin/news/${id}`;
+    
+    // Show confirmation modal with better styling
+    if (confirm('⚠️ PERINGATAN!\n\nApakah Anda yakin ingin menghapus berita ini?\n\nTindakan ini tidak dapat dibatalkan dan akan menghapus:\n• Berita dan semua kontennya\n• Gambar yang terkait\n• Data yang terkait\n\nKlik OK untuk melanjutkan atau Cancel untuk membatalkan.')) {
+        console.log('User confirmed deletion for news ID:', id);
         
-        // Add CSRF token
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = '_token';
-        csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        // Show loading state
+        const deleteButtons = document.querySelectorAll(`button[onclick="deleteNews(${id})"]`);
+        deleteButtons.forEach(button => {
+            button.disabled = true;
+            button.innerHTML = '<svg class="w-4 h-4 mr-1 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>Menghapus...';
+        });
         
-        // Add method override for DELETE
-        const methodField = document.createElement('input');
-        methodField.type = 'hidden';
-        methodField.name = '_method';
-        methodField.value = 'DELETE';
-        
-        form.appendChild(csrfToken);
-        form.appendChild(methodField);
-        document.body.appendChild(form);
-        console.log('Submitting delete form');
-        form.submit();
+        // Use fetch API for delete request
+        fetch(`/admin/news/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            
+            return response.json().then(data => {
+                console.log('Response data:', data);
+                
+                if (response.ok && data.success) {
+                    // Success - show success message and reload
+                    alert(data.message || 'Berita berhasil dihapus.');
+                    window.location.reload();
+                } else {
+                    // Error - show error message
+                    alert(data.message || 'Terjadi kesalahan saat menghapus berita. Silakan coba lagi.');
+                    // Reset button state
+                    deleteButtons.forEach(button => {
+                        button.disabled = false;
+                        button.innerHTML = '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>Hapus';
+                    });
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghapus berita. Silakan coba lagi.');
+            // Reset button state
+            deleteButtons.forEach(button => {
+                button.disabled = false;
+                button.innerHTML = '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>Hapus';
+            });
+        });
     } else {
         console.log('User cancelled deletion');
     }
@@ -561,6 +590,48 @@ function clearSelection() {
     });
     document.getElementById('selectAll').checked = false;
     document.getElementById('bulkActions').style.display = 'none';
+}
+
+// Handle bulk action form submission
+function handleBulkAction() {
+    const form = document.getElementById('bulkActionForm');
+    const action = document.getElementById('bulkActionSelect').value;
+    const selectedCheckboxes = document.querySelectorAll('.news-checkbox:checked');
+    
+    if (selectedCheckboxes.length === 0) {
+        alert('Pilih minimal satu berita untuk melakukan aksi.');
+        return;
+    }
+    
+    if (action === 'delete') {
+        if (!confirm(`⚠️ PERINGATAN!\n\nApakah Anda yakin ingin menghapus ${selectedCheckboxes.length} berita yang dipilih?\n\nTindakan ini tidak dapat dibatalkan dan akan menghapus:\n• Semua berita yang dipilih\n• Gambar yang terkait\n• Data yang terkait\n\nKlik OK untuk melanjutkan atau Cancel untuk membatalkan.`)) {
+            return;
+        }
+    }
+    
+    // Add selected news IDs to form
+    selectedCheckboxes.forEach(checkbox => {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'news_ids[]';
+        hiddenInput.value = checkbox.value;
+        form.appendChild(hiddenInput);
+    });
+    
+    // Add action to form
+    const actionInput = document.createElement('input');
+    actionInput.type = 'hidden';
+    actionInput.name = 'action';
+    actionInput.value = action;
+    form.appendChild(actionInput);
+    
+    // Show loading state
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.innerHTML;
+    submitButton.disabled = true;
+    submitButton.innerHTML = '<svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>Memproses...';
+    
+    form.submit();
 }
 </script>
 @endsection

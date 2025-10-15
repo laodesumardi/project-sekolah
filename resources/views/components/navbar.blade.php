@@ -66,11 +66,20 @@
         @media (max-width: 1023px) {
             .navbar-container {
                 justify-content: space-between;
+                padding: 0.5rem 0;
             }
             
             .navbar-logo {
                 position: static;
                 flex-shrink: 0;
+            }
+            
+            .navbar-logo h1 {
+                font-size: 1rem;
+            }
+            
+            .navbar-logo p {
+                font-size: 0.75rem;
             }
             
             .navbar-menu {
@@ -80,6 +89,26 @@
             .navbar-actions {
                 position: static;
                 flex-shrink: 0;
+            }
+        }
+        
+        /* Extra small screens */
+        @media (max-width: 480px) {
+            .navbar-container {
+                padding: 0.25rem 0;
+            }
+            
+            .navbar-logo h1 {
+                font-size: 0.9rem;
+            }
+            
+            .navbar-logo p {
+                font-size: 0.7rem;
+            }
+            
+            .mobile-menu-item {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
             }
         }
         
@@ -183,6 +212,8 @@
             padding: 0.5rem;
             border-radius: 0.375rem;
             transition: background-color 0.2s;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
         
         .mobile-menu-btn:hover {
@@ -209,6 +240,8 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
         }
         
         .mobile-menu-dropdown.show {
@@ -225,6 +258,8 @@
             text-decoration: none;
             border-bottom: 1px solid #f3f4f6;
             transition: all 0.2s;
+            font-size: 0.9rem;
+            line-height: 1.4;
         }
         
         .mobile-menu-item:hover {
@@ -359,20 +394,20 @@
                                     <span>Kurikulum</span>
                                 </div>
                             </a>
-                            <a href="{{ route('academic.extracurriculars') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 {{ request()->routeIs('academic.extracurriculars') ? 'bg-primary-50 text-primary-600' : '' }}">
-                                <div class="flex items-center space-x-3">
-                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                    </svg>
-                                    <span>Ekstrakurikuler</span>
-                                </div>
-                            </a>
                             <a href="{{ route('academic.teachers') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 {{ request()->routeIs('academic.teachers') ? 'bg-primary-50 text-primary-600' : '' }}">
                                 <div class="flex items-center space-x-3">
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                     </svg>
                                     <span>Tenaga Pendidik</span>
+                                </div>
+                            </a>
+                            <a href="{{ route('extracurriculars.index') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 {{ request()->routeIs('extracurriculars.*') ? 'bg-primary-50 text-primary-600' : '' }}">
+                                <div class="flex items-center space-x-3">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    </svg>
+                                    <span>Ekstrakurikuler</span>
                                 </div>
                             </a>
                             <a href="{{ route('academic.calendar') }}" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200 {{ request()->routeIs('academic.calendar') ? 'bg-primary-50 text-primary-600' : '' }}">
@@ -402,18 +437,63 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('facilities') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('facilities*') ? 'text-primary-600 active' : '' }}">
+                <a href="{{ route('facilities.index') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('facilities*') ? 'text-primary-600 active' : '' }}">
                     Fasilitas
+                </a>
+                <a href="{{ route('gallery.index') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('gallery*') ? 'text-primary-600 active' : '' }}">
+                    Galeri
                 </a>
                 <a href="{{ route('ppdb.index') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('ppdb*') ? 'text-primary-600 active' : '' }}">
                     PPDB
                 </a>
-                <a href="{{ route('gallery') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('gallery*') ? 'text-primary-600 active' : '' }}">
-                    Galeri
-                </a>
-                <a href="{{ route('library') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('library*') ? 'text-primary-600 active' : '' }}">
-                    Perpustakaan
-                </a>
+                <div class="relative group">
+                    <button class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 flex items-center {{ request()->routeIs('library*') ? 'text-primary-600 active' : '' }}">
+                        Perpustakaan
+                        <svg class="w-4 h-4 ml-1 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="absolute left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <div class="py-2">
+                            <a href="{{ route('library') }}" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
+                                <svg class="w-5 h-5 mr-3 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                                <div>
+                                    <div class="font-medium">Perpustakaan Digital</div>
+                                    <div class="text-sm text-gray-500">Akses koleksi digital</div>
+                                </div>
+                            </a>
+                            <a href="https://saranaguru.erlanggaonline.co.id/user/login" target="_blank" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
+                                <svg class="w-5 h-5 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <div>
+                                    <div class="font-medium">Sarana Guru</div>
+                                    <div class="text-sm text-gray-500">Portal pembelajaran guru</div>
+                                </div>
+                            </a>
+                            <a href="https://e-library.erlanggaonline.co.id/user/TWpVMk56RT0" target="_blank" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
+                                <svg class="w-5 h-5 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                                <div>
+                                    <div class="font-medium">E-Library</div>
+                                    <div class="text-sm text-gray-500">Perpustakaan digital Erlangga</div>
+                                </div>
+                            </a>
+                            <a href="https://asesmen.erlanggaonline.co.id/" target="_blank" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors">
+                                <svg class="w-5 h-5 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M6 16h.01" />
+                                </svg>
+                                <div>
+                                    <div class="font-medium">Asesmen Online</div>
+                                    <div class="text-sm text-gray-500">Platform evaluasi pembelajaran</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <a href="{{ route('news') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('news*') ? 'text-primary-600 active' : '' }}">
                     Berita
                 </a>
@@ -489,20 +569,20 @@
                                 <span>Kurikulum</span>
                             </div>
                         </a>
-                        <a href="{{ route('academic.extracurriculars') }}" class="mobile-menu-item pl-8 {{ request()->routeIs('academic.extracurriculars') ? 'active' : '' }}">
-                            <div class="flex items-center space-x-3">
-                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                </svg>
-                                <span>Ekstrakurikuler</span>
-                            </div>
-                        </a>
                         <a href="{{ route('academic.teachers') }}" class="mobile-menu-item pl-8 {{ request()->routeIs('academic.teachers') ? 'active' : '' }}">
                             <div class="flex items-center space-x-3">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                 </svg>
                                 <span>Tenaga Pendidik</span>
+                            </div>
+                        </a>
+                        <a href="{{ route('extracurriculars.index') }}" class="mobile-menu-item pl-8 {{ request()->routeIs('extracurriculars.*') ? 'active' : '' }}">
+                            <div class="flex items-center space-x-3">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                <span>Ekstrakurikuler</span>
                             </div>
                         </a>
                         <a href="{{ route('academic.calendar') }}" class="mobile-menu-item pl-8 {{ request()->routeIs('academic.calendar') ? 'active' : '' }}">
@@ -532,12 +612,21 @@
                     </div>
                 </div>
                 
-                <a href="{{ route('facilities') }}" class="mobile-menu-item {{ request()->routeIs('facilities*') ? 'active' : '' }}">
+                <a href="{{ route('facilities.index') }}" class="mobile-menu-item {{ request()->routeIs('facilities*') ? 'active' : '' }}">
                     <div class="flex items-center space-x-3">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                         </svg>
                         <span>Fasilitas</span>
+                    </div>
+                </a>
+                
+                <a href="{{ route('gallery.index') }}" class="mobile-menu-item {{ request()->routeIs('gallery*') ? 'active' : '' }}">
+                    <div class="flex items-center space-x-3">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>Galeri</span>
                     </div>
                 </a>
                 
@@ -550,23 +639,45 @@
                     </div>
                 </a>
                 
-                <a href="{{ route('gallery') }}" class="mobile-menu-item {{ request()->routeIs('gallery*') ? 'active' : '' }}">
-                    <div class="flex items-center space-x-3">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <div class="mobile-menu-item">
+                    <button onclick="toggleMobileDropdown('library-dropdown')" class="flex items-center justify-between w-full">
+                        <div class="flex items-center space-x-3">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            <span>Perpustakaan</span>
+                        </div>
+                        <svg class="h-4 w-4 transition-transform duration-200" id="library-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
-                        <span>Galeri</span>
+                    </button>
+                    <div id="library-dropdown" class="hidden ml-8 mt-2 space-y-2">
+                        <a href="{{ route('library') }}" class="flex items-center space-x-3 text-gray-600 hover:text-primary-500 py-2">
+                            <svg class="h-4 w-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            <span>Perpustakaan Digital</span>
+                        </a>
+                        <a href="https://saranaguru.erlanggaonline.co.id/user/login" target="_blank" class="flex items-center space-x-3 text-gray-600 hover:text-primary-500 py-2">
+                            <svg class="h-4 w-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Sarana Guru</span>
+                        </a>
+                        <a href="https://e-library.erlanggaonline.co.id/user/TWpVMk56RT0" target="_blank" class="flex items-center space-x-3 text-gray-600 hover:text-primary-500 py-2">
+                            <svg class="h-4 w-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            <span>E-Library</span>
+                        </a>
+                        <a href="https://asesmen.erlanggaonline.co.id/" target="_blank" class="flex items-center space-x-3 text-gray-600 hover:text-primary-500 py-2">
+                            <svg class="h-4 w-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M6 16h.01" />
+                            </svg>
+                            <span>Asesmen Online</span>
+                        </a>
                     </div>
-                </a>
-                
-                <a href="{{ route('library') }}" class="mobile-menu-item {{ request()->routeIs('library*') ? 'active' : '' }}">
-                    <div class="flex items-center space-x-3">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                        <span>Perpustakaan</span>
-                    </div>
-                </a>
+                </div>
                 
                 <a href="{{ route('news') }}" class="mobile-menu-item {{ request()->routeIs('news*') ? 'active' : '' }}">
                     <div class="flex items-center space-x-3">
@@ -630,13 +741,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mobile dropdown toggle function
     function toggleMobileDropdown(dropdownId) {
         const dropdown = document.getElementById(dropdownId);
+        const arrow = document.getElementById(dropdownId.replace('-dropdown', '-arrow'));
         
         if (dropdown) {
             // Toggle dropdown visibility
             if (dropdown.classList.contains('hidden')) {
                 dropdown.classList.remove('hidden');
+                if (arrow) {
+                    arrow.style.transform = 'rotate(180deg)';
+                }
             } else {
                 dropdown.classList.add('hidden');
+                if (arrow) {
+                    arrow.style.transform = 'rotate(0deg)';
+                }
             }
         }
     }

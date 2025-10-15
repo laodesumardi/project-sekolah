@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subject;
-use App\Models\Extracurricular;
 use App\Models\Teacher;
 use App\Models\AcademicCalendar;
 use App\Models\Achievement;
@@ -23,46 +22,7 @@ class AcademicController extends Controller
         return view('frontend.academic.curriculum', compact('subjectsByGrade'));
     }
 
-    /**
-     * Display extracurriculars page.
-     */
-    public function extracurriculars(Request $request)
-    {
-        $query = Extracurricular::active()->with(['instructor', 'images']);
 
-        // Filter by category
-        if ($request->has('category') && $request->category) {
-            $query->byCategory($request->category);
-        }
-
-        $extracurriculars = $query->orderBy('category')->orderBy('name')->get();
-        
-        // Get categories for filter
-        $categories = Extracurricular::active()
-            ->selectRaw('category, COUNT(*) as count')
-            ->groupBy('category')
-            ->get();
-
-        return view('frontend.academic.extracurriculars', compact('extracurriculars', 'categories'));
-    }
-
-    /**
-     * Display extracurricular detail.
-     */
-    public function extracurricularDetail(Extracurricular $extracurricular)
-    {
-        $extracurricular->load(['instructor', 'images']);
-        
-        // Get related extracurriculars (same category, excluding current)
-        $relatedExtracurriculars = Extracurricular::active()
-            ->where('category', $extracurricular->category)
-            ->where('id', '!=', $extracurricular->id)
-            ->with(['instructor'])
-            ->limit(3)
-            ->get();
-        
-        return view('frontend.academic.extracurricular-detail', compact('extracurricular', 'relatedExtracurriculars'));
-    }
 
     /**
      * Display teachers page.
@@ -175,22 +135,6 @@ class AcademicController extends Controller
         return response()->download($filePath, $subject->name . ' - Silabus.pdf');
     }
 
-    /**
-     * Export extracurricular schedule.
-     */
-    public function exportExtracurricularSchedule()
-    {
-        $extracurriculars = Extracurricular::active()
-            ->with('instructor')
-            ->orderBy('schedule_day')
-            ->orderBy('schedule_time')
-            ->get();
-
-        // Group by day
-        $scheduleByDay = $extracurriculars->groupBy('schedule_day');
-
-        return view('frontend.academic.extracurricular-schedule-pdf', compact('scheduleByDay'));
-    }
 
     /**
      * Export academic calendar.

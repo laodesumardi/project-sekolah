@@ -2,280 +2,136 @@
 
 namespace Database\Seeders;
 
-use App\Models\Achievement;
 use Illuminate\Database\Seeder;
+use App\Models\Achievement;
+use App\Models\AchievementParticipant;
+use App\Models\AchievementTeacher;
+use Illuminate\Support\Facades\DB;
 
 class AchievementSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
+        // Clear existing data
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        Achievement::truncate();
+        AchievementParticipant::truncate();
+        AchievementTeacher::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
         $achievements = [
-            // Prestasi Akademik
             [
-                'title' => 'Juara 1 Olimpiade Matematika Tingkat Kabupaten',
-                'description' => 'Siswa berhasil meraih juara 1 dalam Olimpiade Matematika tingkat kabupaten yang diselenggarakan oleh Dinas Pendidikan.',
-                'category' => 'Akademik',
-                'achievement_level' => 'Kecamatan',
+                'title' => 'Juara 1 Olimpiade Matematika Nasional',
+                'slug' => 'juara-1-olimpiade-matematika-nasional-1',
+                'category' => 'akademik',
+                'description' => 'Meraih juara 1 dalam Olimpiade Matematika Nasional tingkat SMA',
+                'achievement_level' => 'nasional',
                 'rank' => 'Juara 1',
-                'participant_type' => 'individual',
-                'participant_names' => 'Ahmad Rizki Pratama',
+                'event_name' => 'Olimpiade Matematika Nasional 2024',
+                'organizer' => 'Kementerian Pendidikan dan Kebudayaan',
+                'location' => 'Jakarta',
                 'date' => '2024-03-15',
-                'competition_name' => 'Olimpiade Matematika Kabupaten Buru Selatan',
-                'organizer' => 'Dinas Pendidikan Kabupaten Buru Selatan',
+                'year' => 2024,
+                'participant_type' => 'individu',
+                'participants' => 'Ahmad Rizki',
+                'student_ids' => null,
+                'teacher_ids' => null,
+                'certificate_image' => 'sample_certificate_1.jpg',
+                'trophy_image' => 'sample_trophy_1.jpg',
+                'documentation_images' => json_encode(['sample_doc_1.jpg', 'sample_doc_2.jpg']),
+                'video_url' => 'https://youtube.com/watch?v=sample1',
+                'news_url' => 'https://example.com/news/sample1',
+                'prize' => 'Rp 5.000.000 + Laptop',
+                'score' => '95',
                 'is_featured' => true,
+                'is_published' => true,
+                'sort_order' => 1,
+                'view_count' => 150,
+                'created_by' => 1,
+                'updated_by' => 1,
             ],
             [
-                'title' => 'Juara 2 Olimpiade IPA Tingkat Provinsi',
-                'description' => 'Tim siswa berhasil meraih juara 2 dalam Olimpiade IPA tingkat provinsi Maluku.',
-                'category' => 'Akademik',
-                'achievement_level' => 'Provinsi',
+                'title' => 'Juara 2 Lomba Cerdas Cermat',
+                'slug' => 'juara-2-lomba-cerdas-cermat-2',
+                'category' => 'akademik',
+                'description' => 'Meraih juara 2 dalam Lomba Cerdas Cermat tingkat provinsi',
+                'achievement_level' => 'provinsi',
                 'rank' => 'Juara 2',
-                'participant_type' => 'team',
-                'participant_names' => 'Siti Nurhaliza, Muhammad Fauzi, Dewi Sartika',
-                'date' => '2024-04-20',
-                'competition_name' => 'Olimpiade IPA Provinsi Maluku',
-                'organizer' => 'Dinas Pendidikan Provinsi Maluku',
+                'event_name' => 'Lomba Cerdas Cermat Provinsi 2024',
+                'organizer' => 'Dinas Pendidikan Provinsi',
+                'location' => 'Bandung',
+                'date' => '2024-02-20',
+                'year' => 2024,
+                'participant_type' => 'kelompok',
+                'participants' => 'Tim Cerdas Cermat SMP Negeri 01 Namrole',
+                'student_ids' => null,
+                'teacher_ids' => null,
+                'certificate_image' => 'sample_certificate_2.jpg',
+                'trophy_image' => null,
+                'documentation_images' => json_encode(['sample_doc_3.jpg']),
+                'video_url' => null,
+                'news_url' => null,
+                'prize' => 'Rp 2.000.000 + Piagam',
+                'score' => '88',
+                'is_featured' => false,
+                'is_published' => true,
+                'sort_order' => 2,
+                'view_count' => 75,
+                'created_by' => 1,
+                'updated_by' => 1,
+            ],
+            [
+                'title' => 'Juara 1 Turnamen Sepak Bola',
+                'slug' => 'juara-1-turnamen-sepak-bola-3',
+                'category' => 'olahraga',
+                'description' => 'Meraih juara 1 dalam Turnamen Sepak Bola antar sekolah',
+                'achievement_level' => 'kota',
+                'rank' => 'Juara 1',
+                'event_name' => 'Turnamen Sepak Bola Kota 2024',
+                'organizer' => 'Dinas Pemuda dan Olahraga',
+                'location' => 'Lapangan Sepak Bola Kota',
+                'date' => '2024-01-10',
+                'year' => 2024,
+                'participant_type' => 'tim',
+                'participants' => 'Tim Sepak Bola SMP Negeri 01 Namrole',
+                'student_ids' => null,
+                'teacher_ids' => null,
+                'certificate_image' => null,
+                'trophy_image' => 'sample_trophy_2.jpg',
+                'documentation_images' => json_encode(['sample_doc_4.jpg', 'sample_doc_5.jpg', 'sample_doc_6.jpg']),
+                'video_url' => 'https://youtube.com/watch?v=sample2',
+                'news_url' => 'https://example.com/news/sample2',
+                'prize' => 'Piala + Rp 3.000.000',
+                'score' => null,
                 'is_featured' => true,
-            ],
-            [
-                'title' => 'Juara 3 Lomba Debat Bahasa Inggris',
-                'description' => 'Tim debat bahasa Inggris berhasil meraih juara 3 dalam lomba debat tingkat kabupaten.',
-                'category' => 'Akademik',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 3',
-                'participant_type' => 'team',
-                'participant_names' => 'Sarah Putri, John Doe, Maria Santos',
-                'date' => '2024-05-10',
-                'competition_name' => 'Lomba Debat Bahasa Inggris Kabupaten',
-                'organizer' => 'MGMP Bahasa Inggris Kabupaten Buru Selatan',
-                'is_featured' => false,
-            ],
-            [
-                'title' => 'Juara 1 Lomba Karya Tulis Ilmiah',
-                'description' => 'Siswa berhasil meraih juara 1 dalam lomba karya tulis ilmiah tingkat kabupaten.',
-                'category' => 'Akademik',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 1',
-                'participant_type' => 'individual',
-                'participant_names' => 'Rizki Amelia',
-                'date' => '2024-06-05',
-                'competition_name' => 'Lomba Karya Tulis Ilmiah Remaja',
-                'organizer' => 'Dinas Pendidikan dan Kebudayaan Kabupaten Buru Selatan',
-                'is_featured' => true,
-            ],
-
-            // Prestasi Olahraga
-            [
-                'title' => 'Juara 1 Sepak Bola Tingkat Kabupaten',
-                'description' => 'Tim sepak bola SMP Negeri 01 Namrole berhasil meraih juara 1 dalam turnamen sepak bola tingkat kabupaten.',
-                'category' => 'Olahraga',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 1',
-                'participant_type' => 'team',
-                'participant_names' => 'Tim Sepak Bola SMP Negeri 01 Namrole',
-                'date' => '2024-08-17',
-                'competition_name' => 'Turnamen Sepak Bola HUT RI ke-79',
-                'organizer' => 'Pemkab Buru Selatan',
-                'is_featured' => true,
-            ],
-            [
-                'title' => 'Juara 2 Basket Putri Tingkat Kabupaten',
-                'description' => 'Tim basket putri berhasil meraih juara 2 dalam turnamen basket tingkat kabupaten.',
-                'category' => 'Olahraga',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 2',
-                'participant_type' => 'team',
-                'participant_names' => 'Tim Basket Putri SMP Negeri 01 Namrole',
-                'date' => '2024-09-25',
-                'competition_name' => 'Turnamen Basket Pelajar Kabupaten',
-                'organizer' => 'Dinas Pemuda dan Olahraga Kabupaten Buru Selatan',
-                'is_featured' => false,
-            ],
-            [
-                'title' => 'Juara 1 Bulu Tangkis Tunggal Putra',
-                'description' => 'Siswa berhasil meraih juara 1 dalam turnamen bulu tangkis tunggal putra tingkat kabupaten.',
-                'category' => 'Olahraga',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 1',
-                'participant_type' => 'individual',
-                'participant_names' => 'Budi Santoso',
-                'date' => '2024-10-12',
-                'competition_name' => 'Kejuaraan Bulu Tangkis Pelajar',
-                'organizer' => 'PB PBSI Kabupaten Buru Selatan',
-                'is_featured' => true,
-            ],
-            [
-                'title' => 'Juara 3 Voli Putri Tingkat Kabupaten',
-                'description' => 'Tim voli putri berhasil meraih juara 3 dalam turnamen voli tingkat kabupaten.',
-                'category' => 'Olahraga',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 3',
-                'participant_type' => 'team',
-                'participant_names' => 'Tim Voli Putri SMP Negeri 01 Namrole',
-                'date' => '2024-11-08',
-                'competition_name' => 'Turnamen Voli Pelajar Kabupaten',
-                'organizer' => 'Dinas Pemuda dan Olahraga Kabupaten Buru Selatan',
-                'is_featured' => false,
-            ],
-
-            // Prestasi Seni
-            [
-                'title' => 'Juara 1 Lomba Tari Tradisional',
-                'description' => 'Siswa berhasil meraih juara 1 dalam lomba tari tradisional tingkat kabupaten.',
-                'category' => 'Seni',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 1',
-                'participant_type' => 'individual',
-                'participant_names' => 'Sari Dewi',
-                'date' => '2024-07-20',
-                'competition_name' => 'Festival Seni Budaya Kabupaten',
-                'organizer' => 'Dinas Pariwisata dan Kebudayaan Kabupaten Buru Selatan',
-                'is_featured' => true,
-            ],
-            [
-                'title' => 'Juara 2 Lomba Menyanyi Solo',
-                'description' => 'Siswa berhasil meraih juara 2 dalam lomba menyanyi solo tingkat kabupaten.',
-                'category' => 'Seni',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 2',
-                'participant_type' => 'individual',
-                'participant_names' => 'Maya Sari',
-                'date' => '2024-08-25',
-                'competition_name' => 'Festival Musik Pelajar',
-                'organizer' => 'Dinas Pendidikan dan Kebudayaan Kabupaten Buru Selatan',
-                'is_featured' => false,
-            ],
-            [
-                'title' => 'Juara 1 Lomba Lukis Tingkat Kabupaten',
-                'description' => 'Siswa berhasil meraih juara 1 dalam lomba lukis tingkat kabupaten.',
-                'category' => 'Seni',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 1',
-                'participant_type' => 'individual',
-                'participant_names' => 'Andi Wijaya',
-                'date' => '2024-09-15',
-                'competition_name' => 'Lomba Lukis Pelajar',
-                'organizer' => 'Dinas Pendidikan dan Kebudayaan Kabupaten Buru Selatan',
-                'is_featured' => true,
-            ],
-
-            // Prestasi Lain-lain
-            [
-                'title' => 'Juara 1 Lomba Pramuka Tingkat Kabupaten',
-                'description' => 'Regu pramuka berhasil meraih juara 1 dalam lomba pramuka tingkat kabupaten.',
-                'category' => 'Lain-lain',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 1',
-                'participant_type' => 'team',
-                'participant_names' => 'Regu Pramuka SMP Negeri 01 Namrole',
-                'date' => '2024-10-05',
-                'competition_name' => 'Jambore Pramuka Kabupaten',
-                'organizer' => 'Kwarcab Gerakan Pramuka Kabupaten Buru Selatan',
-                'is_featured' => true,
-            ],
-            [
-                'title' => 'Juara 2 Lomba PMR Tingkat Kabupaten',
-                'description' => 'Tim PMR berhasil meraih juara 2 dalam lomba PMR tingkat kabupaten.',
-                'category' => 'Lain-lain',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 2',
-                'participant_type' => 'team',
-                'participant_names' => 'Tim PMR SMP Negeri 01 Namrole',
-                'date' => '2024-11-20',
-                'competition_name' => 'Lomba PMR Pelajar',
-                'organizer' => 'PMI Kabupaten Buru Selatan',
-                'is_featured' => false,
-            ],
-            [
-                'title' => 'Juara 1 Lomba Karya Ilmiah Remaja',
-                'description' => 'Siswa berhasil meraih juara 1 dalam lomba karya ilmiah remaja tingkat kabupaten.',
-                'category' => 'Lain-lain',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 1',
-                'participant_type' => 'individual',
-                'participant_names' => 'Nurul Hidayah',
-                'date' => '2024-12-10',
-                'competition_name' => 'Lomba Karya Ilmiah Remaja',
-                'organizer' => 'Dinas Pendidikan dan Kebudayaan Kabupaten Buru Selatan',
-                'is_featured' => true,
-            ],
-
-            // Prestasi Tahun 2023
-            [
-                'title' => 'Juara 1 Olimpiade Matematika Tingkat Kabupaten 2023',
-                'description' => 'Siswa berhasil meraih juara 1 dalam Olimpiade Matematika tingkat kabupaten tahun 2023.',
-                'category' => 'Akademik',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 1',
-                'participant_type' => 'individual',
-                'participant_names' => 'Rizki Pratama',
-                'date' => '2023-03-20',
-                'competition_name' => 'Olimpiade Matematika Kabupaten Buru Selatan',
-                'organizer' => 'Dinas Pendidikan Kabupaten Buru Selatan',
-                'is_featured' => false,
-            ],
-            [
-                'title' => 'Juara 2 Sepak Bola Tingkat Kabupaten 2023',
-                'description' => 'Tim sepak bola berhasil meraih juara 2 dalam turnamen sepak bola tingkat kabupaten tahun 2023.',
-                'category' => 'Olahraga',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 2',
-                'participant_type' => 'team',
-                'participant_names' => 'Tim Sepak Bola SMP Negeri 01 Namrole',
-                'date' => '2023-08-17',
-                'competition_name' => 'Turnamen Sepak Bola HUT RI ke-78',
-                'organizer' => 'Pemkab Buru Selatan',
-                'is_featured' => false,
-            ],
-            [
-                'title' => 'Juara 1 Lomba Tari Tradisional 2023',
-                'description' => 'Siswa berhasil meraih juara 1 dalam lomba tari tradisional tingkat kabupaten tahun 2023.',
-                'category' => 'Seni',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 1',
-                'participant_type' => 'individual',
-                'participant_names' => 'Sari Dewi',
-                'date' => '2023-07-25',
-                'competition_name' => 'Festival Seni Budaya Kabupaten',
-                'organizer' => 'Dinas Pariwisata dan Kebudayaan Kabupaten Buru Selatan',
-                'is_featured' => false,
-            ],
-
-            // Prestasi Tahun 2022
-            [
-                'title' => 'Juara 3 Olimpiade IPA Tingkat Kabupaten 2022',
-                'description' => 'Tim siswa berhasil meraih juara 3 dalam Olimpiade IPA tingkat kabupaten tahun 2022.',
-                'category' => 'Akademik',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 3',
-                'participant_type' => 'team',
-                'participant_names' => 'Tim Olimpiade IPA SMP Negeri 01 Namrole',
-                'date' => '2022-04-15',
-                'competition_name' => 'Olimpiade IPA Kabupaten Buru Selatan',
-                'organizer' => 'Dinas Pendidikan Kabupaten Buru Selatan',
-                'is_featured' => false,
-            ],
-            [
-                'title' => 'Juara 1 Lomba Pramuka Tingkat Kabupaten 2022',
-                'description' => 'Regu pramuka berhasil meraih juara 1 dalam lomba pramuka tingkat kabupaten tahun 2022.',
-                'category' => 'Lain-lain',
-                'achievement_level' => 'Kecamatan',
-                'rank' => 'Juara 1',
-                'participant_type' => 'team',
-                'participant_names' => 'Regu Pramuka SMP Negeri 01 Namrole',
-                'date' => '2022-10-10',
-                'competition_name' => 'Jambore Pramuka Kabupaten',
-                'organizer' => 'Kwarcab Gerakan Pramuka Kabupaten Buru Selatan',
-                'is_featured' => false,
-            ],
+                'is_published' => true,
+                'sort_order' => 3,
+                'view_count' => 200,
+                'created_by' => 1,
+                'updated_by' => 1,
+            ]
         ];
 
-        foreach ($achievements as $achievement) {
-            Achievement::create($achievement);
+        foreach ($achievements as $index => $achievementData) {
+            $achievement = Achievement::create($achievementData);
+
+            // Add participants
+            AchievementParticipant::create([
+                'achievement_id' => $achievement->id,
+                'student_id' => null,
+                'participant_name' => 'Nama Siswa ' . ($index + 1),
+                'role' => 'peserta',
+                'class_name' => 'IX A'
+            ]);
+
+            // Add teachers
+            AchievementTeacher::create([
+                'achievement_id' => $achievement->id,
+                'teacher_id' => 1,
+                'role' => 'pembimbing'
+            ]);
         }
     }
 }
+
 

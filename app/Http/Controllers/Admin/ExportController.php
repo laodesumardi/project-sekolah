@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademicCalendar;
-use App\Models\Extracurricular;
 use App\Models\AcademicYear;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -58,87 +57,7 @@ class ExportController extends Controller
         return $pdf->download($filename);
     }
 
-    /**
-     * Export extracurricular schedule to PDF
-     */
-    public function exportExtracurricularSchedule(Request $request)
-    {
-        $category = $request->get('category');
-        $day = $request->get('day');
 
-        $query = Extracurricular::with('instructor')
-            ->where('is_active', true);
-
-        if ($category) {
-            $query->where('category', $category);
-        }
-
-        if ($day) {
-            $query->where('schedule_day', $day);
-        }
-
-        $extracurriculars = $query->orderBy('schedule_day')
-            ->orderBy('schedule_time')
-            ->get();
-
-        // Group by day
-        $scheduleByDay = $extracurriculars->groupBy('schedule_day');
-
-        $pdf = Pdf::loadView('admin.exports.extracurricular-schedule', compact('scheduleByDay', 'category', 'day'))
-            ->setPaper('A4', 'portrait')
-            ->setOptions([
-                'isHtml5ParserEnabled' => true,
-                'isRemoteEnabled' => true,
-                'defaultFont' => 'Arial'
-            ]);
-
-        $filename = 'Jadwal_Ekstrakurikuler_' . ($category ? $category : 'All') . '_' . date('Y-m-d') . '.pdf';
-        
-        return $pdf->download($filename);
-    }
-
-    /**
-     * Export achievements to PDF
-     */
-    public function exportAchievements(Request $request)
-    {
-        $category = $request->get('category');
-        $year = $request->get('year');
-        $level = $request->get('level');
-
-        $query = \App\Models\Achievement::query();
-
-        if ($category) {
-            $query->where('category', $category);
-        }
-
-        if ($year) {
-            $query->whereYear('date', $year);
-        }
-
-        if ($level) {
-            $query->where('achievement_level', $level);
-        }
-
-        $achievements = $query->orderBy('date', 'desc')->get();
-
-        // Group by year
-        $achievementsByYear = $achievements->groupBy(function ($achievement) {
-            return $achievement->date->format('Y');
-        });
-
-        $pdf = Pdf::loadView('admin.exports.achievements', compact('achievementsByYear', 'category', 'year', 'level'))
-            ->setPaper('A4', 'portrait')
-            ->setOptions([
-                'isHtml5ParserEnabled' => true,
-                'isRemoteEnabled' => true,
-                'defaultFont' => 'Arial'
-            ]);
-
-        $filename = 'Prestasi_Sekolah_' . ($year ? $year : 'All') . '_' . date('Y-m-d') . '.pdf';
-        
-        return $pdf->download($filename);
-    }
 
     /**
      * Export subjects to PDF
@@ -184,7 +103,7 @@ class ExportController extends Controller
         $stats = [
             'total_students' => \App\Models\User::where('role', 'student')->count(),
             'total_teachers' => \App\Models\Teacher::count(),
-            'total_extracurriculars' => Extracurricular::where('is_active', true)->count(),
+            'total_extracurriculars' => 0,
             'total_achievements' => \App\Models\Achievement::count(),
             'total_subjects' => \App\Models\Subject::where('is_active', true)->count(),
         ];

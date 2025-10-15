@@ -2,9 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\TeacherActivity;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\TeacherActivity;
 use Symfony\Component\HttpFoundation\Response;
 
 class TrackTeacherActivity
@@ -18,27 +19,30 @@ class TrackTeacherActivity
     {
         $response = $next($request);
 
-        // Track activity for teachers
-        if (auth()->check() && auth()->user()->role === 'teacher' && auth()->user()->teacher) {
+        // Track activity only for authenticated teachers
+        if (Auth::check() && Auth::user()->role === 'teacher' && Auth::user()->teacher) {
             $this->trackActivity($request);
         }
 
         return $response;
     }
 
-    /**
-     * Track teacher activity.
-     */
     private function trackActivity(Request $request)
     {
-        $teacher = auth()->user()->teacher;
-        $route = $request->route();
+        $teacher = Auth::user()->teacher;
         
-        // Determine activity type based on route
-        $activityType = $this->getActivityType($request);
+        if (!$teacher) {
+            return;
+        }
+
+        $routeName = $request->route()->getName();
+        $method = $request->method();
+        $path = $request->path();
+
+        // Define activity types based on route
+        $activityType = $this->getActivityType($routeName, $method);
         
-        // Skip tracking for certain routes
-        if (in_array($activityType, ['dashboard', 'profile.show', 'sessions'])) {
+        if (!$activityType) {
             return;
         }
 
@@ -46,95 +50,113 @@ class TrackTeacherActivity
         TeacherActivity::create([
             'teacher_id' => $teacher->id,
             'activity_type' => $activityType,
-            'description' => $this->getActivityDescription($request, $activityType),
-            'metadata' => $this->getActivityMetadata($request),
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
+            'title' => $this->getActivityTitle($routeName, $method),
+            'description' => $this->getActivityDescription($routeName, $method, $path),
+            'date' => now()->toDateString(),
         ]);
     }
 
-    /**
-     * Get activity type from request.
-     */
-    private function getActivityType(Request $request)
+    private function getActivityType($routeName, $method)
     {
-        $route = $request->route();
-        $routeName = $route ? $route->getName() : '';
-        
-        // Extract activity type from route name
-        if (str_contains($routeName, 'login')) {
-            return 'login';
-        } elseif (str_contains($routeName, 'logout')) {
-            return 'logout';
-        } elseif (str_contains($routeName, 'upload') || str_contains($routeName, 'photo')) {
-            return 'upload';
-        } elseif (str_contains($routeName, 'grade') || str_contains($routeName, 'nilai')) {
-            return 'grade';
-        } elseif (str_contains($routeName, 'attendance') || str_contains($routeName, 'absensi')) {
-            return 'attendance';
-        } elseif (str_contains($routeName, 'message') || str_contains($routeName, 'pesan')) {
-            return 'message';
-        } elseif (str_contains($routeName, 'profile.update')) {
-            return 'profile_update';
-        } elseif (str_contains($routeName, 'password')) {
-            return 'password_change';
-        } elseif (str_contains($routeName, 'document')) {
-            return 'document_upload';
-        } elseif (str_contains($routeName, 'certification')) {
-            return 'certification_add';
-        } else {
-            return 'other';
+        if (str_contains($routeName, 'assignment')) {
+            return TeacherActivity::TYPE_TEACHING;
         }
+        
+        if (str_contains($routeName, 'grade') || str_contains($routeName, 'attendance')) {
+            return TeacherActivity::TYPE_TEACHING;
+        }
+        
+        if (str_contains($routeName, 'learning-material')) {
+            return TeacherActivity::TYPE_TEACHING;
+        }
+        
+        if (str_contains($routeName, 'schedule')) {
+            return TeacherActivity::TYPE_TEACHING;
+        }
+        
+        if (str_contains($routeName, 'profile')) {
+            return TeacherActivity::TYPE_OTHER;
+        }
+        
+        return null;
     }
 
-    /**
-     * Get activity description.
-     */
-    private function getActivityDescription(Request $request, $activityType)
+    private function getActivityTitle($routeName, $method)
     {
-        $route = $request->route();
-        $routeName = $route ? $route->getName() : '';
+        $action = $this->getActionFromMethod($method);
         
-        return match($activityType) {
-            'login' => 'Guru login ke sistem',
-            'logout' => 'Guru logout dari sistem',
-            'upload' => 'Guru mengupload file',
-            'grade' => 'Guru menginput nilai',
-            'attendance' => 'Guru menginput absensi',
-            'message' => 'Guru mengirim pesan',
-            'profile_update' => 'Guru mengupdate profile',
-            'password_change' => 'Guru mengubah password',
-            'document_upload' => 'Guru mengupload dokumen',
-            'certification_add' => 'Guru menambah sertifikasi',
-            default => 'Guru mengakses ' . $routeName
+        if (str_contains($routeName, 'assignment')) {
+            return $action . ' Tugas';
+        }
+        
+        if (str_contains($routeName, 'grade')) {
+            return $action . ' Nilai';
+        }
+        
+        if (str_contains($routeName, 'attendance')) {
+            return $action . ' Absensi';
+        }
+        
+        if (str_contains($routeName, 'learning-material')) {
+            return $action . ' Materi Pembelajaran';
+        }
+        
+        if (str_contains($routeName, 'schedule')) {
+            return $action . ' Jadwal';
+        }
+        
+        if (str_contains($routeName, 'profile')) {
+            return $action . ' Profil';
+        }
+        
+        return $action . ' Aktivitas';
+    }
+
+    private function getActivityDescription($routeName, $method, $path)
+    {
+        $action = $this->getActionFromMethod($method);
+        $resource = $this->getResourceFromRoute($routeName);
+        
+        return "{$action} {$resource} pada " . now()->format('d/m/Y H:i');
+    }
+
+    private function getActionFromMethod($method)
+    {
+        return match($method) {
+            'GET' => 'Melihat',
+            'POST' => 'Membuat',
+            'PUT', 'PATCH' => 'Memperbarui',
+            'DELETE' => 'Menghapus',
+            default => 'Mengakses',
         };
     }
 
-    /**
-     * Get activity metadata.
-     */
-    private function getActivityMetadata(Request $request)
+    private function getResourceFromRoute($routeName)
     {
-        $metadata = [
-            'route' => $request->route() ? $request->route()->getName() : null,
-            'method' => $request->method(),
-            'url' => $request->url(),
-        ];
-
-        // Add specific metadata based on request
-        if ($request->has('subject_id')) {
-            $metadata['subject_id'] = $request->subject_id;
+        if (str_contains($routeName, 'assignment')) {
+            return 'Tugas';
         }
-        if ($request->has('class_id')) {
-            $metadata['class_id'] = $request->class_id;
+        
+        if (str_contains($routeName, 'grade')) {
+            return 'Nilai';
         }
-        if ($request->hasFile('photo')) {
-            $metadata['file_type'] = 'photo';
+        
+        if (str_contains($routeName, 'attendance')) {
+            return 'Absensi';
         }
-        if ($request->hasFile('document')) {
-            $metadata['file_type'] = 'document';
+        
+        if (str_contains($routeName, 'learning-material')) {
+            return 'Materi Pembelajaran';
         }
-
-        return $metadata;
+        
+        if (str_contains($routeName, 'schedule')) {
+            return 'Jadwal';
+        }
+        
+        if (str_contains($routeName, 'profile')) {
+            return 'Profil';
+        }
+        
+        return 'Data';
     }
 }

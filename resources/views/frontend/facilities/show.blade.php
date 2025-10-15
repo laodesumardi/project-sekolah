@@ -6,7 +6,7 @@
 <!-- Breadcrumb -->
 <x-breadcrumb :items="[
     ['name' => 'Home', 'url' => route('home')],
-    ['name' => 'Fasilitas', 'url' => route('facilities')],
+    ['name' => 'Fasilitas', 'url' => route('facilities.index')],
     ['name' => $facility->name, 'url' => null]
 ]" />
 
@@ -105,7 +105,7 @@
         </div>
         
         <div class="text-center mt-8">
-            <a href="{{ route('facilities') }}" 
+            <a href="{{ route('facilities.index') }}" 
                class="inline-flex items-center px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-200">
                 Lihat Semua Fasilitas
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

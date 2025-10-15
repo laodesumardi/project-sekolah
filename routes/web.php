@@ -3,8 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\FacilityController;
-use App\Http\Controllers\PPDBController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\PPDBController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\AcademicController;
 use App\Http\Controllers\LibraryController;
@@ -15,9 +15,11 @@ use App\Http\Controllers\Student\DocumentController;
 use App\Http\Controllers\Student\ScheduleController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
 use App\Http\Controllers\Teacher\ProfileController as TeacherProfileController;
-use App\Http\Controllers\Teacher\DocumentController as TeacherDocumentController;
-use App\Http\Controllers\Teacher\CertificationController;
-use App\Http\Controllers\Teacher\ClassController;
+use App\Http\Controllers\Teacher\AssignmentController;
+use App\Http\Controllers\Teacher\GradeController;
+use App\Http\Controllers\Teacher\AttendanceController;
+use App\Http\Controllers\Teacher\LearningMaterialController;
+use App\Http\Controllers\Teacher\ScheduleController as TeacherScheduleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -30,8 +32,6 @@ Route::get('/dashboard', function () {
 Route::get('/tentang-kami', [AboutController::class, 'index'])->name('about');
 Route::get('/kontak', [\App\Http\Controllers\ContactController::class, 'index'])->name('contact');
 Route::get('/akreditasi', [\App\Http\Controllers\AccreditationController::class, 'index'])->name('accreditation');
-Route::get('/fasilitas', [FacilityController::class, 'index'])->name('facilities');
-Route::get('/fasilitas/{facility}', [FacilityController::class, 'show'])->name('facilities.show');
 
 // PPDB Routes
 Route::prefix('ppdb')->name('ppdb.')->group(function () {
@@ -50,38 +50,51 @@ Route::get('/berita', [NewsController::class, 'index'])->name('news');
 Route::get('/berita/{news}', [NewsController::class, 'show'])->name('news.show');
 Route::get('/berita/kategori/{category}', [NewsController::class, 'category'])->name('news.category');
 Route::get('/berita/tag/{tag}', [NewsController::class, 'tag'])->name('news.tag');
+
+// Achievement Routes
+Route::get('/prestasi', [\App\Http\Controllers\AchievementController::class, 'index'])->name('achievements');
+Route::get('/prestasi/{slug}', [\App\Http\Controllers\AchievementController::class, 'show'])->name('achievements.show');
+Route::get('/prestasi/filter', [\App\Http\Controllers\AchievementController::class, 'filter'])->name('achievements.filter');
 Route::get('/feed', [NewsController::class, 'feed'])->name('news.feed');
 
 // Gallery Routes
-Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery');
-Route::get('/galeri/data', [GalleryController::class, 'getGalleryData'])->name('gallery.data');
-Route::get('/galeri/{gallery}/download', [GalleryController::class, 'download'])->name('gallery.download');
+Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery.index');
+Route::get('/galeri/{slug}', [GalleryController::class, 'show'])->name('gallery.show');
+Route::get('/galeri/filter', [GalleryController::class, 'filter'])->name('gallery.filter');
+
 
 // Library Routes
 Route::get('/perpustakaan', [LibraryController::class, 'index'])->name('library');
 
+// Facility Routes
+Route::get('/fasilitas', [FacilityController::class, 'index'])->name('facilities.index');
+Route::get('/fasilitas/{slug}', [FacilityController::class, 'show'])->name('facilities.show');
+Route::get('/fasilitas/filter', [FacilityController::class, 'filter'])->name('facilities.filter');
+
 // Academic Routes
 Route::prefix('akademik')->name('academic.')->group(function () {
     Route::get('/kurikulum', [AcademicController::class, 'curriculum'])->name('curriculum');
-    Route::get('/ekstrakurikuler', [AcademicController::class, 'extracurriculars'])->name('extracurriculars');
-    Route::get('/ekstrakurikuler/{extracurricular}', [AcademicController::class, 'extracurricularDetail'])->name('extracurricular.detail');
     Route::get('/guru', [AcademicController::class, 'teachers'])->name('teachers');
     Route::get('/guru/{teacher}', [AcademicController::class, 'teacherDetail'])->name('teacher.detail');
     Route::get('/kalender', [AcademicController::class, 'calendar'])->name('calendar');
     Route::get('/prestasi', [AcademicController::class, 'achievements'])->name('achievements');
     
     // Detail routes
-    Route::get('/ekstrakurikuler/{extracurricular}', [AcademicController::class, 'extracurricularDetail'])->name('extracurricular-detail');
     Route::get('/guru/{teacher}', [AcademicController::class, 'teacherDetail'])->name('teacher-detail');
     
     // Download/Export routes
     Route::get('/silabus/{subject}/download', [AcademicController::class, 'downloadSyllabus'])->name('syllabus.download');
-    Route::get('/jadwal-ekskul/export', [AcademicController::class, 'exportExtracurricularSchedule'])->name('extracurricular.export');
     Route::get('/kalender/export', [AcademicController::class, 'exportCalendar'])->name('calendar.export');
 });
 
+// Extracurricular Routes
+Route::get('/ekstrakurikuler', [\App\Http\Controllers\ExtracurricularController::class, 'index'])->name('extracurriculars.index');
+Route::get('/ekstrakurikuler/{extracurricular:slug}', [\App\Http\Controllers\ExtracurricularController::class, 'show'])->name('extracurriculars.show');
+Route::post('/ekstrakurikuler/{extracurricular:slug}/register', [\App\Http\Controllers\ExtracurricularController::class, 'register'])->name('extracurriculars.register');
+Route::delete('/ekstrakurikuler/{extracurricular:slug}/cancel', [\App\Http\Controllers\ExtracurricularController::class, 'cancelRegistration'])->name('extracurriculars.cancel');
+Route::get('/ekstrakurikuler/filter', [\App\Http\Controllers\ExtracurricularController::class, 'filter'])->name('extracurriculars.filter');
+
 // API Routes for Modal
-Route::get('/api/facilities/{facility}', [FacilityController::class, 'apiShow'])->name('api.facilities.show');
 
 
 // Placeholder routes for navigation
@@ -121,9 +134,7 @@ Route::middleware(['auth', 'active'])->group(function () {
     
             // Admin Routes
             Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
-                Route::get('/dashboard', function () {
-                    return view('admin.dashboard');
-                })->name('dashboard');
+                Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
                 // Homepage Settings Management
                 Route::get('/homepage-settings', [\App\Http\Controllers\Admin\HomepageSettingController::class, 'index'])->name('homepage-settings.index');
@@ -136,17 +147,35 @@ Route::middleware(['auth', 'active'])->group(function () {
                 Route::get('/about-page-settings/edit', [\App\Http\Controllers\Admin\AboutPageSettingController::class, 'edit'])->name('about-page-settings.edit');
                 Route::put('/about-page-settings', [\App\Http\Controllers\Admin\AboutPageSettingController::class, 'update'])->name('about-page-settings.update');
 
-                // Facilities Management
-                Route::resource('facilities', \App\Http\Controllers\Admin\FacilityController::class);
-                Route::post('facilities/{facility}/toggle-status', [\App\Http\Controllers\Admin\FacilityController::class, 'toggleStatus'])->name('facilities.toggle-status');
-                Route::post('facilities/bulk-action', [\App\Http\Controllers\Admin\FacilityController::class, 'bulkAction'])->name('facilities.bulk-action');
-                Route::get('facilities/export', [\App\Http\Controllers\Admin\FacilityController::class, 'export'])->name('facilities.export');
-
 
                 // News Management
                 Route::resource('news', \App\Http\Controllers\Admin\NewsController::class);
                 Route::post('news/{news}/toggle-featured', [\App\Http\Controllers\Admin\NewsController::class, 'toggleFeatured'])->name('news.toggle-featured');
                 Route::post('news/bulk-action', [\App\Http\Controllers\Admin\NewsController::class, 'bulkAction'])->name('news.bulk-action');
+                
+                // Test route for debugging
+                Route::get('test-delete', function() {
+                    return response()->json(['message' => 'Test route works']);
+                })->name('test.delete');
+                
+                // Test delete route
+                Route::delete('test-delete/{id}', function($id) {
+                    return response()->json(['success' => true, 'message' => 'Test delete works', 'id' => $id]);
+                })->name('test.delete.route');
+
+                // Facility Management
+                Route::resource('facilities', \App\Http\Controllers\Admin\FacilityController::class)->parameters([
+                    'facilities' => 'facility'
+                ]);
+                Route::post('facilities/bulk-delete', [\App\Http\Controllers\Admin\FacilityController::class, 'bulkDelete'])->name('facilities.bulk-delete');
+                Route::post('facilities/bulk-status', [\App\Http\Controllers\Admin\FacilityController::class, 'bulkStatus'])->name('facilities.bulk-status');
+
+                // Gallery Management
+                Route::resource('gallery', \App\Http\Controllers\Admin\GalleryController::class)->parameters([
+                    'gallery' => 'gallery'
+                ]);
+                Route::post('gallery/bulk-delete', [\App\Http\Controllers\Admin\GalleryController::class, 'bulkDelete'])->name('gallery.bulk-delete');
+                Route::post('gallery/bulk-status', [\App\Http\Controllers\Admin\GalleryController::class, 'bulkStatus'])->name('gallery.bulk-status');
 
                 // PPDB Management
                 Route::prefix('ppdb')->name('ppdb.')->group(function () {
@@ -173,12 +202,6 @@ Route::middleware(['auth', 'active'])->group(function () {
                     Route::get('/quota-statistics', [\App\Http\Controllers\Admin\PPDBSettingController::class, 'quotaStatistics'])->name('quota-statistics');
                 });
 
-                // Gallery Management
-                Route::resource('gallery', \App\Http\Controllers\Admin\GalleryController::class);
-                Route::post('gallery/bulk-upload', [\App\Http\Controllers\Admin\GalleryController::class, 'bulkUpload'])->name('gallery.bulk-upload');
-                Route::post('gallery/update-sort', [\App\Http\Controllers\Admin\GalleryController::class, 'updateSortOrder'])->name('gallery.update-sort');
-                Route::post('gallery/{gallery}/toggle-active', [\App\Http\Controllers\Admin\GalleryController::class, 'toggleActive'])->name('gallery.toggle-active');
-                Route::post('gallery/bulk-action', [\App\Http\Controllers\Admin\GalleryController::class, 'bulkAction'])->name('gallery.bulk-action');
 
                 // Tags Management
                 Route::resource('tags', \App\Http\Controllers\Admin\TagController::class);
@@ -204,16 +227,26 @@ Route::middleware(['auth', 'active'])->group(function () {
                 Route::get('calendar/export-pdf', [\App\Http\Controllers\Admin\CalendarController::class, 'exportPdf'])->name('calendar.export-pdf');
                 Route::post('calendar/bulk-action', [\App\Http\Controllers\Admin\CalendarController::class, 'bulkAction'])->name('calendar.bulk-action');
 
-                // Achievement Management
-                Route::resource('achievements', \App\Http\Controllers\Admin\AchievementController::class);
+                // Achievement Management (moved to dashboard)
+                Route::get('achievements', [\App\Http\Controllers\Admin\AchievementController::class, 'index'])->name('achievements.index');
+                Route::get('achievements/create', [\App\Http\Controllers\Admin\AchievementController::class, 'create'])->name('achievements.create');
+                Route::post('achievements', [\App\Http\Controllers\Admin\AchievementController::class, 'store'])->name('achievements.store');
+                Route::get('achievements/{achievement}/edit', [\App\Http\Controllers\Admin\AchievementController::class, 'edit'])->name('achievements.edit');
+                Route::put('achievements/{achievement}', [\App\Http\Controllers\Admin\AchievementController::class, 'update'])->name('achievements.update');
+                Route::delete('achievements/{achievement}', [\App\Http\Controllers\Admin\AchievementController::class, 'destroy'])->name('achievements.destroy');
                 Route::post('achievements/{achievement}/toggle-featured', [\App\Http\Controllers\Admin\AchievementController::class, 'toggleFeatured'])->name('achievements.toggle-featured');
+                Route::post('achievements/{achievement}/toggle-published', [\App\Http\Controllers\Admin\AchievementController::class, 'togglePublished'])->name('achievements.toggle-published');
                 Route::post('achievements/bulk-action', [\App\Http\Controllers\Admin\AchievementController::class, 'bulkAction'])->name('achievements.bulk-action');
+
+                // User Management
+                Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+                Route::post('users/{user}/toggle-active', [\App\Http\Controllers\Admin\UserController::class, 'toggleActive'])->name('users.toggle-active');
+                Route::post('users/bulk-action', [\App\Http\Controllers\Admin\UserController::class, 'bulkAction'])->name('users.bulk-action');
+                Route::get('users/export', [\App\Http\Controllers\Admin\UserController::class, 'export'])->name('users.export');
 
                 // Export Routes
                 Route::prefix('export')->name('export.')->group(function () {
                     Route::get('calendar', [\App\Http\Controllers\Admin\ExportController::class, 'exportCalendar'])->name('calendar');
-                    Route::get('extracurricular-schedule', [\App\Http\Controllers\Admin\ExportController::class, 'exportExtracurricularSchedule'])->name('extracurricular-schedule');
-                    Route::get('achievements', [\App\Http\Controllers\Admin\ExportController::class, 'exportAchievements'])->name('achievements');
                     Route::get('subjects', [\App\Http\Controllers\Admin\ExportController::class, 'exportSubjects'])->name('subjects');
                     Route::get('school-report', [\App\Http\Controllers\Admin\ExportController::class, 'exportSchoolReport'])->name('school-report');
                 });
@@ -230,6 +263,8 @@ Route::middleware(['auth', 'active'])->group(function () {
         
         // Profile
         Route::get('/profil', [TeacherProfileController::class, 'show'])->name('profile.show');
+        Route::get('/profil/create', [TeacherProfileController::class, 'create'])->name('profile.create');
+        Route::post('/profil', [TeacherProfileController::class, 'store'])->name('profile.store');
         Route::get('/profil/edit', [TeacherProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profil', [TeacherProfileController::class, 'update'])->name('profile.update');
         Route::post('/profil/photo', [TeacherProfileController::class, 'updatePhoto'])->name('profile.photo');
@@ -240,65 +275,39 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::post('/profil/logout-devices', [TeacherProfileController::class, 'logoutOtherDevices'])->name('profile.logout-devices');
         Route::put('/profil/privacy', [TeacherProfileController::class, 'updatePrivacy'])->name('profile.privacy');
         
-        // Documents
-        Route::resource('dokumen', TeacherDocumentController::class);
-        Route::get('/dokumen/{id}/download', [TeacherDocumentController::class, 'download'])->name('dokumen.download');
+        // Assignments
+        Route::resource('assignments', AssignmentController::class);
+        Route::get('/assignments/{assignment}/download', [AssignmentController::class, 'download'])->name('assignments.download');
+        Route::post('/assignments/{assignment}/toggle-publish', [AssignmentController::class, 'togglePublish'])->name('assignments.toggle-publish');
+        Route::post('/assignments/{assignment}/submissions/{submission}/grade', [AssignmentController::class, 'gradeSubmission'])->name('assignments.grade-submission');
         
-        // Certifications
-        Route::resource('sertifikasi', CertificationController::class);
+        // Grades
+        Route::resource('grades', GradeController::class);
+        Route::get('/grades/class/{class}', [GradeController::class, 'showClass'])->name('grades.class');
+        Route::get('/grades/analytics', [GradeController::class, 'analytics'])->name('grades.analytics');
+        Route::post('/grades/export', [GradeController::class, 'export'])->name('grades.export');
         
-            // Classes
-            Route::get('/kelas', [ClassController::class, 'index'])->name('kelas.index');
-            Route::get('/kelas/{class}', [ClassController::class, 'show'])->name('kelas.show');
-            Route::get('/kelas/{class}/analytics', [ClassController::class, 'analytics'])->name('kelas.analytics');
-            Route::get('/kelas/{class}/export/{format}', [ClassController::class, 'export'])->name('kelas.export');
-            Route::get('/kelas/{class}/attendance', [ClassController::class, 'inputAttendance'])->name('kelas.attendance');
-            Route::post('/kelas/{class}/attendance', [ClassController::class, 'storeAttendance'])->name('kelas.attendance.store');
-            Route::get('/kelas/{class}/grades', [ClassController::class, 'inputGrades'])->name('kelas.grades');
-            Route::post('/kelas/{class}/grades', [ClassController::class, 'storeGrades'])->name('kelas.grades.store');
-            Route::get('/kelas/{class}/student/{student}', [ClassController::class, 'studentDetails'])->name('kelas.student.details');
-            
-            // Learning
-            Route::get('/pembelajaran', [App\Http\Controllers\Teacher\LearningController::class, 'index'])->name('pembelajaran.index');
-            Route::get('/pembelajaran/create', [App\Http\Controllers\Teacher\LearningController::class, 'create'])->name('pembelajaran.create');
-            Route::post('/pembelajaran', [App\Http\Controllers\Teacher\LearningController::class, 'store'])->name('pembelajaran.store');
-            Route::get('/pembelajaran/{id}', [App\Http\Controllers\Teacher\LearningController::class, 'show'])->name('pembelajaran.show');
-            Route::get('/pembelajaran/{id}/edit', [App\Http\Controllers\Teacher\LearningController::class, 'edit'])->name('pembelajaran.edit');
-            Route::put('/pembelajaran/{id}', [App\Http\Controllers\Teacher\LearningController::class, 'update'])->name('pembelajaran.update');
-            Route::post('/pembelajaran/{id}/update', [App\Http\Controllers\Teacher\LearningController::class, 'update'])->name('pembelajaran.update.post');
-            Route::delete('/pembelajaran/{id}', [App\Http\Controllers\Teacher\LearningController::class, 'destroy'])->name('pembelajaran.destroy');
-            Route::post('/pembelajaran/{id}/publish', [App\Http\Controllers\Teacher\LearningController::class, 'publish'])->name('pembelajaran.publish');
-            
-            // Grades/Assessment
-            Route::get('/penilaian', [App\Http\Controllers\Teacher\GradeController::class, 'index'])->name('penilaian.index');
-            Route::get('/penilaian/create', [App\Http\Controllers\Teacher\GradeController::class, 'create'])->name('penilaian.create');
-            Route::post('/penilaian', [App\Http\Controllers\Teacher\GradeController::class, 'store'])->name('penilaian.store');
-            Route::get('/penilaian/{id}/edit', [App\Http\Controllers\Teacher\GradeController::class, 'edit'])->name('penilaian.edit');
-            Route::put('/penilaian/{id}', [App\Http\Controllers\Teacher\GradeController::class, 'update'])->name('penilaian.update');
-            Route::delete('/penilaian/{id}', [App\Http\Controllers\Teacher\GradeController::class, 'destroy'])->name('penilaian.destroy');
-            Route::get('/penilaian/kelas/{class}', [App\Http\Controllers\Teacher\GradeController::class, 'showClass'])->name('penilaian.class');
-            Route::get('/penilaian/analytics', [App\Http\Controllers\Teacher\GradeController::class, 'analytics'])->name('penilaian.analytics');
-            Route::post('/penilaian/export', [App\Http\Controllers\Teacher\GradeController::class, 'export'])->name('penilaian.export');
-            
-            // Forum & Discussion
-            Route::get('/forum', [App\Http\Controllers\Teacher\ForumController::class, 'index'])->name('forum.index');
-            Route::get('/forum/create', [App\Http\Controllers\Teacher\ForumController::class, 'create'])->name('forum.create');
-            Route::post('/forum', [App\Http\Controllers\Teacher\ForumController::class, 'store'])->name('forum.store');
-            Route::get('/forum/{id}', [App\Http\Controllers\Teacher\ForumController::class, 'show'])->name('forum.show');
-            Route::get('/forum/{id}/edit', [App\Http\Controllers\Teacher\ForumController::class, 'edit'])->name('forum.edit');
-            Route::put('/forum/{id}', [App\Http\Controllers\Teacher\ForumController::class, 'update'])->name('forum.update');
-            Route::delete('/forum/{id}', [App\Http\Controllers\Teacher\ForumController::class, 'destroy'])->name('forum.destroy');
-            Route::get('/forum/kategori/{category}', [App\Http\Controllers\Teacher\ForumController::class, 'category'])->name('forum.category');
-            Route::post('/forum/{id}/reply', [App\Http\Controllers\Teacher\ForumController::class, 'reply'])->name('forum.reply');
-            Route::post('/forum/{id}/like', [App\Http\Controllers\Teacher\ForumController::class, 'like'])->name('forum.like');
-            Route::post('/forum/{id}/pin', [App\Http\Controllers\Teacher\ForumController::class, 'pin'])->name('forum.pin');
-            Route::get('/forum/search', [App\Http\Controllers\Teacher\ForumController::class, 'search'])->name('forum.search');
+        // Attendance
+        Route::resource('attendance', AttendanceController::class);
+        Route::get('/attendance/class/{class}/subject/{subject}', [AttendanceController::class, 'showClass'])->name('attendance.class');
+        Route::get('/attendance/analytics', [AttendanceController::class, 'analytics'])->name('attendance.analytics');
+        Route::post('/attendance/export', [AttendanceController::class, 'export'])->name('attendance.export');
+        
+        // Learning Materials
+        Route::resource('learning-materials', LearningMaterialController::class);
+        Route::get('/learning-materials/{learningMaterial}/download', [LearningMaterialController::class, 'download'])->name('learning-materials.download');
+        Route::post('/learning-materials/{learningMaterial}/toggle-publish', [LearningMaterialController::class, 'togglePublish'])->name('learning-materials.toggle-publish');
+        
+        // Schedules
+        Route::resource('schedules', TeacherScheduleController::class);
+        Route::get('/schedules/calendar', [TeacherScheduleController::class, 'calendar'])->name('schedules.calendar');
+        Route::get('/schedules/events', [TeacherScheduleController::class, 'getEvents'])->name('schedules.events');
     });
     
     // Student Routes
     Route::middleware(['auth', 'student'])->prefix('siswa')->name('student.')->group(function () {
         // Dashboard
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [\App\Http\Controllers\Student\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/dashboard/stats', [DashboardController::class, 'getStats'])->name('dashboard.stats');
         Route::get('/dashboard/activities', [DashboardController::class, 'getActivities'])->name('dashboard.activities');
         

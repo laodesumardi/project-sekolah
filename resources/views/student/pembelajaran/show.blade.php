@@ -411,3 +411,6 @@ function submitQuiz(contentId) {
 </script>
 @endsection
 
+
+
+

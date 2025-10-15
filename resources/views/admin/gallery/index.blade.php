@@ -1,351 +1,530 @@
 @extends('admin.layouts.app')
 
-@section('page-title', 'Kelola Galeri')
+@section('title', 'Kelola Galeri')
 
 @section('content')
-<div class="p-6">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Kelola Galeri</h1>
-            <p class="text-gray-600">Kelola foto dan gambar galeri sekolah</p>
+<div class="p-3 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div class="min-w-0 flex-1">
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-900 truncate">Kelola Galeri</h1>
+            <nav class="flex mt-1 sm:mt-2" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                    <li class="inline-flex items-center">
+                        <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center text-xs sm:text-sm font-medium text-gray-700 hover:text-primary-600">
+                            <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                            </svg>
+                            <span class="hidden sm:inline">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="w-4 h-4 sm:w-6 sm:h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="ml-1 text-xs sm:text-sm font-medium text-gray-500 md:ml-2">Galeri</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
         </div>
-        <div class="mt-4 sm:mt-0 flex space-x-3">
+        <div class="mt-3 sm:mt-0 flex-shrink-0">
             <a href="{{ route('admin.gallery.create') }}" 
-               class="inline-flex items-center px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-200">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               class="inline-flex items-center px-3 sm:px-4 py-2 bg-primary-600 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors w-full sm:w-auto justify-center" 
+               style="background-color: #13315c;">
+                <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
-                Upload Gambar
+                <span class="hidden sm:inline">Buat Album Baru</span>
+                <span class="sm:hidden">Tambah</span>
             </a>
-            <button onclick="openBulkUpload()" 
-                    class="inline-flex items-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                </svg>
-                Bulk Upload
-            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6 border-l-4" style="border-left-color: #13315c;">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-primary-600" fill="currentColor" viewBox="0 0 20 20" style="color: #13315c;">
+                        <path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"></path>
+                    </svg>
+                </div>
+                <div class="ml-3 sm:ml-4 min-w-0 flex-1">
+                    <p class="text-xs sm:text-sm font-medium text-gray-500 truncate">Total Album</p>
+                    <p class="text-lg sm:text-2xl font-semibold text-gray-900">{{ $stats['total_albums'] }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6 border-l-4" style="border-left-color: #13315c;">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-primary-600" fill="currentColor" viewBox="0 0 20 20" style="color: #13315c;">
+                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="ml-3 sm:ml-4 min-w-0 flex-1">
+                    <p class="text-xs sm:text-sm font-medium text-gray-500 truncate">Total Foto</p>
+                    <p class="text-lg sm:text-2xl font-semibold text-gray-900">{{ $stats['total_photos'] }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6 border-l-4" style="border-left-color: #13315c;">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-primary-600" fill="currentColor" viewBox="0 0 20 20" style="color: #13315c;">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                </div>
+                <div class="ml-3 sm:ml-4 min-w-0 flex-1">
+                    <p class="text-xs sm:text-sm font-medium text-gray-500 truncate">Featured Albums</p>
+                    <p class="text-lg sm:text-2xl font-semibold text-gray-900">{{ $stats['featured_albums'] }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-4 sm:p-6 border-l-4" style="border-left-color: #13315c;">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="w-6 h-6 sm:w-8 sm:h-8 text-primary-600" fill="currentColor" viewBox="0 0 20 20" style="color: #13315c;">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="ml-3 sm:ml-4 min-w-0 flex-1">
+                    <p class="text-xs sm:text-sm font-medium text-gray-500 truncate">Total Views</p>
+                    <p class="text-lg sm:text-2xl font-semibold text-gray-900">{{ number_format($stats['total_views']) }}</p>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Filters -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-        <form method="GET" action="{{ route('admin.gallery.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-                <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                <select name="category" id="category" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+    <div class="bg-white rounded-lg shadow p-4 sm:p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4">
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:gap-4">
+                <!-- Category Filter -->
+                <select id="category-filter" class="block w-full sm:w-auto px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-xs sm:text-sm">
                     <option value="">Semua Kategori</option>
-                    <option value="general" {{ request('category') === 'general' ? 'selected' : '' }}>General</option>
-                    <option value="kegiatan" {{ request('category') === 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
-                    <option value="prestasi" {{ request('category') === 'prestasi' ? 'selected' : '' }}>Prestasi</option>
-                    <option value="fasilitas" {{ request('category') === 'fasilitas' ? 'selected' : '' }}>Fasilitas</option>
-                    <option value="event" {{ request('category') === 'event' ? 'selected' : '' }}>Event</option>
+                    @foreach($categories as $key => $label)
+                    <option value="{{ $key }}">{{ $label }}</option>
+                    @endforeach
                 </select>
-            </div>
-            
-            <div>
-                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <select name="status" id="status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+
+                <!-- Status Filter -->
+                <select id="status-filter" class="block w-full sm:w-auto px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-xs sm:text-sm">
                     <option value="">Semua Status</option>
-                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
-                    <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    <option value="published">Published</option>
+                    <option value="draft">Draft</option>
+                </select>
+
+                <!-- Featured Filter -->
+                <select id="featured-filter" class="block w-full sm:w-auto px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-xs sm:text-sm">
+                    <option value="">Semua Featured</option>
+                    <option value="featured">Featured</option>
+                    <option value="not_featured">Not Featured</option>
                 </select>
             </div>
-            
-            <div>
-                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Cari</label>
-                <input type="text" name="search" id="search" value="{{ request('search') }}" 
-                       placeholder="Cari gambar..." 
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-            </div>
-            
-            <div class="flex items-end">
-                <button type="submit" class="w-full bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 transition-colors duration-200">
-                    Filter
-                </button>
-            </div>
-        </form>
-    </div>
 
-    <!-- Bulk Actions -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6" id="bulkActions" style="display: none;">
-        <form method="POST" action="{{ route('admin.gallery.bulk-action') }}" id="bulkActionForm">
-            @csrf
-            <div class="flex items-center space-x-4">
-                <span class="text-sm text-gray-600" id="selectedCount">0 item dipilih</span>
-                <select name="action" id="bulkActionSelect" class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
-                    <option value="">Pilih Aksi</option>
-                    <option value="delete">Hapus</option>
-                    <option value="activate">Aktifkan</option>
-                    <option value="deactivate">Nonaktifkan</option>
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:gap-4">
+                <!-- Search -->
+                <div class="relative flex-1 sm:flex-none">
+                    <div class="absolute inset-y-0 left-0 pl-2 sm:pl-3 flex items-center pointer-events-none">
+                        <svg class="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <input type="text" id="search-input" placeholder="Cari album..." 
+                           class="block w-full pl-8 sm:pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-xs sm:text-sm">
+                </div>
+
+                <!-- Sort -->
+                <select id="sort-select" class="block w-full sm:w-auto px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-xs sm:text-sm">
+                    <option value="recent">Terbaru</option>
+                    <option value="oldest">Terlama</option>
+                    <option value="views">Paling Banyak Dilihat</option>
+                    <option value="title_asc">Judul (A-Z)</option>
+                    <option value="title_desc">Judul (Z-A)</option>
                 </select>
-                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors duration-200">
-                    Jalankan
-                </button>
-                <button type="button" onclick="clearSelection()" class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors duration-200">
-                    Batal
-                </button>
             </div>
-        </form>
+        </div>
     </div>
 
-    <!-- Gallery Grid -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        @if($galleries->count() > 0)
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6" id="galleryGrid">
-                @foreach($galleries as $gallery)
-                    <div class="gallery-item bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                        <!-- Checkbox -->
-                        <div class="absolute top-2 left-2 z-10">
-                            <input type="checkbox" 
-                                   name="gallery_ids[]" 
-                                   value="{{ $gallery->id }}" 
-                                   class="gallery-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+    <!-- Galleries Table -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <!-- Mobile View -->
+        <div class="block sm:hidden">
+            @forelse($galleries as $gallery)
+            <div class="border-b border-gray-200 p-4">
+                <div class="flex items-start space-x-3">
+                    <input type="checkbox" class="gallery-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500 mt-1" value="{{ $gallery->id }}">
+                    <div class="flex-shrink-0">
+                        <div class="h-16 w-16 rounded-lg overflow-hidden">
+                            <img src="{{ $gallery->cover_image_url }}" alt="{{ $gallery->title }}" class="h-full w-full object-cover">
                         </div>
-
-                        <!-- Image -->
-                        <div class="relative aspect-square overflow-hidden">
-                            <img src="{{ $gallery->thumbnail_url }}" 
-                                 alt="{{ $gallery->alt_text ?: $gallery->title }}"
-                                 class="w-full h-full object-cover"
-                                 onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiM5Q0EzQUYiLz4KPHRleHQgeD0iMjAwIiB5PSIxNTAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2QjcyODAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiI+R2FsbGVyeSBJbWFnZTwvdGV4dD4KPC9zdmc+';">
-                            
-                            <!-- Overlay -->
-                            <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
-                                <div class="opacity-0 hover:opacity-100 transition-opacity duration-300 text-white text-center">
-                                    <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <!-- Status Badge -->
-                            <div class="absolute top-2 right-2">
-                                @if($gallery->is_active)
-                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        Active
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                        Inactive
-                                    </span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-medium text-gray-900 truncate">{{ $gallery->title }}</h3>
+                            <div class="flex items-center space-x-1">
+                                @if($gallery->is_featured)
+                                <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                </svg>
                                 @endif
-                            </div>
-
-                            <!-- Category Badge -->
-                            <div class="absolute bottom-2 left-2">
-                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white bg-opacity-90 text-gray-700">
-                                    {{ ucfirst($gallery->category) }}
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $gallery->is_published ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                    {{ $gallery->is_published ? 'Published' : 'Draft' }}
                                 </span>
                             </div>
                         </div>
-
-                        <!-- Content -->
-                        <div class="p-4">
-                            <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">{{ $gallery->title }}</h3>
-                            @if($gallery->description)
-                                <p class="text-sm text-gray-600 line-clamp-2 mb-2">{{ $gallery->description }}</p>
-                            @endif
-                            
-                            <!-- File Info -->
-                            <div class="text-xs text-gray-500 space-y-1">
-                                @if($gallery->formatted_file_size)
-                                    <div>Size: {{ $gallery->formatted_file_size }}</div>
-                                @endif
-                                @if($gallery->dimensions)
-                                    <div>Dimensions: {{ $gallery->dimensions }}</div>
-                                @endif
+                        <p class="text-xs text-gray-500 mt-1">{{ Str::limit($gallery->description, 60) }}</p>
+                        <div class="flex items-center justify-between mt-2">
+                            <div class="flex items-center space-x-3 text-xs text-gray-500">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium" style="background-color: #13315c; color: white;">
+                                    {{ $gallery->category_name }}
+                                </span>
+                                <span class="flex items-center">
+                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    {{ $gallery->total_photos }}
+                                </span>
+                                <span class="flex items-center">
+                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    {{ $gallery->view_count }}
+                                </span>
                             </div>
-
-                            <!-- Actions -->
-                            <div class="mt-3 flex justify-between items-center">
-                                <div class="flex space-x-2">
-                                    <a href="{{ route('admin.gallery.edit', $gallery) }}" 
-                                       class="text-primary-600 hover:text-primary-900">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                    </a>
-                                    <button onclick="deleteGallery({{ $gallery->id }})" 
-                                            class="text-red-600 hover:text-red-900">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                                
-                                <!-- Toggle Active -->
-                                <button onclick="toggleActive({{ $gallery->id }})" 
-                                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-200 {{ $gallery->is_active ? 'bg-green-600' : 'bg-gray-200' }}">
-                                    <span class="inline-block h-3 w-3 transform rounded-full bg-white transition-transform duration-200 {{ $gallery->is_active ? 'translate-x-5' : 'translate-x-1' }}"></span>
+                            <div class="flex items-center space-x-1">
+                                <a href="{{ route('admin.gallery.show', $gallery) }}" 
+                                   class="text-green-600 hover:text-green-900 p-1" title="Lihat Detail">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                </a>
+                                <a href="{{ route('admin.gallery.edit', $gallery) }}" 
+                                   class="text-blue-600 hover:text-blue-900 p-1" title="Edit">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </a>
+                                <button onclick="deleteGallery({{ $gallery->id }})" 
+                                        class="text-red-600 hover:text-red-900 p-1" title="Hapus">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-2-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
                                 </button>
                             </div>
                         </div>
+                        <div class="text-xs text-gray-500 mt-1">
+                            {{ $gallery->formatted_date ?? $gallery->created_at->format('d M Y') }}
+                        </div>
                     </div>
-                @endforeach
+                </div>
             </div>
+            @empty
+            <div class="p-12 text-center text-gray-500">
+                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">Tidak ada album galeri</h3>
+                <p class="mt-1 text-sm text-gray-500">Mulai dengan membuat album galeri baru.</p>
+            </div>
+            @endforelse
+        </div>
 
-            <!-- Pagination -->
-            @if($galleries->hasPages())
-                <div class="mt-8">
-                    {{ $galleries->appends(request()->query())->links() }}
-                </div>
-            @endif
-        @else
-            <div class="text-center py-12">
-                <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center">
-                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Belum Ada Galeri</h3>
-                <p class="text-gray-600 mb-4">Mulai dengan mengupload gambar pertama Anda</p>
-                <a href="{{ route('admin.gallery.create') }}" 
-                   class="inline-flex items-center px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-200">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    Upload Gambar
-                </a>
-            </div>
+        <!-- Desktop View -->
+        <div class="hidden sm:block overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <input type="checkbox" id="select-all" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
+                        </th>
+                        <th class="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cover</th>
+                        <th class="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul Album</th>
+                        <th class="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                        <th class="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Foto</th>
+                        <th class="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                        <th class="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Views</th>
+                        <th class="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Featured</th>
+                        <th class="px-3 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($galleries as $gallery)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-3 lg:px-6 py-4 whitespace-nowrap">
+                            <input type="checkbox" class="gallery-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500" value="{{ $gallery->id }}">
+                        </td>
+                        <td class="px-3 lg:px-6 py-4 whitespace-nowrap">
+                            <div class="h-10 w-10 sm:h-12 sm:w-12 rounded-lg overflow-hidden">
+                                <img src="{{ $gallery->cover_image_url }}" alt="{{ $gallery->title }}" class="h-full w-full object-cover">
+                            </div>
+                        </td>
+                        <td class="px-3 lg:px-6 py-4">
+                            <div class="text-sm font-medium text-gray-900 truncate max-w-xs">{{ $gallery->title }}</div>
+                            <div class="text-xs sm:text-sm text-gray-500 truncate max-w-xs">{{ Str::limit($gallery->description, 40) }}</div>
+                        </td>
+                        <td class="px-3 lg:px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium" style="background-color: #13315c; color: white;">
+                                {{ $gallery->category_name }}
+                            </span>
+                        </td>
+                        <td class="px-3 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <div class="flex items-center">
+                                <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ $gallery->total_photos }}
+                            </div>
+                        </td>
+                        <td class="px-3 lg:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">
+                            {{ $gallery->formatted_date ?? $gallery->created_at->format('d M Y') }}
+                        </td>
+                        <td class="px-3 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <div class="flex items-center">
+                                <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ $gallery->view_count }}
+                            </div>
+                        </td>
+                        <td class="px-3 lg:px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $gallery->is_published ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                {{ $gallery->is_published ? 'Published' : 'Draft' }}
+                            </span>
+                        </td>
+                        <td class="px-3 lg:px-6 py-4 whitespace-nowrap">
+                            @if($gallery->is_featured)
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                            @else
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                            @endif
+                        </td>
+                        <td class="px-3 lg:px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex items-center space-x-1 sm:space-x-2">
+                                <a href="{{ route('admin.gallery.show', $gallery) }}" 
+                                   class="text-green-600 hover:text-green-900 p-1" title="Lihat Detail">
+                                    <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                </a>
+                                <a href="{{ route('admin.gallery.edit', $gallery) }}" 
+                                   class="text-blue-600 hover:text-blue-900 p-1" title="Edit">
+                                    <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </a>
+                                <button onclick="deleteGallery({{ $gallery->id }})" 
+                                        class="text-red-600 hover:text-red-900 p-1" title="Hapus">
+                                    <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-2-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="10" class="px-6 py-12 text-center text-gray-500">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">Tidak ada album galeri</h3>
+                            <p class="mt-1 text-sm text-gray-500">Mulai dengan membuat album galeri baru.</p>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        @if($galleries->hasPages())
+        <div class="bg-white px-3 sm:px-4 py-3 border-t border-gray-200">
+            {{ $galleries->links() }}
+        </div>
         @endif
     </div>
-</div>
 
-<!-- Bulk Upload Modal -->
-<div id="bulkUploadModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-    <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Bulk Upload Images</h3>
-            
-            <form method="POST" action="{{ route('admin.gallery.bulk-upload') }}" enctype="multipart/form-data">
-                @csrf
-                <div class="space-y-4">
-                    <div>
-                        <label for="images" class="block text-sm font-medium text-gray-700 mb-2">Pilih Gambar</label>
-                        <input type="file" 
-                               id="images" 
-                               name="images[]" 
-                               multiple 
-                               accept="image/*"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                               required>
-                        <p class="mt-1 text-sm text-gray-500">Pilih multiple gambar (max 20 files)</p>
-                    </div>
-                    
-                    <div>
-                        <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
-                        <select id="category" name="category" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500" required>
-                            <option value="general">General</option>
-                            <option value="kegiatan">Kegiatan</option>
-                            <option value="prestasi">Prestasi</option>
-                            <option value="fasilitas">Fasilitas</option>
-                            <option value="event">Event</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label for="title_prefix" class="block text-sm font-medium text-gray-700 mb-2">Prefix Judul (Opsional)</label>
-                        <input type="text" 
-                               id="title_prefix" 
-                               name="title_prefix" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                               placeholder="Contoh: Kegiatan Sekolah">
-                    </div>
-                </div>
-                
-                <div class="mt-6 flex justify-end space-x-3">
-                    <button type="button" onclick="closeBulkUpload()" 
-                            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
-                        Batal
-                    </button>
-                    <button type="submit" 
-                            class="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600">
-                        Upload
-                    </button>
-                </div>
-            </form>
+    <!-- Bulk Actions -->
+    <div id="bulk-actions" class="hidden bg-white rounded-lg shadow p-3 sm:p-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <span class="text-xs sm:text-sm text-gray-700">
+                <span id="selected-count">0</span> album dipilih
+            </span>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="bulkPublish()" class="px-2 sm:px-3 py-1 bg-green-600 text-white text-xs sm:text-sm rounded hover:bg-green-700">
+                    Publish
+                </button>
+                <button onclick="bulkUnpublish()" class="px-2 sm:px-3 py-1 bg-yellow-600 text-white text-xs sm:text-sm rounded hover:bg-yellow-700">
+                    Unpublish
+                </button>
+                <button onclick="bulkFeature()" class="px-2 sm:px-3 py-1 bg-blue-600 text-white text-xs sm:text-sm rounded hover:bg-blue-700">
+                    Feature
+                </button>
+                <button onclick="bulkUnfeature()" class="px-2 sm:px-3 py-1 bg-gray-600 text-white text-xs sm:text-sm rounded hover:bg-gray-700">
+                    Unfeature
+                </button>
+                <button onclick="bulkDelete()" class="px-2 sm:px-3 py-1 bg-red-600 text-white text-xs sm:text-sm rounded hover:bg-red-700">
+                    Hapus
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- Delete Form -->
+<form id="delete-form" method="POST" style="display: none;">
+    @csrf
+    @method('DELETE')
+</form>
+
+<!-- Bulk Action Form -->
+<form id="bulk-form" method="POST" style="display: none;">
+    @csrf
+</form>
+
 <script>
-// Gallery checkbox functionality
-document.addEventListener('DOMContentLoaded', function() {
+// Filter and search functionality
+document.getElementById('category-filter').addEventListener('change', filterGalleries);
+document.getElementById('status-filter').addEventListener('change', filterGalleries);
+document.getElementById('featured-filter').addEventListener('change', filterGalleries);
+document.getElementById('search-input').addEventListener('input', debounce(filterGalleries, 500));
+document.getElementById('sort-select').addEventListener('change', filterGalleries);
+
+function filterGalleries() {
+    const params = new URLSearchParams();
+    
+    const category = document.getElementById('category-filter').value;
+    const status = document.getElementById('status-filter').value;
+    const featured = document.getElementById('featured-filter').value;
+    const search = document.getElementById('search-input').value;
+    const sort = document.getElementById('sort-select').value;
+    
+    if (category) params.append('category', category);
+    if (status) params.append('status', status);
+    if (featured) params.append('featured', featured);
+    if (search) params.append('search', search);
+    if (sort) params.append('sort', sort);
+    
+    window.location.href = '{{ route("admin.gallery.index") }}?' + params.toString();
+}
+
+// Select all functionality
+document.getElementById('select-all').addEventListener('change', function() {
     const checkboxes = document.querySelectorAll('.gallery-checkbox');
-    const bulkActions = document.getElementById('bulkActions');
-    const selectedCount = document.getElementById('selectedCount');
-    
     checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateBulkActions);
+        checkbox.checked = this.checked;
     });
-    
-    function updateBulkActions() {
-        const checkedBoxes = document.querySelectorAll('.gallery-checkbox:checked');
-        if (checkedBoxes.length > 0) {
-            bulkActions.style.display = 'block';
-            selectedCount.textContent = `${checkedBoxes.length} item dipilih`;
-        } else {
-            bulkActions.style.display = 'none';
-        }
-    }
-    
-    window.clearSelection = function() {
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        updateBulkActions();
-    };
+    updateBulkActions();
 });
 
-function openBulkUpload() {
-    document.getElementById('bulkUploadModal').classList.remove('hidden');
+// Individual checkbox change
+document.querySelectorAll('.gallery-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', updateBulkActions);
+});
+
+function updateBulkActions() {
+    const checkedBoxes = document.querySelectorAll('.gallery-checkbox:checked');
+    const bulkActions = document.getElementById('bulk-actions');
+    const selectedCount = document.getElementById('selected-count');
+    
+    if (checkedBoxes.length > 0) {
+        bulkActions.classList.remove('hidden');
+        selectedCount.textContent = checkedBoxes.length;
+    } else {
+        bulkActions.classList.add('hidden');
+    }
 }
 
-function closeBulkUpload() {
-    document.getElementById('bulkUploadModal').classList.add('hidden');
+// Bulk actions
+function bulkPublish() {
+    performBulkAction('publish');
 }
 
-function toggleActive(galleryId) {
-    fetch(`/admin/gallery/${galleryId}/toggle-active`, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        }
-    })
-    .catch(error => console.error('Error:', error));
+function bulkUnpublish() {
+    performBulkAction('unpublish');
 }
 
-function deleteGallery(galleryId) {
-    if (confirm('Apakah Anda yakin ingin menghapus gambar ini?')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = `/admin/gallery/${galleryId}`;
-        
-        const csrfToken = document.createElement('input');
-        csrfToken.type = 'hidden';
-        csrfToken.name = '_token';
-        csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        
-        const methodField = document.createElement('input');
-        methodField.type = 'hidden';
-        methodField.name = '_method';
-        methodField.value = 'DELETE';
-        
-        form.appendChild(csrfToken);
-        form.appendChild(methodField);
-        document.body.appendChild(form);
+function bulkFeature() {
+    performBulkAction('feature');
+}
+
+function bulkUnfeature() {
+    performBulkAction('unfeature');
+}
+
+function bulkDelete() {
+    if (confirm('Yakin ingin menghapus album yang dipilih?')) {
+        performBulkAction('delete');
+    }
+}
+
+function performBulkAction(action) {
+    const checkedBoxes = document.querySelectorAll('.gallery-checkbox:checked');
+    const galleryIds = Array.from(checkedBoxes).map(cb => cb.value);
+    
+    if (galleryIds.length === 0) return;
+    
+    const form = document.getElementById('bulk-form');
+    form.action = '{{ route("admin.gallery.bulk-status") }}';
+    
+    // Add gallery IDs
+    galleryIds.forEach(id => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'gallery_ids[]';
+        input.value = id;
+        form.appendChild(input);
+    });
+    
+    // Add action
+    const actionInput = document.createElement('input');
+    actionInput.type = 'hidden';
+    actionInput.name = 'action';
+    actionInput.value = action;
+    form.appendChild(actionInput);
+    
+    form.submit();
+}
+
+// Delete single gallery
+function deleteGallery(id) {
+    if (confirm('Yakin ingin menghapus album ini?')) {
+        const form = document.getElementById('delete-form');
+        form.action = '{{ route("admin.gallery.destroy", ":id") }}'.replace(':id', id);
         form.submit();
     }
 }
+
+// Debounce function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
 </script>
 @endsection
+
 

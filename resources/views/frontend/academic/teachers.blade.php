@@ -60,14 +60,14 @@
                          onclick="openTeacherModal({{ $teacher->id }})">
                         
                         <!-- Profile Photo -->
-                        <div class="h-48 bg-gradient-to-br from-primary-500 to-secondary flex items-center justify-center">
-                            @if($teacher->user && $teacher->user->profile_photo_path)
-                                <img src="{{ $teacher->user->profile_photo_url }}" 
-                                     alt="{{ $teacher->name }}"
-                                     class="w-24 h-24 rounded-full object-cover border-4 border-white">
+                        <div class="h-64 bg-gray-100 flex items-center justify-center p-4">
+                            @if($teacher->photo)
+                                <img src="{{ $teacher->profile_picture_url }}" 
+                                     alt="{{ $teacher->full_name }}"
+                                     class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
                             @else
-                                <div class="w-24 h-24 rounded-full bg-white flex items-center justify-center">
-                                    <svg class="w-12 h-12 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-32 h-32 rounded-full bg-white flex items-center justify-center shadow-lg">
+                                    <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                     </svg>
                                 </div>

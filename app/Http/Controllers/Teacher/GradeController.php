@@ -3,474 +3,334 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
+use App\Models\Grade;
+use App\Models\SchoolClass;
+use App\Models\Subject;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class GradeController extends Controller
 {
-    /**
-     * Display the grades management page.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        $teacher = Auth::user()->profile;
+        $teacher = Auth::user()->teacher;
         
-        // Get teacher's classes
-        $classes = $this->getTeacherClasses($teacher);
-        
-        // Get recent grades
-        $recentGrades = $this->getRecentGrades($teacher);
-        
-        // Get grade statistics
-        $stats = $this->getGradeStats($teacher);
-        
-        // Get upcoming assessments
-        $upcomingAssessments = $this->getUpcomingAssessments($teacher);
-        
-        return view('teacher.penilaian.index', compact(
-            'classes',
-            'recentGrades',
-            'stats',
-            'upcomingAssessments'
-        ));
+        if (!$teacher) {
+            return redirect()->route('teacher.profile.create')
+                ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
+        }
+
+        $query = Grade::where('teacher_id', $teacher->id)
+            ->with(['student', 'class', 'subject', 'assignment']);
+
+        // Filter by class
+        if ($request->filled('class_id')) {
+            $query->where('class_id', $request->class_id);
+        }
+
+        // Filter by subject
+        if ($request->filled('subject_id')) {
+            $query->where('subject_id', $request->subject_id);
+        }
+
+        // Filter by grade type
+        if ($request->filled('grade_type')) {
+            $query->where('grade_type', $request->grade_type);
+        }
+
+        // Search
+        if ($request->filled('search')) {
+            $query->whereHas('student', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $grades = $query->orderBy('graded_at', 'desc')->paginate(20);
+
+        $classes = $teacher->classes;
+        $subjects = $teacher->subjects;
+
+        return view('teacher.grades.index', compact('grades', 'classes', 'subjects'));
     }
-    
-    /**
-     * Show grades for a specific class.
-     */
-    public function showClass($classId)
-    {
-        $teacher = Auth::user()->profile;
-        
-        // Get class details
-        $class = $this->getClassDetails($classId);
-        
-        // Get students in class
-        $students = $this->getClassStudents($classId);
-        
-        // Get grade categories
-        $categories = $this->getGradeCategories();
-        
-        // Get recent assessments
-        $assessments = $this->getClassAssessments($classId);
-        
-        return view('teacher.penilaian.class', compact(
-            'class',
-            'students',
-            'categories',
-            'assessments'
-        ));
-    }
-    
-    /**
-     * Show create grade form.
-     */
+
     public function create()
     {
-        $teacher = Auth::user()->profile;
+        $teacher = Auth::user()->teacher;
         
-        // Get teacher's classes
-        $classes = $this->getTeacherClasses($teacher);
-        
-        // Get grade categories
-        $categories = $this->getGradeCategories();
-        
-        // Get subjects
-        $subjects = $this->getTeacherSubjects($teacher);
-        
-        return view('teacher.penilaian.create', compact(
-            'classes',
-            'categories',
-            'subjects'
-        ));
+        if (!$teacher) {
+            return redirect()->route('teacher.profile.create')
+                ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
+        }
+
+        $classes = $teacher->classes;
+        $subjects = $teacher->subjects;
+
+        return view('teacher.grades.create', compact('classes', 'subjects'));
     }
-    
-    /**
-     * Store new grade.
-     */
+
     public function store(Request $request)
     {
+        $teacher = Auth::user()->teacher;
+        
+        if (!$teacher) {
+            return redirect()->route('teacher.profile.create')
+                ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
+        }
+
         $request->validate([
+            'student_id' => 'required|exists:profiles,id',
             'class_id' => 'required|exists:school_classes,id',
             'subject_id' => 'required|exists:subjects,id',
-            'category' => 'required|string',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'grade_type' => 'required|in:assignment,quiz,exam,project,attendance,other',
+            'score' => 'required|numeric|min:0',
             'max_score' => 'required|numeric|min:1',
-            'date' => 'required|date',
-            'students' => 'required|array',
-            'students.*.student_id' => 'required|exists:profiles,id',
-            'students.*.score' => 'nullable|numeric|min:0',
-            'students.*.note' => 'nullable|string'
+            'description' => 'nullable|string|max:500',
         ]);
-        
-        // In real implementation, save to database
-        return response()->json([
-            'success' => true,
-            'message' => 'Nilai berhasil disimpan',
-            'redirect' => route('teacher.penilaian.index')
+
+        $data = $request->only([
+            'student_id', 'class_id', 'subject_id', 'grade_type',
+            'score', 'max_score', 'description'
         ]);
+
+        $data['teacher_id'] = $teacher->id;
+        $data['graded_at'] = now();
+
+        Grade::create($data);
+
+        return redirect()->route('teacher.grades.index')
+            ->with('success', 'Nilai berhasil disimpan!');
     }
-    
-    /**
-     * Show edit grade form.
-     */
-    public function edit($id)
+
+    public function show(Grade $grade)
     {
-        $teacher = Auth::user()->profile;
+        $teacher = Auth::user()->teacher;
         
-        // Get grade details (placeholder)
-        $grade = (object) [
-            'id' => $id,
-            'class' => 'VII A',
-            'subject' => 'Matematika',
-            'category' => 'Ujian',
-            'title' => 'Ujian Tengah Semester',
-            'description' => 'Ujian matematika untuk materi aljabar',
-            'max_score' => 100,
-            'date' => '2024-10-15',
-            'students' => [
-                (object) ['id' => 1, 'name' => 'Ahmad Rizki', 'score' => 85, 'note' => 'Bagus'],
-                (object) ['id' => 2, 'name' => 'Siti Nurhaliza', 'score' => 92, 'note' => 'Sangat bagus'],
-                (object) ['id' => 3, 'name' => 'Budi Santoso', 'score' => 78, 'note' => 'Perlu perbaikan'],
-            ]
+        if (!$teacher) {
+            return redirect()->route('teacher.profile.create')
+                ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
+        }
+
+        // Check if grade belongs to teacher
+        if ($grade->teacher_id !== $teacher->id) {
+            abort(403, 'Unauthorized access to grade.');
+        }
+
+        $grade->load(['student', 'class', 'subject', 'assignment']);
+
+        return view('teacher.grades.show', compact('grade'));
+    }
+
+    public function edit(Grade $grade)
+    {
+        $teacher = Auth::user()->teacher;
+        
+        if (!$teacher) {
+            return redirect()->route('teacher.profile.create')
+                ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
+        }
+
+        // Check if grade belongs to teacher
+        if ($grade->teacher_id !== $teacher->id) {
+            abort(403, 'Unauthorized access to grade.');
+        }
+
+        $classes = $teacher->classes;
+        $subjects = $teacher->subjects;
+
+        return view('teacher.grades.edit', compact('grade', 'classes', 'subjects'));
+    }
+
+    public function update(Request $request, Grade $grade)
+    {
+        $teacher = Auth::user()->teacher;
+        
+        if (!$teacher) {
+            return redirect()->route('teacher.profile.create')
+                ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
+        }
+
+        // Check if grade belongs to teacher
+        if ($grade->teacher_id !== $teacher->id) {
+            abort(403, 'Unauthorized access to grade.');
+        }
+
+        $request->validate([
+            'student_id' => 'required|exists:profiles,id',
+            'class_id' => 'required|exists:school_classes,id',
+            'subject_id' => 'required|exists:subjects,id',
+            'grade_type' => 'required|in:assignment,quiz,exam,project,attendance,other',
+            'score' => 'required|numeric|min:0',
+            'max_score' => 'required|numeric|min:1',
+            'description' => 'nullable|string|max:500',
+        ]);
+
+        $data = $request->only([
+            'student_id', 'class_id', 'subject_id', 'grade_type',
+            'score', 'max_score', 'description'
+        ]);
+
+        $grade->update($data);
+
+        return redirect()->route('teacher.grades.show', $grade)
+            ->with('success', 'Nilai berhasil diperbarui!');
+    }
+
+    public function destroy(Grade $grade)
+    {
+        $teacher = Auth::user()->teacher;
+        
+        if (!$teacher) {
+            return redirect()->route('teacher.profile.create')
+                ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
+        }
+
+        // Check if grade belongs to teacher
+        if ($grade->teacher_id !== $teacher->id) {
+            abort(403, 'Unauthorized access to grade.');
+        }
+
+        $grade->delete();
+
+        return redirect()->route('teacher.grades.index')
+            ->with('success', 'Nilai berhasil dihapus!');
+    }
+
+    public function showClass(SchoolClass $class)
+    {
+        $teacher = Auth::user()->teacher;
+        
+        if (!$teacher) {
+            return redirect()->route('teacher.profile.create')
+                ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
+        }
+
+        // Check if teacher teaches this class
+        if (!$teacher->classes->contains($class)) {
+            abort(403, 'Unauthorized access to class.');
+        }
+
+        $students = $class->students()->with('user')->get();
+        $subjects = $teacher->subjects;
+        
+        $grades = Grade::where('teacher_id', $teacher->id)
+            ->where('class_id', $class->id)
+            ->with(['student', 'subject'])
+            ->get()
+            ->groupBy('student_id');
+
+        return view('teacher.grades.class', compact('class', 'students', 'subjects', 'grades'));
+    }
+
+    public function analytics()
+    {
+        $teacher = Auth::user()->teacher;
+        
+        if (!$teacher) {
+            return redirect()->route('teacher.profile.create')
+                ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
+        }
+
+        $analytics = [
+            'total_grades' => Grade::where('teacher_id', $teacher->id)->count(),
+            'average_score' => Grade::where('teacher_id', $teacher->id)->avg('score'),
+            'grades_by_type' => Grade::where('teacher_id', $teacher->id)
+                ->selectRaw('grade_type, COUNT(*) as count')
+                ->groupBy('grade_type')
+                ->get(),
+            'grades_by_class' => Grade::where('teacher_id', $teacher->id)
+                ->join('school_classes', 'grades.class_id', '=', 'school_classes.id')
+                ->selectRaw('school_classes.name, COUNT(*) as count')
+                ->groupBy('school_classes.id', 'school_classes.name')
+                ->get(),
+            'grades_by_subject' => Grade::where('teacher_id', $teacher->id)
+                ->join('subjects', 'grades.subject_id', '=', 'subjects.id')
+                ->selectRaw('subjects.name, COUNT(*) as count')
+                ->groupBy('subjects.id', 'subjects.name')
+                ->get(),
         ];
-        
-        // Get classes and subjects
-        $classes = $this->getTeacherClasses($teacher);
-        $subjects = $this->getTeacherSubjects($teacher);
-        $categories = $this->getGradeCategories();
-        
-        return view('teacher.penilaian.edit', compact(
-            'grade',
-            'classes',
-            'subjects',
-            'categories'
-        ));
+
+        return view('teacher.grades.analytics', compact('analytics'));
     }
-    
-    /**
-     * Update grade.
-     */
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'class_id' => 'required|exists:school_classes,id',
-            'subject_id' => 'required|exists:subjects,id',
-            'category' => 'required|string',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'max_score' => 'required|numeric|min:1',
-            'date' => 'required|date',
-            'students' => 'required|array',
-            'students.*.student_id' => 'required|exists:profiles,id',
-            'students.*.score' => 'nullable|numeric|min:0',
-            'students.*.note' => 'nullable|string'
-        ]);
-        
-        // In real implementation, update in database
-        return response()->json([
-            'success' => true,
-            'message' => 'Nilai berhasil diperbarui',
-            'redirect' => route('teacher.penilaian.index')
-        ]);
-    }
-    
-    /**
-     * Delete grade.
-     */
-    public function destroy($id)
-    {
-        // In real implementation, delete from database
-        return response()->json([
-            'success' => true,
-            'message' => 'Nilai berhasil dihapus'
-        ]);
-    }
-    
-    /**
-     * Get grade analytics.
-     */
-    public function analytics($classId = null)
-    {
-        $teacher = Auth::user()->profile;
-        
-        // Get analytics data
-        $analytics = $this->getGradeAnalytics($teacher, $classId);
-        
-        return view('teacher.penilaian.analytics', compact('analytics'));
-    }
-    
-    /**
-     * Export grades.
-     */
+
     public function export(Request $request)
     {
-        $format = $request->get('format', 'excel');
-        $classId = $request->get('class_id');
+        $teacher = Auth::user()->teacher;
         
-        // In real implementation, generate export file
-        return response()->json([
-            'success' => true,
-            'message' => 'Export berhasil dibuat',
-            'download_url' => '/exports/grades-' . time() . '.' . $format
-        ]);
-    }
-    
-    /**
-     * Get teacher's classes.
-     */
-    private function getTeacherClasses($teacher)
-    {
-        return collect([
-            (object) [
-                'id' => 1,
-                'name' => 'VII A',
-                'subject' => 'Matematika',
-                'student_count' => 25,
-                'recent_grade_count' => 3
-            ],
-            (object) [
-                'id' => 2,
-                'name' => 'VII B',
-                'subject' => 'Matematika',
-                'student_count' => 23,
-                'recent_grade_count' => 2
-            ],
-            (object) [
-                'id' => 3,
-                'name' => 'VIII A',
-                'subject' => 'Matematika',
-                'student_count' => 24,
-                'recent_grade_count' => 4
-            ]
-        ]);
-    }
-    
-    /**
-     * Get recent grades.
-     */
-    private function getRecentGrades($teacher)
-    {
-        return collect([
-            (object) [
-                'id' => 1,
-                'class' => 'VII A',
-                'subject' => 'Matematika',
-                'title' => 'Ujian Tengah Semester',
-                'category' => 'Ujian',
-                'date' => '2024-10-15',
-                'student_count' => 25,
-                'average_score' => 82.5,
-                'max_score' => 100
-            ],
-            (object) [
-                'id' => 2,
-                'class' => 'VII B',
-                'subject' => 'Matematika',
-                'title' => 'Tugas Aljabar',
-                'category' => 'Tugas',
-                'date' => '2024-10-12',
-                'student_count' => 23,
-                'average_score' => 78.3,
-                'max_score' => 100
-            ],
-            (object) [
-                'id' => 3,
-                'class' => 'VIII A',
-                'subject' => 'Matematika',
-                'title' => 'Quiz Geometri',
-                'category' => 'Quiz',
-                'date' => '2024-10-10',
-                'student_count' => 24,
-                'average_score' => 85.7,
-                'max_score' => 50
-            ]
-        ]);
-    }
-    
-    /**
-     * Get grade statistics.
-     */
-    private function getGradeStats($teacher)
-    {
-        return [
-            'total_assessments' => 15,
-            'total_students' => 72,
-            'average_grade' => 81.2,
-            'grade_distribution' => [
-                'A' => 25,
-                'B' => 30,
-                'C' => 15,
-                'D' => 2
-            ],
-            'recent_activity' => [
-                'grades_this_week' => 8,
-                'pending_grades' => 3,
-                'overdue_grades' => 1
-            ]
+        if (!$teacher) {
+            return redirect()->route('teacher.profile.create')
+                ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
+        }
+
+        $query = Grade::where('teacher_id', $teacher->id)
+            ->with(['student', 'class', 'subject']);
+
+        // Apply filters
+        if ($request->filled('class_id')) {
+            $query->where('class_id', $request->class_id);
+        }
+
+        if ($request->filled('subject_id')) {
+            $query->where('subject_id', $request->subject_id);
+        }
+
+        if ($request->filled('grade_type')) {
+            $query->where('grade_type', $request->grade_type);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('graded_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('graded_at', '<=', $request->date_to);
+        }
+
+        $grades = $query->orderBy('graded_at', 'desc')->get();
+
+        // Generate CSV
+        $filename = 'grades_' . date('Y-m-d_H-i-s') . '.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
-    }
-    
-    /**
-     * Get upcoming assessments.
-     */
-    private function getUpcomingAssessments($teacher)
-    {
-        return collect([
-            (object) [
-                'id' => 1,
-                'class' => 'VII A',
-                'subject' => 'Matematika',
-                'title' => 'Ujian Akhir Semester',
-                'date' => '2024-12-15',
-                'days_left' => 45
-            ],
-            (object) [
-                'id' => 2,
-                'class' => 'VII B',
-                'subject' => 'Matematika',
-                'title' => 'Tugas Trigonometri',
-                'date' => '2024-10-25',
-                'days_left' => 10
-            ]
-        ]);
-    }
-    
-    /**
-     * Get class details.
-     */
-    private function getClassDetails($classId)
-    {
-        return (object) [
-            'id' => $classId,
-            'name' => 'VII A',
-            'subject' => 'Matematika',
-            'student_count' => 25,
-            'teacher' => 'Bu Sari'
-        ];
-    }
-    
-    /**
-     * Get students in class.
-     */
-    private function getClassStudents($classId)
-    {
-        return collect([
-            (object) [
-                'id' => 1,
-                'name' => 'Ahmad Rizki',
-                'nis' => '2024001',
-                'recent_grade' => 85,
-                'average' => 82.5,
-                'status' => 'active'
-            ],
-            (object) [
-                'id' => 2,
-                'name' => 'Siti Nurhaliza',
-                'nis' => '2024002',
-                'recent_grade' => 92,
-                'average' => 88.7,
-                'status' => 'active'
-            ],
-            (object) [
-                'id' => 3,
-                'name' => 'Budi Santoso',
-                'nis' => '2024003',
-                'recent_grade' => 78,
-                'average' => 75.2,
-                'status' => 'active'
-            ]
-        ]);
-    }
-    
-    /**
-     * Get grade categories.
-     */
-    private function getGradeCategories()
-    {
-        return [
-            'Ujian' => 'Ujian',
-            'Tugas' => 'Tugas',
-            'Quiz' => 'Quiz',
-            'Praktikum' => 'Praktikum',
-            'Proyek' => 'Proyek',
-            'Presentasi' => 'Presentasi'
-        ];
-    }
-    
-    /**
-     * Get teacher subjects.
-     */
-    private function getTeacherSubjects($teacher)
-    {
-        return collect([
-            (object) ['id' => 1, 'name' => 'Matematika'],
-            (object) ['id' => 2, 'name' => 'Fisika'],
-            (object) ['id' => 3, 'name' => 'Kimia']
-        ]);
-    }
-    
-    /**
-     * Get class assessments.
-     */
-    private function getClassAssessments($classId)
-    {
-        return collect([
-            (object) [
-                'id' => 1,
-                'title' => 'Ujian Tengah Semester',
-                'category' => 'Ujian',
-                'date' => '2024-10-15',
-                'max_score' => 100,
-                'average' => 82.5
-            ],
-            (object) [
-                'id' => 2,
-                'title' => 'Tugas Aljabar',
-                'category' => 'Tugas',
-                'date' => '2024-10-12',
-                'max_score' => 100,
-                'average' => 78.3
-            ]
-        ]);
-    }
-    
-    /**
-     * Get grade analytics.
-     */
-    private function getGradeAnalytics($teacher, $classId = null)
-    {
-        return [
-            'overview' => [
-                'total_students' => 72,
-                'average_grade' => 81.2,
-                'grade_distribution' => [
-                    'A' => 25,
-                    'B' => 30,
-                    'C' => 15,
-                    'D' => 2
-                ]
-            ],
-            'trends' => [
-                'monthly_average' => [78, 80, 82, 81, 83, 85],
-                'subject_performance' => [
-                    'Matematika' => 82.5,
-                    'Fisika' => 79.3,
-                    'Kimia' => 85.1
-                ]
-            ],
-            'top_performers' => [
-                (object) ['name' => 'Siti Nurhaliza', 'average' => 95.2],
-                (object) ['name' => 'Ahmad Rizki', 'average' => 92.8],
-                (object) ['name' => 'Maria Santos', 'average' => 90.5]
-            ],
-            'needs_improvement' => [
-                (object) ['name' => 'Budi Santoso', 'average' => 65.2],
-                (object) ['name' => 'John Doe', 'average' => 68.7],
-                (object) ['name' => 'Jane Smith', 'average' => 70.1]
-            ]
-        ];
+
+        $callback = function() use ($grades) {
+            $file = fopen('php://output', 'w');
+            
+            // CSV headers
+            fputcsv($file, [
+                'Nama Siswa',
+                'Kelas',
+                'Mata Pelajaran',
+                'Jenis Nilai',
+                'Nilai',
+                'Nilai Maksimal',
+                'Persentase',
+                'Huruf',
+                'Deskripsi',
+                'Tanggal Dinilai'
+            ]);
+
+            foreach ($grades as $grade) {
+                fputcsv($file, [
+                    $grade->student->name,
+                    $grade->class->name,
+                    $grade->subject->name,
+                    $grade->grade_type_name,
+                    $grade->score,
+                    $grade->max_score,
+                    $grade->percentage . '%',
+                    $grade->grade,
+                    $grade->description,
+                    $grade->graded_at->format('d/m/Y H:i')
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }
-

@@ -85,7 +85,13 @@
             <div class="relative">
                 <button type="button" class="-m-1.5 flex items-center p-1.5" onclick="toggleProfileDropdown()">
                     <span class="sr-only">Open user menu</span>
-                    <img class="h-8 w-8 rounded-full bg-gray-50" src="{{ Auth::user()->profile->profile_picture_url }}" alt="{{ Auth::user()->name }}">
+                    @if(Auth::user()->profile)
+                        <img class="h-8 w-8 rounded-full bg-gray-50" src="{{ Auth::user()->profile->profile_picture_url }}" alt="{{ Auth::user()->name }}">
+                    @else
+                        <div class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">
+                            <i class="fas fa-user text-gray-600 text-sm"></i>
+                        </div>
+                    @endif
                     <span class="hidden lg:flex lg:items-center">
                         <span class="ml-4 text-sm font-semibold leading-6 text-gray-900" aria-hidden="true">{{ Auth::user()->name }}</span>
                         <svg class="ml-2 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

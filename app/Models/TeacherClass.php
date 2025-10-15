@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TeacherClass extends Model
 {
@@ -13,47 +14,25 @@ class TeacherClass extends Model
         'teacher_id',
         'class_id',
         'subject_id',
-        'academic_year_id',
-        'is_homeroom',
+        'is_active',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'is_homeroom' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
 
-    /**
-     * Get the teacher that owns the class.
-     */
-    public function teacher()
+    public function teacher(): BelongsTo
     {
         return $this->belongsTo(Teacher::class);
     }
 
-    /**
-     * Get the class that belongs to the teacher.
-     */
-    public function class()
+    public function class(): BelongsTo
     {
         return $this->belongsTo(SchoolClass::class, 'class_id');
     }
 
-    /**
-     * Get the subject that belongs to the teacher.
-     */
-    public function subject()
+    public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);
     }
-
-    /**
-     * Get the academic year that belongs to the teacher.
-     */
-    public function academicYear()
-    {
-        return $this->belongsTo(AcademicYear::class);
-    }
 }
-

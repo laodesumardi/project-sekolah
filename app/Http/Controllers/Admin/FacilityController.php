@@ -4,234 +4,364 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Facility;
-use App\Models\FacilityCategory;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class FacilityController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of facilities.
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $query = Facility::with('category');
+        $query = Facility::with(['creator', 'updater']);
 
         // Search functionality
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('description', 'like', '%' . $request->search . '%');
+            $query->search($request->search);
         }
 
-        // Category filter
+        // Filter by category
         if ($request->filled('category')) {
-            $query->where('category_id', $request->category);
+            $query->byCategory($request->category);
         }
 
-        // Status filter
+        // Filter by status
         if ($request->filled('status')) {
-            $query->where('is_available', $request->status);
+            $query->where('is_available', $request->status === 'available');
         }
 
-        // Sort functionality
-        switch ($request->get('sort')) {
-            case 'name_desc':
-                $query->orderBy('name', 'desc');
-                break;
-            case 'created_desc':
-                $query->orderBy('created_at', 'desc');
-                break;
-            case 'created_asc':
-                $query->orderBy('created_at', 'asc');
-                break;
-            default:
-                $query->orderBy('name', 'asc');
-                break;
-        }
+        $facilities = $query->orderBy('sort_order', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
-        $facilities = $query->paginate(10)->withQueryString();
-        return view('admin.facilities.index', compact('facilities'));
+        // Statistics
+        $stats = [
+            'total' => Facility::count(),
+            'available' => Facility::where('is_available', true)->count(),
+            'unavailable' => Facility::where('is_available', false)->count(),
+            'total_views' => Facility::sum('view_count')
+        ];
+
+        return view('admin.facilities.index', compact('facilities', 'stats'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new facility.
      */
-    public function create()
+    public function create(): View
     {
-        $categories = FacilityCategory::active()->orderBy('name')->get();
-        return view('admin.facilities.create', compact('categories'));
+        return view('admin.facilities.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created facility.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name' => 'required|string|max:255|unique:facilities,name',
+            'slug' => 'required|string|max:255|unique:facilities,slug',
+            'category' => 'required|in:ruang_kelas,laboratorium,olahraga,perpustakaan,mushola,kantin,lainnya',
+            'image' => 'required|image|mimes:jpeg,jpg,png|max:2048',
+            'description' => 'required|string|max:5000',
             'capacity' => 'nullable|integer|min:1',
-            'category_id' => 'nullable|exists:facility_categories,id',
-            'is_available' => 'boolean',
+            'location' => 'nullable|string|max:255',
+            'floor' => 'nullable|string|max:50',
+            'facilities_spec' => 'nullable|string',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_available' => 'boolean'
+        ], [
+            'name.required' => 'Nama fasilitas wajib diisi.',
+            'name.unique' => 'Nama fasilitas sudah digunakan.',
+            'slug.required' => 'Slug wajib diisi.',
+            'slug.unique' => 'Slug sudah digunakan.',
+            'category.required' => 'Kategori wajib dipilih.',
+            'image.required' => 'Gambar fasilitas wajib diupload.',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus JPG, JPEG, atau PNG.',
+            'image.max' => 'Ukuran gambar maksimal 2MB.',
+            'description.required' => 'Deskripsi wajib diisi.',
+            'description.max' => 'Deskripsi maksimal 5000 karakter.'
         ]);
 
-        $data = $request->all();
-        
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/facilities', $imageName);
-            $data['image'] = $imageName;
+        DB::beginTransaction();
+        try {
+            $imagePath = null;
+            $thumbnailPath = null;
+
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                
+                // Generate unique filename
+                $filename = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
+                
+                // Store original image
+                $imagePath = $image->storeAs('facilities', $filename, 'public');
+                
+                // Generate thumbnail
+                $thumbnailPath = 'facilities/thumbnails/' . $filename;
+                
+                // Create thumbnail directory if not exists
+                if (!Storage::disk('public')->exists('facilities/thumbnails')) {
+                    Storage::disk('public')->makeDirectory('facilities/thumbnails');
+                }
+                
+                // Generate thumbnail using Intervention Image
+                $manager = new ImageManager(new Driver());
+                $manager->read($image)
+                    ->cover(400, 300)
+                    ->save(storage_path('app/public/' . $thumbnailPath));
+                
+                // Optimize original image
+                $manager->read(storage_path('app/public/' . $imagePath))
+                    ->scaleDown(1200)
+                    ->save(storage_path('app/public/' . $imagePath), 85);
+            }
+
+            // Create facility
+            Facility::create([
+                'name' => $request->name,
+                'slug' => $request->slug,
+                'category' => $request->category,
+                'description' => $request->description,
+                'capacity' => $request->capacity,
+                'location' => $request->location,
+                'floor' => $request->floor,
+                'image' => $imagePath,
+                'thumbnail' => $thumbnailPath,
+                'facilities_spec' => $request->facilities_spec,
+                'sort_order' => $request->sort_order ?? 0,
+                'is_available' => $request->has('is_available'),
+                'created_by' => auth()->id()
+            ]);
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.facilities.index')
+                ->with('success', 'Fasilitas berhasil ditambahkan!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Delete uploaded images if exists
+            if ($imagePath) {
+                Storage::disk('public')->delete($imagePath);
+                Storage::disk('public')->delete($thumbnailPath);
+            }
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Gagal menambahkan fasilitas: ' . $e->getMessage());
         }
-
-        $data['is_available'] = $request->has('is_available');
-
-        Facility::create($data);
-
-        return redirect()->route('admin.facilities.index')
-            ->with('success', 'Fasilitas berhasil ditambahkan.');
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified facility.
      */
-    public function show(Facility $facility)
+    public function show(Facility $facility): View
     {
         return view('admin.facilities.show', compact('facility'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified facility.
      */
-    public function edit(Facility $facility)
+    public function edit(Facility $facility): View
     {
-        $categories = FacilityCategory::active()->orderBy('name')->get();
-        return view('admin.facilities.edit', compact('facility', 'categories'));
+        return view('admin.facilities.edit', compact('facility'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified facility.
      */
-    public function update(Request $request, Facility $facility)
+    public function update(Request $request, Facility $facility): RedirectResponse
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name' => 'required|string|max:255|unique:facilities,name,' . $facility->id,
+            'slug' => 'required|string|max:255|unique:facilities,slug,' . $facility->id,
+            'category' => 'required|in:ruang_kelas,laboratorium,olahraga,perpustakaan,mushola,kantin,lainnya',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+            'description' => 'required|string|max:5000',
             'capacity' => 'nullable|integer|min:1',
-            'category_id' => 'nullable|exists:facility_categories,id',
-            'is_available' => 'boolean',
+            'location' => 'nullable|string|max:255',
+            'floor' => 'nullable|string|max:50',
+            'facilities_spec' => 'nullable|string',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_available' => 'boolean'
         ]);
 
-        $data = $request->all();
-        
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            // Delete old image
-            if ($facility->image) {
-                Storage::delete('public/facilities/' . $facility->image);
+        DB::beginTransaction();
+        try {
+            $imagePath = $facility->image;
+            $thumbnailPath = $facility->thumbnail;
+
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                
+                // Delete old images
+                if ($facility->image) {
+                    Storage::disk('public')->delete($facility->image);
+                }
+                if ($facility->thumbnail) {
+                    Storage::disk('public')->delete($facility->thumbnail);
+                }
+                
+                // Generate unique filename
+                $filename = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
+                
+                // Store original image
+                $imagePath = $image->storeAs('facilities', $filename, 'public');
+                
+                // Generate thumbnail
+                $thumbnailPath = 'facilities/thumbnails/' . $filename;
+                
+                // Generate thumbnail using Intervention Image
+                $manager = new ImageManager(new Driver());
+                $manager->read($image)
+                    ->cover(400, 300)
+                    ->save(storage_path('app/public/' . $thumbnailPath));
+                
+                // Optimize original image
+                $manager->read(storage_path('app/public/' . $imagePath))
+                    ->scaleDown(1200)
+                    ->save(storage_path('app/public/' . $imagePath), 85);
             }
-            
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/facilities', $imageName);
-            $data['image'] = $imageName;
+
+            // Update facility
+            $facility->update([
+                'name' => $request->name,
+                'slug' => $request->slug,
+                'category' => $request->category,
+                'description' => $request->description,
+                'capacity' => $request->capacity,
+                'location' => $request->location,
+                'floor' => $request->floor,
+                'image' => $imagePath,
+                'thumbnail' => $thumbnailPath,
+                'facilities_spec' => $request->facilities_spec,
+                'sort_order' => $request->sort_order ?? 0,
+                'is_available' => $request->has('is_available'),
+                'updated_by' => auth()->id()
+            ]);
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.facilities.index')
+                ->with('success', 'Fasilitas berhasil diperbarui!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui fasilitas: ' . $e->getMessage());
         }
-
-        $data['is_available'] = $request->has('is_available');
-
-        $facility->update($data);
-
-        return redirect()->route('admin.facilities.index')
-            ->with('success', 'Fasilitas berhasil diperbarui.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified facility.
      */
-    public function destroy(Facility $facility)
+    public function destroy(Facility $facility): RedirectResponse
     {
-        // Delete image file
-        if ($facility->image) {
-            Storage::delete('public/facilities/' . $facility->image);
+        try {
+            // Delete images
+            if ($facility->image) {
+                Storage::disk('public')->delete($facility->image);
+            }
+            if ($facility->thumbnail) {
+                Storage::disk('public')->delete($facility->thumbnail);
+            }
+
+            $facility->delete();
+
+            return redirect()
+                ->route('admin.facilities.index')
+                ->with('success', 'Fasilitas berhasil dihapus!');
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Gagal menghapus fasilitas: ' . $e->getMessage());
         }
-
-        $facility->delete();
-
-        return redirect()->route('admin.facilities.index')
-            ->with('success', 'Fasilitas berhasil dihapus.');
     }
 
     /**
-     * Toggle facility status
+     * Bulk delete facilities.
      */
-    public function toggleStatus(Request $request, Facility $facility)
-    {
-        $facility->update([
-            'is_available' => $request->is_available
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Status fasilitas berhasil diubah'
-        ]);
-    }
-
-    /**
-     * Bulk actions for facilities
-     */
-    public function bulkAction(Request $request)
+    public function bulkDelete(Request $request): RedirectResponse
     {
         $request->validate([
-            'action' => 'required|in:toggle,delete',
-            'ids' => 'required|array',
-            'ids.*' => 'exists:facilities,id'
+            'facility_ids' => 'required|array',
+            'facility_ids.*' => 'exists:facilities,id'
         ]);
 
-        $facilities = Facility::whereIn('id', $request->ids);
-
-        switch ($request->action) {
-            case 'toggle':
-                $facilities->update([
-                    'is_available' => \DB::raw('NOT is_available')
-                ]);
-                $message = 'Status fasilitas berhasil diubah';
-                break;
+        try {
+            $facilities = Facility::whereIn('id', $request->facility_ids)->get();
             
-            case 'delete':
-                // Delete images first
-                $facilitiesToDelete = $facilities->get();
-                foreach ($facilitiesToDelete as $facility) {
-                    if ($facility->image) {
-                        Storage::delete('public/facilities/' . $facility->image);
-                    }
+            foreach ($facilities as $facility) {
+                // Delete images
+                if ($facility->image) {
+                    Storage::disk('public')->delete($facility->image);
                 }
-                $facilities->delete();
-                $message = 'Fasilitas berhasil dihapus';
-                break;
-        }
+                if ($facility->thumbnail) {
+                    Storage::disk('public')->delete($facility->thumbnail);
+                }
+                
+                $facility->delete();
+            }
 
-        return response()->json([
-            'success' => true,
-            'message' => $message
-        ]);
+            return redirect()
+                ->route('admin.facilities.index')
+                ->with('success', count($facilities) . ' fasilitas berhasil dihapus!');
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Gagal menghapus fasilitas: ' . $e->getMessage());
+        }
     }
 
     /**
-     * Export facilities to Excel/PDF
+     * Bulk change status.
      */
-    public function export(Request $request)
+    public function bulkStatus(Request $request): RedirectResponse
     {
-        $facilities = Facility::with('category')->get();
-        
-        // For now, return JSON. You can implement Excel/PDF export later
-        return response()->json([
-            'success' => true,
-            'data' => $facilities,
-            'message' => 'Export functionality will be implemented'
+        $request->validate([
+            'facility_ids' => 'required|array',
+            'facility_ids.*' => 'exists:facilities,id',
+            'status' => 'required|boolean'
         ]);
+
+        try {
+            Facility::whereIn('id', $request->facility_ids)
+                ->update([
+                    'is_available' => $request->status,
+                    'updated_by' => auth()->id()
+                ]);
+
+            $statusText = $request->status ? 'Tersedia' : 'Tidak Tersedia';
+            
+            return redirect()
+                ->route('admin.facilities.index')
+                ->with('success', 'Status ' . count($request->facility_ids) . ' fasilitas berhasil diubah menjadi ' . $statusText . '!');
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Gagal mengubah status fasilitas: ' . $e->getMessage());
+        }
     }
 }

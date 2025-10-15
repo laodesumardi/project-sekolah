@@ -3,90 +3,149 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gallery;
+use App\Models\GalleryImage;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class GalleryController extends Controller
 {
     /**
      * Display a listing of galleries.
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $query = Gallery::active();
+        $query = Gallery::published()->with(['images' => function ($q) {
+            $q->orderBy('sort_order')->orderBy('created_at');
+        }]);
 
         // Filter by category
-        if ($request->has('category') && $request->category && $request->category !== 'all') {
+        if ($request->filled('category') && $request->category !== 'all') {
             $query->byCategory($request->category);
         }
 
-        // Sort options
-        $sort = $request->get('sort', 'newest');
+        // Search
+        if ($request->filled('search')) {
+            $query->search($request->search);
+        }
+
+        // Sort
+        $sort = $request->get('sort', 'recent');
         switch ($sort) {
             case 'oldest':
-                $query->orderBy('created_at', 'asc');
+                $query->orderBy('date', 'asc')->orderBy('created_at', 'asc');
                 break;
-            case 'name':
+            case 'views':
+                $query->orderBy('view_count', 'desc');
+                break;
+            case 'title_asc':
                 $query->orderBy('title', 'asc');
                 break;
-            case 'newest':
-            default:
-                $query->orderBy('created_at', 'desc');
+            case 'title_desc':
+                $query->orderBy('title', 'desc');
+                break;
+            default: // recent
+                $query->recent();
                 break;
         }
 
-        $galleries = $query->paginate(20);
+        $galleries = $query->paginate(12);
+
+        // Get featured galleries for carousel
+        $featuredGalleries = Gallery::published()
+            ->featured()
+            ->with(['images' => function ($q) {
+                $q->orderBy('sort_order')->orderBy('created_at');
+            }])
+            ->recent()
+            ->limit(3)
+            ->get();
 
         // Get categories for filter
-        $categories = Gallery::active()
-            ->selectRaw('category, COUNT(*) as count')
-            ->groupBy('category')
-            ->get();
+        $categories = [
+            'all' => 'Semua',
+            'kegiatan' => 'Kegiatan',
+            'prestasi' => 'Prestasi',
+            'fasilitas' => 'Fasilitas',
+            'event' => 'Event',
+            'olahraga' => 'Olahraga',
+            'seni' => 'Seni',
+            'akademik' => 'Akademik',
+            'lainnya' => 'Lainnya'
+        ];
 
-        return view('frontend.gallery.index', compact('galleries', 'categories'));
+        return view('gallery.index', compact('galleries', 'featuredGalleries', 'categories'));
     }
 
     /**
-     * Get gallery data for lightbox (AJAX).
+     * Display the specified gallery.
      */
-    public function getGalleryData(Request $request)
+    public function show(string $slug): View
     {
-        $galleries = Gallery::active()
-            ->orderBy('sort_order')
-            ->orderBy('created_at', 'desc')
+        $gallery = Gallery::published()
+            ->where('slug', $slug)
+            ->with(['images' => function ($q) {
+                $q->orderBy('sort_order')->orderBy('created_at');
+            }])
+            ->firstOrFail();
+
+        // Increment view count
+        $gallery->incrementViewCount();
+
+        // Get related galleries
+        $relatedGalleries = Gallery::published()
+            ->where('category', $gallery->category)
+            ->where('id', '!=', $gallery->id)
+            ->with(['images' => function ($q) {
+                $q->orderBy('sort_order')->orderBy('created_at');
+            }])
+            ->recent()
+            ->limit(3)
             ->get();
 
-        $data = $galleries->map(function ($gallery) {
-            return [
-                'id' => $gallery->id,
-                'title' => $gallery->title,
-                'description' => $gallery->description,
-                'image_url' => $gallery->image_url,
-                'thumbnail_url' => $gallery->thumbnail_url,
-                'alt_text' => $gallery->alt_text,
-                'category' => $gallery->category,
-                'file_size' => $gallery->formatted_file_size,
-                'dimensions' => $gallery->dimensions,
-            ];
-        });
-
-        return response()->json($data);
+        return view('gallery.show', compact('gallery', 'relatedGalleries'));
     }
 
     /**
-     * Download gallery image.
+     * Filter galleries via AJAX.
      */
-    public function download(Gallery $gallery)
+    public function filter(Request $request)
     {
-        if (!$gallery->is_active) {
-            abort(404);
+        $query = Gallery::published()->with(['images' => function ($q) {
+            $q->orderBy('sort_order')->orderBy('created_at');
+        }]);
+
+        // Filter by category
+        if ($request->filled('category') && $request->category !== 'all') {
+            $query->byCategory($request->category);
         }
 
-        $filePath = storage_path('app/public/gallery/' . $gallery->image);
-        
-        if (!file_exists($filePath)) {
-            abort(404);
+        // Search
+        if ($request->filled('search')) {
+            $query->search($request->search);
         }
 
-        return response()->download($filePath, $gallery->title . '.jpg');
+        // Sort
+        $sort = $request->get('sort', 'recent');
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('date', 'asc')->orderBy('created_at', 'asc');
+                break;
+            case 'views':
+                $query->orderBy('view_count', 'desc');
+                break;
+            case 'title_asc':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'title_desc':
+                $query->orderBy('title', 'desc');
+                break;
+            default: // recent
+                $query->recent();
+                break;
+        }
+
+        $galleries = $query->paginate(12);
+
+        return view('gallery.partials.gallery-grid', compact('galleries'));
     }
 }

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class TeacherDocument extends Model
 {
@@ -11,112 +13,45 @@ class TeacherDocument extends Model
 
     protected $fillable = [
         'teacher_id',
-        'document_type',
-        'document_name',
+        'title',
+        'description',
         'file_path',
+        'file_type',
         'file_size',
-        'issue_date',
-        'expiry_date',
-        'is_verified',
-        'verified_by',
-        'verified_at',
+        'is_public',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'issue_date' => 'date',
-            'expiry_date' => 'date',
-            'is_verified' => 'boolean',
-            'verified_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'is_public' => 'boolean',
+    ];
 
-    /**
-     * Get the teacher that owns the document.
-     */
-    public function teacher()
+    public function teacher(): BelongsTo
     {
         return $this->belongsTo(Teacher::class);
     }
 
-    /**
-     * Get the user who verified the document.
-     */
-    public function verifier()
+    public function getFileUrlAttribute(): string
     {
-        return $this->belongsTo(User::class, 'verified_by');
+        if ($this->file_path && Storage::disk('public')->exists($this->file_path)) {
+            return Storage::disk('public')->url($this->file_path);
+        }
+        
+        return '';
     }
 
-    /**
-     * Get the file URL.
-     */
-    public function getFileUrlAttribute()
+    public function getFileSizeFormattedAttribute(): string
     {
-        return asset('storage/teacher-documents/' . $this->file_path);
-    }
+        if (!$this->file_size) {
+            return '0 B';
+        }
 
-    /**
-     * Get the file size in human readable format.
-     */
-    public function getFileSizeHumanAttribute()
-    {
         $bytes = $this->file_size;
         $units = ['B', 'KB', 'MB', 'GB'];
         
-        for ($i = 0; $bytes > 1024; $i++) {
+        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
             $bytes /= 1024;
         }
         
         return round($bytes, 2) . ' ' . $units[$i];
     }
-
-    /**
-     * Check if document is expired.
-     */
-    public function isExpired()
-    {
-        return $this->expiry_date && $this->expiry_date->isPast();
-    }
-
-    /**
-     * Check if document is expiring soon (within 30 days).
-     */
-    public function isExpiringSoon()
-    {
-        return $this->expiry_date && $this->expiry_date->isFuture() && $this->expiry_date->diffInDays(now()) <= 30;
-    }
-
-    /**
-     * Scope for verified documents.
-     */
-    public function scopeVerified($query)
-    {
-        return $query->where('is_verified', true);
-    }
-
-    /**
-     * Scope for unverified documents.
-     */
-    public function scopeUnverified($query)
-    {
-        return $query->where('is_verified', false);
-    }
-
-    /**
-     * Scope for expired documents.
-     */
-    public function scopeExpired($query)
-    {
-        return $query->where('expiry_date', '<', now());
-    }
-
-    /**
-     * Scope for expiring soon documents.
-     */
-    public function scopeExpiringSoon($query)
-    {
-        return $query->whereBetween('expiry_date', [now(), now()->addDays(30)]);
-    }
 }
-

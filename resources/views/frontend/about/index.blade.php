@@ -283,7 +283,7 @@
                     @if($facility->category)
                         <div class="absolute top-2 left-2">
                             <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white bg-opacity-90 text-blue-800 shadow-sm">
-                                {{ $facility->category->name }}
+                                {{ $facility->category_name }}
                             </span>
                         </div>
                     @endif
@@ -316,7 +316,7 @@
         
         <!-- View All Facilities Link -->
         <div class="text-center mt-12">
-            <a href="{{ route('facilities') }}" 
+            <a href="{{ route('facilities.index') }}" 
                class="inline-flex items-center px-6 py-3 bg-primary-500 text-white font-medium rounded-lg hover:bg-primary-600 transition-colors duration-200">
                 Lihat Semua Fasilitas
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

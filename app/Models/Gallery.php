@@ -2,104 +2,163 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Gallery extends Model
 {
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'title',
+        'slug',
         'description',
-        'image',
-        'thumbnail',
-        'alt_text',
         'category',
+        'date',
+        'location',
+        'photographer',
+        'is_published',
+        'is_featured',
         'sort_order',
-        'is_active',
-        'file_size',
-        'dimensions',
+        'view_count',
+        'total_photos',
+        'cover_image',
+        'created_by',
+        'updated_by'
     ];
 
-    protected function casts(): array
+    protected $casts = [
+        'is_published' => 'boolean',
+        'is_featured' => 'boolean',
+        'date' => 'date',
+        'view_count' => 'integer',
+        'total_photos' => 'integer'
+    ];
+
+    protected $appends = ['cover_image_url', 'formatted_date'];
+
+    // Relationships
+    public function images()
     {
-        return [
-            'is_active' => 'boolean',
+        return $this->hasMany(GalleryImage::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updater()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    // Accessors
+    public function getCoverImageUrlAttribute()
+    {
+        if ($this->cover_image) {
+            return asset('storage/gallery/' . $this->cover_image);
+        }
+        
+        // Return first image if no cover set
+        $firstImage = $this->images()->first();
+        if ($firstImage) {
+            return $firstImage->image_url;
+        }
+        
+        return asset('images/placeholder-gallery.jpg');
+    }
+
+    public function getFormattedDateAttribute()
+    {
+        if (!$this->date) {
+            return null;
+        }
+        
+        return $this->date->format('d F Y');
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        $categories = [
+            'kegiatan' => 'Kegiatan',
+            'prestasi' => 'Prestasi',
+            'fasilitas' => 'Fasilitas',
+            'event' => 'Event',
+            'olahraga' => 'Olahraga',
+            'seni' => 'Seni',
+            'akademik' => 'Akademik',
+            'lainnya' => 'Lainnya'
         ];
+        
+        return $categories[$this->category] ?? 'Lainnya';
     }
 
-    /**
-     * Scope a query to only include active galleries.
-     */
-    public function scopeActive($query)
+    // Mutators
+    public function setTitleAttribute($value)
     {
-        return $query->where('is_active', true);
+        $this->attributes['title'] = $value;
+        $this->attributes['slug'] = Str::slug($value);
     }
 
-    /**
-     * Scope a query to filter by category.
-     */
+    // Scopes
+    public function scopePublished($query)
+    {
+        return $query->where('is_published', true);
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true);
+    }
+
     public function scopeByCategory($query, $category)
     {
         return $query->where('category', $category);
     }
 
-    /**
-     * Get the image URL.
-     */
-    public function getImageUrlAttribute()
+    public function scopeSearch($query, $keyword)
     {
-        if ($this->image) {
-            $imagePath = storage_path('app/public/gallery/' . $this->image);
-            if (file_exists($imagePath)) {
-                $url = asset('storage/gallery/' . $this->image);
-                \Log::info("Gallery image URL generated: {$url}");
-                return $url;
-            } else {
-                \Log::warning("Gallery image file not found: {$imagePath}");
-            }
-        }
-        
-        \Log::warning("Gallery has no image field or image is null");
-        // Return a simple placeholder if no image
-        return 'data:image/svg+xml;base64,' . base64_encode('<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="300" fill="#F3F4F6"/><rect x="50" y="50" width="300" height="200" fill="#9CA3AF"/><rect x="100" y="100" width="200" height="100" fill="#E5E7EB"/><text x="200" y="150" text-anchor="middle" fill="#6B7280" font-family="Arial" font-size="16">Gallery Image</text></svg>');
+        return $query->where(function ($q) use ($keyword) {
+            $q->where('title', 'like', "%{$keyword}%")
+              ->orWhere('description', 'like', "%{$keyword}%");
+        });
     }
 
-    /**
-     * Get the thumbnail URL.
-     */
-    public function getThumbnailUrlAttribute()
+    public function scopeRecent($query)
     {
-        if ($this->thumbnail) {
-            $thumbnailPath = storage_path('app/public/gallery/thumbnails/' . $this->thumbnail);
-            if (file_exists($thumbnailPath)) {
-                $url = asset('storage/gallery/thumbnails/' . $this->thumbnail);
-                \Log::info("Gallery thumbnail URL generated: {$url}");
-                return $url;
-            } else {
-                \Log::warning("Gallery thumbnail file not found: {$thumbnailPath}");
-            }
-        }
-        
-        \Log::warning("Gallery has no thumbnail field or thumbnail is null, falling back to image_url");
-        // Fallback to image_url if thumbnail doesn't exist
-        return $this->image_url;
+        return $query->orderBy('date', 'desc')->orderBy('created_at', 'desc');
     }
 
-    /**
-     * Get formatted file size.
-     */
-    public function getFormattedFileSizeAttribute()
+    // Methods
+    public function incrementViewCount()
     {
-        if (!$this->file_size) {
-            return null;
+        $this->increment('view_count');
+    }
+
+    public function updateTotalPhotos()
+    {
+        $this->update(['total_photos' => $this->images()->count()]);
+    }
+
+    public function setCoverImage($imageId)
+    {
+        // Remove cover from all images in this gallery
+        $this->images()->update(['is_cover' => false]);
+        
+        // Set new cover
+        $image = $this->images()->find($imageId);
+        if ($image) {
+            $image->update(['is_cover' => true]);
+            $this->update(['cover_image' => $image->image]);
         }
-        
-        $bytes = (int) $this->file_size;
-        $units = ['B', 'KB', 'MB', 'GB'];
-        
-        for ($i = 0; $bytes > 1024; $i++) {
-            $bytes /= 1024;
-        }
-        
-        return round($bytes, 2) . ' ' . $units[$i];
+    }
+
+    public function getCoverImage()
+    {
+        return $this->images()->where('is_cover', true)->first() 
+            ?? $this->images()->first();
     }
 }

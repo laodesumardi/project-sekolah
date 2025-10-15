@@ -4,328 +4,480 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Gallery;
+use App\Models\GalleryImage;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class GalleryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of galleries.
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $query = Gallery::query();
+        $query = Gallery::with(['images', 'creator']);
 
         // Filter by category
-        if ($request->has('category') && $request->category && $request->category !== 'all') {
+        if ($request->filled('category')) {
             $query->byCategory($request->category);
         }
 
         // Filter by status
-        if ($request->has('status') && $request->status) {
-            $query->where('is_active', $request->status === 'active');
+        if ($request->filled('status')) {
+            if ($request->status === 'published') {
+                $query->where('is_published', true);
+            } elseif ($request->status === 'draft') {
+                $query->where('is_published', false);
+            }
+        }
+
+        // Filter by featured
+        if ($request->filled('featured')) {
+            if ($request->featured === 'featured') {
+                $query->where('is_featured', true);
+            } elseif ($request->featured === 'not_featured') {
+                $query->where('is_featured', false);
+            }
         }
 
         // Search
-        if ($request->has('search') && $request->search) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
+        if ($request->filled('search')) {
+            $query->search($request->search);
         }
 
-        $galleries = $query->orderBy('sort_order')->orderBy('created_at', 'desc')->paginate(20);
-        
-        // Get categories for filter
-        $categories = Gallery::selectRaw('category, COUNT(*) as count')
-            ->groupBy('category')
-            ->get();
+        // Sort
+        $sort = $request->get('sort', 'recent');
+        switch ($sort) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'views':
+                $query->orderBy('view_count', 'desc');
+                break;
+            case 'title_asc':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'title_desc':
+                $query->orderBy('title', 'desc');
+                break;
+            default: // recent
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
 
-        return view('admin.gallery.index', compact('galleries', 'categories'));
+        $galleries = $query->paginate(10);
+
+        // Statistics
+        $stats = [
+            'total_albums' => Gallery::count(),
+            'total_photos' => GalleryImage::count(),
+            'featured_albums' => Gallery::featured()->count(),
+            'total_views' => Gallery::sum('view_count')
+        ];
+
+        // Categories for filter
+        $categories = [
+            'kegiatan' => 'Kegiatan',
+            'prestasi' => 'Prestasi',
+            'fasilitas' => 'Fasilitas',
+            'event' => 'Event',
+            'olahraga' => 'Olahraga',
+            'seni' => 'Seni',
+            'akademik' => 'Akademik',
+            'lainnya' => 'Lainnya'
+        ];
+
+        return view('admin.gallery.index', compact('galleries', 'stats', 'categories'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new gallery.
      */
-    public function create()
+    public function create(): View
     {
-        return view('admin.gallery.create');
+        $categories = [
+            'kegiatan' => 'Kegiatan',
+            'prestasi' => 'Prestasi',
+            'fasilitas' => 'Fasilitas',
+            'event' => 'Event',
+            'olahraga' => 'Olahraga',
+            'seni' => 'Seni',
+            'akademik' => 'Akademik',
+            'lainnya' => 'Lainnya'
+        ];
+
+        return view('admin.gallery.create', compact('categories'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created gallery.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
-            'alt_text' => 'nullable|string|max:255',
-            'category' => 'required|in:academic,sports,events,facilities,activities,other',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean',
+            'description' => 'nullable|string|max:2000',
+            'category' => 'required|in:kegiatan,prestasi,fasilitas,event,olahraga,seni,akademik,lainnya',
+            'date' => 'nullable|date|before_or_equal:today',
+            'location' => 'nullable|string|max:255',
+            'photographer' => 'nullable|string|max:255',
+            'is_published' => 'boolean',
+            'is_featured' => 'boolean',
+            'images' => 'required|array|min:1',
+            'images.*' => 'image|mimes:jpeg,jpg,png,webp|max:5120', // 5MB max
+            'image_titles' => 'nullable|array',
+            'image_titles.*' => 'nullable|string|max:255',
+            'image_captions' => 'nullable|array',
+            'image_captions.*' => 'nullable|string|max:500'
         ]);
 
-        $data = $request->all();
+        DB::beginTransaction();
+        try {
+            // Create gallery
+            $gallery = Gallery::create([
+                'title' => $request->title,
+                'slug' => Str::slug($request->title),
+                'description' => $request->description,
+                'category' => $request->category,
+                'date' => $request->date,
+                'location' => $request->location,
+                'photographer' => $request->photographer,
+                'is_published' => $request->has('is_published'),
+                'is_featured' => $request->has('is_featured'),
+                'created_by' => auth()->id()
+            ]);
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-            
-            // Store original image
-            $image->storeAs('public/gallery', $imageName);
-            
-            // Create thumbnail directory if not exists
-            if (!Storage::exists('public/gallery/thumbnails')) {
-                Storage::makeDirectory('public/gallery/thumbnails');
+            // Handle image uploads
+            if ($request->hasFile('images')) {
+                $manager = new ImageManager(new Driver());
+                $sortOrder = 0;
+
+                foreach ($request->file('images') as $index => $image) {
+                    // Generate unique filename
+                    $filename = time() . '_' . $sortOrder . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
+                    
+                    // Store original image
+                    $imagePath = $image->storeAs('gallery', $filename, 'public');
+                    
+                    // Generate thumbnail
+                    $thumbnailPath = 'gallery/thumbnails/' . $filename;
+                    $manager->read($image)
+                        ->cover(400, 300)
+                        ->save(storage_path('app/public/' . $thumbnailPath));
+                    
+                    // Generate medium size
+                    $mediumPath = 'gallery/medium/' . $filename;
+                    $manager->read($image)
+                        ->scaleDown(800)
+                        ->save(storage_path('app/public/' . $mediumPath));
+                    
+                    // Get image dimensions
+                    $imageInfo = getimagesize($image->getPathname());
+                    
+                    // Create gallery image record
+                    GalleryImage::create([
+                        'gallery_id' => $gallery->id,
+                        'image' => $filename,
+                        'thumbnail' => $filename,
+                        'medium' => $filename,
+                        'title' => $request->image_titles[$index] ?? null,
+                        'caption' => $request->image_captions[$index] ?? null,
+                        'alt_text' => $request->image_titles[$index] ?? $gallery->title,
+                        'file_size' => $image->getSize(),
+                        'mime_type' => $image->getMimeType(),
+                        'width' => $imageInfo[0] ?? null,
+                        'height' => $imageInfo[1] ?? null,
+                        'sort_order' => $sortOrder,
+                        'is_cover' => $sortOrder === 0 // First image as cover
+                    ]);
+                    
+                    $sortOrder++;
+                }
+                
+                // Update gallery with cover image and total photos
+                $gallery->update([
+                    'cover_image' => $gallery->images()->first()->image,
+                    'total_photos' => $gallery->images()->count()
+                ]);
             }
-            
-            // Copy original as thumbnail for now (TODO: Implement proper image resizing later)
-            $thumbnailName = 'thumb_' . $imageName;
-            $sourcePath = storage_path('app/public/gallery/' . $imageName);
-            $destPath = storage_path('app/public/gallery/thumbnails/' . $thumbnailName);
-            
-            if (file_exists($sourcePath)) {
-                copy($sourcePath, $destPath);
-            }
-            
-            $data['image'] = $imageName;
-            $data['thumbnail'] = $thumbnailName;
-            
-            // Get image info
-            $data['file_size'] = $image->getSize();
-            $data['dimensions'] = 'Unknown'; // TODO: Implement proper image dimension detection
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.gallery.index')
+                ->with('success', 'Album galeri berhasil dibuat!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Gagal membuat album: ' . $e->getMessage());
         }
-
-        Gallery::create($data);
-
-        return redirect()->route('admin.gallery.index')
-            ->with('success', 'Galeri berhasil ditambahkan.');
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified gallery.
      */
-    public function show(Gallery $gallery)
+    public function show(Gallery $gallery): View
     {
+        $gallery->load(['images' => function ($q) {
+            $q->orderBy('sort_order')->orderBy('created_at');
+        }, 'creator', 'updater']);
+
         return view('admin.gallery.show', compact('gallery'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified gallery.
      */
-    public function edit(Gallery $gallery)
+    public function edit(Gallery $gallery): View
     {
-        return view('admin.gallery.edit', compact('gallery'));
+        $gallery->load(['images' => function ($q) {
+            $q->orderBy('sort_order')->orderBy('created_at');
+        }]);
+
+        $categories = [
+            'kegiatan' => 'Kegiatan',
+            'prestasi' => 'Prestasi',
+            'fasilitas' => 'Fasilitas',
+            'event' => 'Event',
+            'olahraga' => 'Olahraga',
+            'seni' => 'Seni',
+            'akademik' => 'Akademik',
+            'lainnya' => 'Lainnya'
+        ];
+
+        return view('admin.gallery.edit', compact('gallery', 'categories'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified gallery.
      */
-    public function update(Request $request, Gallery $gallery)
+    public function update(Request $request, Gallery $gallery): RedirectResponse
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
-            'alt_text' => 'nullable|string|max:255',
-            'category' => 'required|in:academic,sports,events,facilities,activities,other',
-            'sort_order' => 'nullable|integer|min:0',
-            'is_active' => 'boolean',
+            'description' => 'nullable|string|max:2000',
+            'category' => 'required|in:kegiatan,prestasi,fasilitas,event,olahraga,seni,akademik,lainnya',
+            'date' => 'nullable|date|before_or_equal:today',
+            'location' => 'nullable|string|max:255',
+            'photographer' => 'nullable|string|max:255',
+            'is_published' => 'boolean',
+            'is_featured' => 'boolean',
+            'new_images' => 'nullable|array',
+            'new_images.*' => 'image|mimes:jpeg,jpg,png,webp|max:5120', // 5MB max
+            'new_image_titles' => 'nullable|array',
+            'new_image_titles.*' => 'nullable|string|max:255',
+            'new_image_captions' => 'nullable|array',
+            'new_image_captions.*' => 'nullable|string|max:500',
+            'deleted_images' => 'nullable|array',
+            'deleted_images.*' => 'integer|exists:gallery_images,id',
+            'cover_image_id' => 'nullable|integer|exists:gallery_images,id'
         ]);
 
-        $data = $request->all();
+        DB::beginTransaction();
+        try {
+            // Update gallery basic info
+            $gallery->update([
+                'title' => $request->title,
+                'slug' => Str::slug($request->title),
+                'description' => $request->description,
+                'category' => $request->category,
+                'date' => $request->date,
+                'location' => $request->location,
+                'photographer' => $request->photographer,
+                'is_published' => $request->has('is_published'),
+                'is_featured' => $request->has('is_featured'),
+                'updated_by' => auth()->id()
+            ]);
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            // Delete old images
-            if ($gallery->image) {
-                Storage::delete('public/gallery/' . $gallery->image);
-                Storage::delete('public/gallery/thumbnails/' . $gallery->thumbnail);
+            // Handle deleted images
+            if ($request->has('deleted_images')) {
+                foreach ($request->deleted_images as $imageId) {
+                    $image = $gallery->images()->find($imageId);
+                    if ($image) {
+                        // Delete files from storage
+                        Storage::disk('public')->delete($image->image);
+                        Storage::disk('public')->delete($image->thumbnail);
+                        Storage::disk('public')->delete($image->medium);
+                        
+                        // Delete from database
+                        $image->delete();
+                    }
+                }
             }
 
-            $image = $request->file('image');
-            $imageName = time() . '_' . Str::slug($request->title) . '.' . $image->getClientOriginalExtension();
-            
-            // Store original image
-            $image->storeAs('public/gallery', $imageName);
-            
-            // Create thumbnail directory if not exists
-            if (!Storage::exists('public/gallery/thumbnails')) {
-                Storage::makeDirectory('public/gallery/thumbnails');
+            // Handle new images upload
+            if ($request->hasFile('new_images')) {
+                $sortOrder = $gallery->images()->max('sort_order') ?? 0;
+                
+                foreach ($request->file('new_images') as $index => $file) {
+                    // Generate unique filename
+                    $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+                    
+                    // Store original image
+                    $imagePath = $file->storeAs('gallery', $filename, 'public');
+                    
+                    // Generate thumbnail and medium sizes
+                    $thumbnailPath = 'gallery/thumbnails/' . $filename;
+                    $mediumPath = 'gallery/medium/' . $filename;
+                    
+                    // Use ImageManager for Intervention Image v3
+                    $manager = new ImageManager(new Driver());
+                    
+                    // Generate thumbnail (300x300)
+                    $manager->read($file)
+                        ->cover(300, 300)
+                        ->save(storage_path('app/public/' . $thumbnailPath));
+                    
+                    // Generate medium size (800x600)
+                    $manager->read($file)
+                        ->scaleDown(800, 600)
+                        ->save(storage_path('app/public/' . $mediumPath));
+                    
+                    // Optimize original image
+                    $manager->read(storage_path('app/public/' . $imagePath))
+                        ->scaleDown(1200)
+                        ->save(storage_path('app/public/' . $imagePath), 85);
+                    
+                    // Create gallery image record
+                    $galleryImage = $gallery->images()->create([
+                        'image' => $imagePath,
+                        'thumbnail' => $thumbnailPath,
+                        'medium' => $mediumPath,
+                        'title' => $request->new_image_titles[$index] ?? null,
+                        'caption' => $request->new_image_captions[$index] ?? null,
+                        'alt_text' => $request->new_image_titles[$index] ?? $gallery->title,
+                        'file_size' => $file->getSize(),
+                        'mime_type' => $file->getMimeType(),
+                        'width' => getimagesize($file)[0],
+                        'height' => getimagesize($file)[1],
+                        'sort_order' => ++$sortOrder,
+                        'is_cover' => false
+                    ]);
+                }
             }
-            
-            // Copy original as thumbnail for now (TODO: Implement proper image resizing later)
-            $thumbnailName = 'thumb_' . $imageName;
-            $sourcePath = storage_path('app/public/gallery/' . $imageName);
-            $destPath = storage_path('app/public/gallery/thumbnails/' . $thumbnailName);
-            
-            if (file_exists($sourcePath)) {
-                copy($sourcePath, $destPath);
+
+            // Handle cover image change
+            if ($request->has('cover_image_id')) {
+                // Remove cover from all images
+                $gallery->images()->update(['is_cover' => false]);
+                
+                // Set new cover
+                $coverImage = $gallery->images()->find($request->cover_image_id);
+                if ($coverImage) {
+                    $coverImage->update(['is_cover' => true]);
+                    $gallery->update(['cover_image' => $coverImage->image]);
+                }
             }
-            
-            $data['image'] = $imageName;
-            $data['thumbnail'] = $thumbnailName;
-            
-            // Get image info
-            $data['file_size'] = $image->getSize();
-            $data['dimensions'] = 'Unknown'; // TODO: Implement proper image dimension detection
+
+            // Update total photos count
+            $gallery->update(['total_photos' => $gallery->images()->count()]);
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.gallery.index')
+                ->with('success', 'Album galeri berhasil diperbarui!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui album: ' . $e->getMessage());
         }
-
-        $gallery->update($data);
-
-        return redirect()->route('admin.gallery.index')
-            ->with('success', 'Galeri berhasil diperbarui.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified gallery.
      */
-    public function destroy(Gallery $gallery)
+    public function destroy(Gallery $gallery): RedirectResponse
     {
-        // Delete image files
-        if ($gallery->image) {
-            Storage::delete('public/gallery/' . $gallery->image);
-            Storage::delete('public/gallery/thumbnails/' . $gallery->thumbnail);
+        // Delete all images
+        foreach ($gallery->images as $image) {
+            Storage::disk('public')->delete('gallery/' . $image->image);
+            Storage::disk('public')->delete('gallery/thumbnails/' . $image->thumbnail);
+            Storage::disk('public')->delete('gallery/medium/' . $image->medium);
         }
 
         $gallery->delete();
 
-        return redirect()->route('admin.gallery.index')
-            ->with('success', 'Galeri berhasil dihapus.');
+        return redirect()
+            ->route('admin.gallery.index')
+            ->with('success', 'Album galeri berhasil dihapus!');
     }
 
     /**
-     * Bulk upload images.
+     * Bulk delete galleries.
      */
-    public function bulkUpload(Request $request)
+    public function bulkDelete(Request $request): RedirectResponse
     {
         $request->validate([
-            'images' => 'required|array|max:20',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:10240',
-            'category' => 'required|in:academic,sports,events,facilities,activities,other',
-            'title_prefix' => 'nullable|string|max:100',
-        ]);
-
-        $uploadedCount = 0;
-        $errors = [];
-
-        foreach ($request->file('images') as $index => $image) {
-            try {
-                $imageName = time() . '_' . $index . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
-                
-                // Store original image
-                $image->storeAs('public/gallery', $imageName);
-                
-                // Create thumbnail directory if not exists
-                if (!Storage::exists('public/gallery/thumbnails')) {
-                    Storage::makeDirectory('public/gallery/thumbnails');
-                }
-                
-                // Copy original as thumbnail for now (TODO: Implement proper image resizing later)
-                $thumbnailName = 'thumb_' . $imageName;
-                $sourcePath = storage_path('app/public/gallery/' . $imageName);
-                $destPath = storage_path('app/public/gallery/thumbnails/' . $thumbnailName);
-                
-                if (file_exists($sourcePath)) {
-                    copy($sourcePath, $destPath);
-                }
-                
-                Gallery::create([
-                    'title' => ($request->title_prefix ? $request->title_prefix . ' ' : '') . ($index + 1),
-                    'image' => $imageName,
-                    'thumbnail' => $thumbnailName,
-                    'category' => $request->category,
-                    'file_size' => $image->getSize(),
-                    'dimensions' => 'Unknown', // TODO: Implement proper image dimension detection
-                    'sort_order' => $uploadedCount,
-                ]);
-                
-                $uploadedCount++;
-            } catch (\Exception $e) {
-                $errors[] = "Gambar " . ($index + 1) . ": " . $e->getMessage();
-            }
-        }
-
-        $message = "Berhasil mengupload {$uploadedCount} gambar.";
-        if (!empty($errors)) {
-            $message .= " Error: " . implode(', ', $errors);
-        }
-
-        return redirect()->route('admin.gallery.index')
-            ->with('success', $message);
-    }
-
-    /**
-     * Update sort order.
-     */
-    public function updateSortOrder(Request $request)
-    {
-        $request->validate([
-            'items' => 'required|array',
-            'items.*.id' => 'required|exists:galleries,id',
-            'items.*.sort_order' => 'required|integer|min:0',
-        ]);
-
-        foreach ($request->items as $item) {
-            Gallery::where('id', $item['id'])->update(['sort_order' => $item['sort_order']]);
-        }
-
-        return response()->json(['success' => true]);
-    }
-
-    /**
-     * Toggle active status.
-     */
-    public function toggleActive(Gallery $gallery)
-    {
-        $gallery->update(['is_active' => !$gallery->is_active]);
-        
-        return response()->json([
-            'success' => true,
-            'is_active' => $gallery->is_active
-        ]);
-    }
-
-    /**
-     * Bulk actions.
-     */
-    public function bulkAction(Request $request)
-    {
-        $request->validate([
-            'action' => 'required|in:delete,activate,deactivate',
             'gallery_ids' => 'required|array',
             'gallery_ids.*' => 'exists:galleries,id'
         ]);
 
-        $galleryIds = $request->gallery_ids;
+        $galleries = Gallery::whereIn('id', $request->gallery_ids)->get();
+
+        foreach ($galleries as $gallery) {
+            // Delete all images
+            foreach ($gallery->images as $image) {
+                Storage::disk('public')->delete('gallery/' . $image->image);
+                Storage::disk('public')->delete('gallery/thumbnails/' . $image->thumbnail);
+                Storage::disk('public')->delete('gallery/medium/' . $image->medium);
+            }
+            $gallery->delete();
+        }
+
+        return redirect()
+            ->route('admin.gallery.index')
+            ->with('success', count($galleries) . ' album galeri berhasil dihapus!');
+    }
+
+    /**
+     * Bulk update gallery status.
+     */
+    public function bulkStatus(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'gallery_ids' => 'required|array',
+            'gallery_ids.*' => 'exists:galleries,id',
+            'action' => 'required|in:publish,unpublish,feature,unfeature'
+        ]);
+
+        $galleries = Gallery::whereIn('id', $request->gallery_ids);
 
         switch ($request->action) {
-            case 'delete':
-                $galleries = Gallery::whereIn('id', $galleryIds)->get();
-                foreach ($galleries as $gallery) {
-                    if ($gallery->image) {
-                        Storage::delete('public/gallery/' . $gallery->image);
-                        Storage::delete('public/gallery/thumbnails/' . $gallery->thumbnail);
-                    }
-                }
-                Gallery::whereIn('id', $galleryIds)->delete();
-                $message = 'Galeri berhasil dihapus.';
+            case 'publish':
+                $galleries->update(['is_published' => true]);
+                $message = 'Album galeri berhasil dipublikasikan!';
                 break;
-            case 'activate':
-                Gallery::whereIn('id', $galleryIds)->update(['is_active' => true]);
-                $message = 'Galeri berhasil diaktifkan.';
+            case 'unpublish':
+                $galleries->update(['is_published' => false]);
+                $message = 'Album galeri berhasil disembunyikan!';
                 break;
-            case 'deactivate':
-                Gallery::whereIn('id', $galleryIds)->update(['is_active' => false]);
-                $message = 'Galeri berhasil dinonaktifkan.';
+            case 'feature':
+                $galleries->update(['is_featured' => true]);
+                $message = 'Album galeri berhasil dijadikan featured!';
+                break;
+            case 'unfeature':
+                $galleries->update(['is_featured' => false]);
+                $message = 'Album galeri berhasil dihapus dari featured!';
                 break;
         }
 
-        return redirect()->route('admin.gallery.index')->with('success', $message);
+        return redirect()
+            ->route('admin.gallery.index')
+            ->with('success', $message);
     }
 }

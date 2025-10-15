@@ -48,12 +48,12 @@
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
                     <div class="flex items-start space-x-6">
                         @if($teacher->photo)
-                            <img src="{{ asset('storage/' . $teacher->photo) }}" 
-                                 alt="{{ $teacher->name }}" 
-                                 class="w-24 h-24 rounded-full object-cover">
+                            <img src="{{ $teacher->profile_picture_url }}" 
+                                 alt="{{ $teacher->full_name }}" 
+                                 class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg">
                         @else
-                            <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
-                                <svg class="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <div class="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                                <svg class="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
                                 </svg>
                             </div>

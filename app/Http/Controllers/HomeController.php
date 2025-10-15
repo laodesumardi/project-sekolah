@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
-use App\Models\Gallery;
 use App\Models\HomepageSetting;
 use Illuminate\Http\Request;
 
@@ -24,11 +23,8 @@ class HomeController extends Controller
             ->limit(3)
             ->get();
 
-        // Get latest 4 active gallery items
-        $galleryItems = Gallery::active()
-            ->orderBy('created_at', 'desc')
-            ->limit(4)
-            ->get();
+        // Gallery functionality removed
+        $galleryItems = collect();
 
         // Get featured news (if any)
         $featuredNews = News::published()

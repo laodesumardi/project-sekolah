@@ -334,19 +334,53 @@ class NewsController extends Controller
      */
     public function destroy(News $news)
     {
-        // Delete image files
-        if ($news->image) {
-            Storage::delete('public/news/' . $news->image);
-            Storage::delete('public/news/thumbnails/thumb_' . $news->image);
+        try {
+            // Delete image files
+            if ($news->image) {
+                $imagePath = 'public/news/' . $news->image;
+                $thumbnailPath = 'public/news/thumbnails/thumb_' . $news->image;
+                
+                if (Storage::exists($imagePath)) {
+                    Storage::delete($imagePath);
+                }
+                
+                if (Storage::exists($thumbnailPath)) {
+                    Storage::delete($thumbnailPath);
+                }
+            }
+
+            // Detach tags
+            $news->tags()->detach();
+
+            // Delete the news
+            $news->delete();
+
+            // Check if request is AJAX
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Berita berhasil dihapus.'
+                ]);
+            }
+
+            return redirect()->route('admin.news.index')
+                ->with('success', 'Berita berhasil dihapus.');
+                
+        } catch (\Exception $e) {
+            \Log::error('Error deleting news: ' . $e->getMessage());
+            
+            // Check if request is AJAX
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan saat menghapus berita. Silakan coba lagi.',
+                    'error' => $e->getMessage()
+                ], 500);
+            }
+            
+            return redirect()->route('admin.news.index')
+                ->with('error', 'Terjadi kesalahan saat menghapus berita. Silakan coba lagi.');
         }
-
-        // Detach tags
-        $news->tags()->detach();
-
-        $news->delete();
-
-        return redirect()->route('admin.news.index')
-            ->with('success', 'Berita berhasil dihapus.');
     }
 
     /**
