@@ -299,7 +299,8 @@ class PPDBController extends Controller
      */
     public function statusForm()
     {
-        return view('ppdb.status');
+        $setting = RegistrationSetting::getActive();
+        return view('ppdb.status', compact('setting'));
     }
 
     /**

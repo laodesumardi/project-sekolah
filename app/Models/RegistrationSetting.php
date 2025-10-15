@@ -150,4 +150,14 @@ class RegistrationSetting extends Model
 
         return $now->diffInDays($endDate);
     }
+
+    /**
+     * Get active registration setting.
+     */
+    public static function getActive(): ?self
+    {
+        return static::where('is_active', true)
+            ->with('academicYear')
+            ->first();
+    }
 }
