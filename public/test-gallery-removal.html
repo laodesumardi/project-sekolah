@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Gallery Removal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen py-8">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Test Gallery Removal from Homepage</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Before -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Before (Ada Galeri)</h2>
+                    
+                    <div class="bg-red-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-red-900 mb-2">❌ Sebelum (Ada Galeri)</h3>
+                        <div class="text-sm text-red-800 space-y-2">
+                            <div class="bg-white p-3 rounded border-l-4 border-red-500">
+                                <strong>Galeri Sekolah</strong><br>
+                                Momen-momen berharga di SMP Negeri 01 Namrole<br><br>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="bg-gray-200 h-16 rounded"></div>
+                                    <div class="bg-gray-200 h-16 rounded"></div>
+                                    <div class="bg-gray-200 h-16 rounded"></div>
+                                    <div class="bg-gray-200 h-16 rounded"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- After -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">After (Galeri Dihapus)</h2>
+                    
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-green-900 mb-2">✅ Sesudah (Galeri Dihapus)</h3>
+                        <div class="text-sm text-green-800 space-y-2">
+                            <div class="bg-white p-3 rounded border-l-4 border-green-500">
+                                <strong>Section galeri telah dihapus</strong><br>
+                                Halaman beranda sekarang lebih fokus tanpa section galeri yang berlebihan.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <a href="http://127.0.0.1:8000/" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-external-link-alt mr-2"></i>
+                    Buka Halaman Beranda
+                </a>
+            </div>
+        </div>
+        
+        <!-- What Was Removed -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Yang Dihapus</h2>
+            
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h3 class="font-semibold text-gray-900 mb-2">Section Galeri yang dihapus:</h3>
+                <div class="text-sm text-gray-700 space-y-1">
+                    <p>• <strong>Judul:</strong> "Galeri Sekolah"</p>
+                    <p>• <strong>Subtitle:</strong> "Momen-momen berharga di SMP Negeri 01 Namrole"</p>
+                    <p>• <strong>Grid Galeri:</strong> 4 kolom gambar galeri</p>
+                    <p>• <strong>Fallback Images:</strong> Screenshot dan WhatsApp images</p>
+                    <p>• <strong>Hover Effects:</strong> Animasi hover pada gambar</p>
+                </div>
+            </div>
+            
+            <div class="mt-4 bg-blue-50 rounded-lg p-4">
+                <h3 class="font-semibold text-blue-900 mb-2">File yang Diperbarui:</h3>
+                <code class="text-sm text-blue-800">resources/views/welcome.blade.php</code>
+            </div>
+        </div>
+        
+        <!-- Benefits -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Manfaat Penghapusan Galeri</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-green-50 rounded-lg p-4">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-check-circle text-green-600 mr-2"></i>
+                        <span class="font-medium text-green-900">Halaman Lebih Fokus</span>
+                    </div>
+                    <p class="text-sm text-green-800">Beranda lebih fokus pada informasi utama sekolah</p>
+                </div>
+                
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-eye text-blue-600 mr-2"></i>
+                        <span class="font-medium text-blue-900">Loading Lebih Cepat</span>
+                    </div>
+                    <p class="text-sm text-blue-800">Halaman beranda loading lebih cepat tanpa gambar galeri</p>
+                </div>
+                
+                <div class="bg-yellow-50 rounded-lg p-4">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-mobile-alt text-yellow-600 mr-2"></i>
+                        <span class="font-medium text-yellow-900">Mobile Friendly</span>
+                    </div>
+                    <p class="text-sm text-yellow-800">Halaman lebih optimal di perangkat mobile</p>
+                </div>
+                
+                <div class="bg-purple-50 rounded-lg p-4">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-rocket text-purple-600 mr-2"></i>
+                        <span class="font-medium text-purple-900">Performance</span>
+                    </div>
+                    <p class="text-sm text-purple-800">Halaman lebih ringan dan performa lebih baik</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Current Structure -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Struktur Halaman Beranda Sekarang</h2>
+            
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h3 class="font-semibold text-gray-900 mb-2">Urutan konten halaman beranda:</h3>
+                <div class="text-sm text-gray-700 space-y-1">
+                    <p>1. <strong>Hero Section</strong> - Judul dan deskripsi utama</p>
+                    <p>2. <strong>Profil Singkat</strong> - Tentang sekolah</p>
+                    <p>3. <strong>Informasi Kepala Sekolah</strong> - Profil kepala sekolah</p>
+                    <p>4. <strong>Statistik</strong> - Data dan statistik sekolah</p>
+                    <p>5. <strong>Akreditasi</strong> - Informasi akreditasi</p>
+                    <p>6. <strong>Kontak</strong> - Informasi kontak</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gallery Still Available -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Galeri Masih Tersedia</h2>
+            
+            <div class="bg-blue-50 rounded-lg p-4">
+                <h3 class="font-semibold text-blue-900 mb-2">Galeri masih dapat diakses melalui:</h3>
+                <div class="text-sm text-blue-800 space-y-1">
+                    <p>• <strong>URL Langsung:</strong> <code>http://127.0.0.1:8000/galeri</code></p>
+                    <p>• <strong>Menu Navigasi:</strong> Link di menu utama</p>
+                    <p>• <strong>Fungsi Lengkap:</strong> Filter, search, lightbox</p>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <a href="http://127.0.0.1:8000/galeri" class="inline-flex items-center px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+                    <i class="fas fa-images mr-2"></i>
+                    Buka Galeri Sekolah
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -35,6 +35,189 @@
         .counter {
             font-variant-numeric: tabular-nums;
         }
+        
+        /* Hero Background dengan Gambar dari Admin Panel */
+        .hero-background {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
+        .hero-background .relative {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Overlay tambahan untuk kontras yang lebih baik */
+        .hero-background-overlay {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Responsive background */
+        @media (max-width: 768px) {
+            .hero-background {
+                background-attachment: scroll;
+            }
+        }
+        
+        /* Animasi fade in untuk background */
+        @keyframes fadeInBackground {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .hero-background {
+            animation: fadeInBackground 1s ease-in-out;
+        }
+        
+        /* Page Header Background untuk halaman lain */
+        .page-header-background {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        
+        .page-header-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+        
+        .page-header-background .relative {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Overlay tambahan untuk kontras yang lebih baik */
+        .page-header-overlay {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Responsive background */
+        @media (max-width: 768px) {
+            .page-header-background {
+                background-attachment: scroll;
+            }
+        }
+        
+        /* Animasi fade in untuk page header */
+        @keyframes fadeInPageHeader {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .page-header-background {
+            animation: fadeInPageHeader 1s ease-in-out;
+        }
+        
+        /* Section Images Styles */
+        .section-images-container {
+            margin: 2rem 0;
+        }
+        
+        .section-image-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .section-image-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .section-image-card img {
+            transition: transform 0.3s ease;
+        }
+        
+        .section-image-card:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .section-images-container .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Background Section Styles */
+        .background-section {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        
+        .background-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
+        .background-section .relative {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Overlay tambahan untuk kontras yang lebih baik */
+        .background-section-overlay {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Responsive background */
+        @media (max-width: 768px) {
+            .background-section {
+                background-attachment: scroll;
+            }
+        }
+        
+        /* Animasi fade in untuk background section */
+        @keyframes fadeInBackgroundSection {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .background-section {
+            animation: fadeInBackgroundSection 1s ease-in-out;
+        }
     </style>
 </head>
 <body class="font-sans antialiased bg-gray-50">

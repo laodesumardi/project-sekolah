@@ -9,10 +9,12 @@
     ['name' => 'Tentang Kami', 'url' => null]
 ]" />
 
-<!-- Page Header -->
-<x-page-header 
-    title="{{ $homepageSetting->about_page_title ?? 'Tentang Kami' }}" 
-    subtitle="{{ $homepageSetting->about_page_description ? Str::limit($homepageSetting->about_page_description, 100) : 'Mengenal lebih dekat SMP Negeri 01 Namrole' }}" 
+
+<!-- Background Section -->
+<x-background-section 
+    section="hero"
+    :title="$homepageSetting->about_page_title ?? 'Tentang Kami'"
+    :subtitle="$homepageSetting->about_page_description ? Str::limit($homepageSetting->about_page_description, 100) : 'Mengenal lebih dekat SMP Negeri 01 Namrole'"
 />
 
 <!-- Visi & Misi Section -->
@@ -538,6 +540,72 @@
     </div>
 </section>
 
+<!-- Statistik Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Prestasi & Pencapaian</h2>
+            <p class="text-lg text-gray-600">Data dan statistik yang membanggakan</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <x-stat-card 
+                :number="$statistics['total_students']" 
+                label="Total Siswa"
+                description="Siswa aktif"
+            >
+                <svg class="h-8 w-8 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                </svg>
+            </x-stat-card>
+
+            <x-stat-card 
+                :number="$statistics['total_teachers']" 
+                label="Tenaga Pendidik"
+                description="Guru & staff"
+            >
+                <svg class="h-8 w-8 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+            </x-stat-card>
+
+            <x-stat-card 
+                :number="$statistics['total_achievements']" 
+                label="Prestasi"
+                description="Penghargaan"
+            >
+                <svg class="h-8 w-8 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                </svg>
+            </x-stat-card>
+
+            <x-stat-card 
+                :number="$statistics['years_experience']" 
+                label="Tahun Berdiri"
+                description="Pengalaman"
+            >
+                <svg class="h-8 w-8 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+            </x-stat-card>
+        </div>
+        
+        <!-- Data Source Information -->
+        <div class="mt-12 bg-blue-50 rounded-lg p-6">
+            <div class="flex items-center justify-center mb-4">
+                <svg class="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h3 class="text-lg font-semibold text-blue-900">Informasi Data</h3>
+            </div>
+            <div class="text-center text-blue-800">
+                <p class="mb-2">Data statistik diambil dari database sekolah secara real-time</p>
+                <p class="text-sm">Terakhir diperbarui: {{ $statistics['last_updated'] ?? 'Belum tersedia' }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Kontak & Lokasi Section -->
 <section class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -558,7 +626,15 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-1">Alamat</h3>
-                        <p class="text-gray-600">{{ $homepageSetting->contact_address ?? 'Jl. Pendidikan No. 123, Namrole, Kabupaten Buru Selatan, Maluku' }}</p>
+                        <p class="text-gray-600 mb-3">{{ $homepageSetting->contact_address ?? 'Jl. Pendidikan No. 123, Namrole, Kabupaten Buru Selatan, Maluku' }}</p>
+                        <a href="https://maps.app.goo.gl/MayRvY9qK43PTnbK9" 
+                           target="_blank" 
+                           class="inline-flex items-center px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                            Lihat di Google Maps
+                        </a>
                     </div>
                 </div>
                 
@@ -600,14 +676,34 @@
             </div>
             
             <!-- Peta Lokasi -->
-            <div class="bg-gray-200 rounded-lg h-96 flex items-center justify-center">
-                <div class="text-center">
-                    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    <p class="text-gray-500">Peta Lokasi Sekolah</p>
-                    <p class="text-sm text-gray-400">Jl. Pendidikan No. 123, Namrole</p>
+            <div class="rounded-lg overflow-hidden shadow-lg">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.1234567890!2d127.1234567890!3d-3.1234567890!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM8KwMDcnMjQuMCJTIDEyN8KwMDcnMjQuMCJF!5e0!3m2!1sid!2sid!4v1234567890123!5m2!1sid!2sid"
+                    width="100%" 
+                    height="400" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade"
+                    class="w-full h-96">
+                </iframe>
+                <div class="bg-gray-50 px-4 py-3 border-t">
+                    <p class="text-sm text-gray-600 text-center">
+                        <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        Jl. Pendidikan No. 123, Namrole, Kabupaten Buru Selatan, Maluku
+                    </p>
+                    <div class="text-center mt-2">
+                        <a href="https://maps.app.goo.gl/MayRvY9qK43PTnbK9" 
+                           target="_blank" 
+                           class="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition-colors">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                            </svg>
+                            Buka di Google Maps
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

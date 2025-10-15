@@ -40,6 +40,75 @@
         .sidebar-expanded {
             width: 16rem;
         }
+        
+        /* Fix for content crop issues */
+        body {
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .main-content {
+            min-height: 100vh;
+            width: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        .sidebar {
+            min-height: 100vh;
+            overflow-y: auto;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 40;
+        }
+        
+        .content-wrapper {
+            margin-left: 16rem; /* Width of expanded sidebar */
+            width: calc(100% - 16rem);
+            min-height: 100vh;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .sidebar-collapsed + .content-wrapper {
+            margin-left: 4rem; /* Width of collapsed sidebar */
+            width: calc(100% - 4rem);
+        }
+        
+        /* Ensure content is not hidden behind sidebar */
+        .main-content {
+            position: relative;
+            z-index: 20;
+            background: white;
+            min-height: 100vh;
+            width: 100%;
+        }
+        
+        /* Ensure proper spacing */
+        .content-wrapper {
+            background: #f8fafc;
+        }
+        
+        /* Fix for header */
+        .main-content header {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background: white;
+        }
+        
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .sidebar {
+                z-index: 50;
+            }
+        }
+        
         @media (max-width: 1024px) {
             .sidebar-mobile {
                 transform: translateX(-100%);
@@ -51,9 +120,8 @@
     </style>
 </head>
 <body class="font-sans antialiased bg-gray-100">
-    <div class="flex h-screen">
-        <!-- Sidebar -->
-        <div id="sidebar" class="bg-primary-500 sidebar-transition fixed inset-y-0 left-0 z-50 lg:static lg:translate-x-0 sidebar-expanded lg:sidebar-expanded sidebar-mobile flex flex-col h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="bg-primary-500 sidebar-transition fixed inset-y-0 left-0 z-50 lg:translate-x-0 sidebar-expanded sidebar-mobile flex flex-col sidebar">
             <!-- Sidebar Container -->
             <div class="flex flex-col h-full">
                 <!-- Sidebar Header -->
@@ -265,8 +333,10 @@
             </div>
         </div>
 
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col content-transition lg:ml-0">
+        <div class="flex-1 flex flex-col content-transition main-content">
             <!-- Top Bar -->
             <header class="bg-white shadow-sm border-b border-gray-200">
                 <div class="flex items-center justify-between px-4 lg:px-6 py-4">
@@ -393,7 +463,7 @@
             </header>
 
             <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto">
+            <main class="flex-1 w-full main-content">
                 <!-- Flash Messages -->
                 @if(session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 mx-4 lg:mx-6 mt-4 rounded">

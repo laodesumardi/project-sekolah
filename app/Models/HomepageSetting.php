@@ -43,6 +43,12 @@ class HomepageSetting extends Model
         'about_page_principal_photo',
         'about_page_school_photo',
         'about_page_organization_chart',
+        'about_page_background_image',
+        'curriculum_page_background_image',
+        'extracurricular_page_background_image',
+        'gallery_page_background_image',
+        'news_page_background_image',
+        'ppdb_page_background_image',
         'about_page_achievements',
         'about_page_facilities_description',
         'organization_structure_title',
@@ -85,7 +91,10 @@ class HomepageSetting extends Model
      */
     public function getHeroBackgroundImageUrlAttribute()
     {
-        return $this->hero_background_image ? asset('storage/' . $this->hero_background_image) : null;
+        if ($this->hero_background_image) {
+            return asset('storage/' . $this->hero_background_image);
+        }
+        return asset('images/placeholders/placeholder-hero-background.jpg');
     }
 
     /**
@@ -134,6 +143,54 @@ class HomepageSetting extends Model
     public function getAboutPageOrganizationChartUrlAttribute()
     {
         return $this->about_page_organization_chart ? asset('storage/' . $this->about_page_organization_chart) : asset('images/placeholder-org-chart.jpg');
+    }
+
+    /**
+     * Get the about page background image URL.
+     */
+    public function getAboutPageBackgroundImageUrlAttribute()
+    {
+        return $this->about_page_background_image ? asset('storage/' . $this->about_page_background_image) : asset('images/placeholders/placeholder-about-background.jpg');
+    }
+
+    /**
+     * Get the curriculum page background image URL.
+     */
+    public function getCurriculumPageBackgroundImageUrlAttribute()
+    {
+        return $this->curriculum_page_background_image ? asset('storage/' . $this->curriculum_page_background_image) : asset('images/placeholders/placeholder-curriculum-background.jpg');
+    }
+
+    /**
+     * Get the extracurricular page background image URL.
+     */
+    public function getExtracurricularPageBackgroundImageUrlAttribute()
+    {
+        return $this->extracurricular_page_background_image ? asset('storage/' . $this->extracurricular_page_background_image) : asset('images/placeholders/placeholder-extracurricular-background.jpg');
+    }
+
+    /**
+     * Get the gallery page background image URL.
+     */
+    public function getGalleryPageBackgroundImageUrlAttribute()
+    {
+        return $this->gallery_page_background_image ? asset('storage/' . $this->gallery_page_background_image) : asset('images/placeholders/placeholder-gallery-background.jpg');
+    }
+
+    /**
+     * Get the news page background image URL.
+     */
+    public function getNewsPageBackgroundImageUrlAttribute()
+    {
+        return $this->news_page_background_image ? asset('storage/' . $this->news_page_background_image) : asset('images/placeholders/placeholder-news-background.jpg');
+    }
+
+    /**
+     * Get the PPDB page background image URL.
+     */
+    public function getPpdbPageBackgroundImageUrlAttribute()
+    {
+        return $this->ppdb_page_background_image ? asset('storage/' . $this->ppdb_page_background_image) : asset('images/placeholders/placeholder-ppdb-background.jpg');
     }
 
     /**

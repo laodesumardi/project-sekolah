@@ -37,11 +37,31 @@ class News extends Model
     }
 
     /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($news) {
+            if (empty($news->slug)) {
+                $news->slug = Str::slug($news->title);
+            }
+        });
+
+        static::updating(function ($news) {
+            if ($news->isDirty('title') && empty($news->slug)) {
+                $news->slug = Str::slug($news->title);
+            }
+        });
+    }
+
+    /**
      * Get the route key for the model.
      */
     public function getRouteKeyName()
     {
-        return 'id';
+        return 'slug';
     }
 
     /**

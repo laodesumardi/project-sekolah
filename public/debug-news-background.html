@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug News Background</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .background-test {
+            height: 300px;
+            background-image: url('/images/placeholders/placeholder-news-background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            margin: 20px 0;
+            position: relative;
+        }
+        .background-test::after {
+            content: 'News Background Test';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .info { color: #17a2b8; font-weight: bold; }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        .button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Debug News Background</h1>
+        <p>Halaman ini untuk debug masalah background halaman berita.</p>
+
+        <div class="test-section">
+            <h2>🧪 Test Background Image</h2>
+            <p>Jika gambar di bawah ini muncul, maka placeholder image berfungsi:</p>
+            <div class="background-test"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔗 Test Links</h2>
+            <a href="/berita" class="button">Halaman Berita</a>
+            <a href="/admin/homepage-settings/edit" class="button">Admin Settings</a>
+            <a href="/" class="button">Homepage</a>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Checklist Debug</h2>
+            <ul>
+                <li>✅ Placeholder image ada di: <code>/images/placeholders/placeholder-news-background.jpg</code></li>
+                <li>❓ HomepageSetting data ada di database</li>
+                <li>❓ Component background-section berfungsi</li>
+                <li>❓ CSS background-image berfungsi</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🛠️ Troubleshooting Steps</h2>
+            <ol>
+                <li><strong>Check placeholder image:</strong> Lihat apakah gambar di atas muncul</li>
+                <li><strong>Check database:</strong> Pastikan ada data HomepageSetting</li>
+                <li><strong>Check admin panel:</strong> Upload gambar background di admin</li>
+                <li><strong>Check browser console:</strong> Lihat apakah ada error JavaScript</li>
+                <li><strong>Check network tab:</strong> Lihat apakah request gambar gagal</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>💡 Possible Issues</h2>
+            <ul>
+                <li><strong>No HomepageSetting data:</strong> Database kosong, perlu seeder</li>
+                <li><strong>CSS issue:</strong> Background-image tidak di-apply</li>
+                <li><strong>Path issue:</strong> URL gambar tidak benar</li>
+                <li><strong>Component issue:</strong> background-section tidak berfungsi</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 Quick Fixes</h2>
+            <div style="background: #e7f3ff; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff;">
+                <h4>1. Run Seeder (jika database kosong):</h4>
+                <code>php artisan db:seed --class=HomepageSettingSeeder</code>
+            </div>
+            <br>
+            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
+                <h4>2. Clear Cache:</h4>
+                <code>php artisan cache:clear && php artisan view:clear</code>
+            </div>
+            <br>
+            <div style="background: #d4edda; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+                <h4>3. Upload Background di Admin:</h4>
+                <p>Buka <a href="/admin/homepage-settings/edit" target="_blank">Admin Panel</a> dan upload gambar background untuk halaman berita.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

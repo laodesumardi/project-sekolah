@@ -5,22 +5,22 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-50">
-    <!-- Header Section -->
-    <div class="bg-gradient-to-r from-[#13315c] to-[#1e4d8b] text-white py-16">
-        <div class="container mx-auto px-4">
-            <!-- Breadcrumb -->
-            <nav class="mb-6">
-                <ol class="flex items-center space-x-2 text-sm">
-                    <li><a href="{{ route('home') }}" class="hover:text-blue-200">Home</a></li>
-                    <li class="text-blue-200">/</li>
-                    <li class="text-blue-200">Prestasi</li>
-                </ol>
-            </nav>
-
-            <!-- Page Title -->
-            <div class="text-center">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">Prestasi Sekolah</h1>
-                <p class="text-xl text-blue-100 mb-8">Catatan prestasi dan pencapaian siswa-siswi</p>
+    <!-- Background Section -->
+    <x-background-section 
+        section="hero"
+        title="Prestasi Sekolah"
+        subtitle="Catatan prestasi dan pencapaian siswa-siswi"
+    />
+                
+                <!-- Statistics Link -->
+                <div class="mb-8">
+                    <a href="{{ route('achievements.statistics') }}" class="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition-colors duration-200">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Lihat Statistik & Pencapaian
+                    </a>
+                </div>
                 
                 <!-- Hero Stats -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
@@ -171,7 +171,7 @@
             @if($achievements->count() > 0)
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($achievements as $achievement)
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-{{ $achievement->level_color }}-500">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 @if($achievement->achievement_level === 'sekolah') border-blue-500 @elseif($achievement->achievement_level === 'kecamatan') border-green-500 @elseif($achievement->achievement_level === 'kota') border-yellow-500 @elseif($achievement->achievement_level === 'provinsi') border-orange-500 @elseif($achievement->achievement_level === 'nasional') border-red-500 @elseif($achievement->achievement_level === 'internasional') border-purple-500 @else border-gray-500 @endif">
                     <!-- Image Section -->
                     <div class="relative h-48 overflow-hidden">
                         @if($achievement->certificate_image)
@@ -186,7 +186,7 @@
                         
                         <!-- Level Badge -->
                         <div class="absolute top-4 left-4">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold text-white bg-{{ $achievement->level_color }}-500/95 backdrop-blur-sm">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold text-white @if($achievement->achievement_level === 'sekolah') bg-blue-500/95 @elseif($achievement->achievement_level === 'kecamatan') bg-green-500/95 @elseif($achievement->achievement_level === 'kota') bg-yellow-500/95 @elseif($achievement->achievement_level === 'provinsi') bg-orange-500/95 @elseif($achievement->achievement_level === 'nasional') bg-red-500/95 @elseif($achievement->achievement_level === 'internasional') bg-purple-500/95 @else bg-gray-500/95 @endif backdrop-blur-sm">
                                 <i class="fas fa-trophy mr-1"></i>{{ strtoupper($achievement->achievement_level) }}
                             </span>
                         </div>
@@ -200,8 +200,8 @@
                         
                         <!-- Rank Badge (on hover) -->
                         <div class="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                            <div class="bg-white rounded-full p-4 border-4 border-{{ $achievement->level_color }}-500">
-                                <div class="text-2xl font-bold text-{{ $achievement->level_color }}-500">{{ $achievement->rank }}</div>
+                            <div class="bg-white rounded-full p-4 border-4 @if($achievement->achievement_level === 'sekolah') border-blue-500 @elseif($achievement->achievement_level === 'kecamatan') border-green-500 @elseif($achievement->achievement_level === 'kota') border-yellow-500 @elseif($achievement->achievement_level === 'provinsi') border-orange-500 @elseif($achievement->achievement_level === 'nasional') border-red-500 @elseif($achievement->achievement_level === 'internasional') border-purple-500 @else border-gray-500 @endif">
+                                <div class="text-2xl font-bold @if($achievement->achievement_level === 'sekolah') text-blue-500 @elseif($achievement->achievement_level === 'kecamatan') text-green-500 @elseif($achievement->achievement_level === 'kota') text-yellow-500 @elseif($achievement->achievement_level === 'provinsi') text-orange-500 @elseif($achievement->achievement_level === 'nasional') text-red-500 @elseif($achievement->achievement_level === 'internasional') text-purple-500 @else text-gray-500 @endif">{{ $achievement->rank }}</div>
                             </div>
                         </div>
                     </div>
@@ -248,7 +248,7 @@
                                 <span>{{ $achievement->view_count }} views</span>
                             </div>
                             <a href="{{ route('achievements.show', $achievement->slug) }}" 
-                               class="inline-flex items-center px-4 py-2 border-2 border-{{ $achievement->level_color }}-500 text-{{ $achievement->level_color }}-500 rounded-lg hover:bg-{{ $achievement->level_color }}-500 hover:text-white transition-colors">
+                               class="inline-flex items-center px-4 py-2 border-2 @if($achievement->achievement_level === 'sekolah') border-blue-500 text-blue-500 hover:bg-blue-500 @elseif($achievement->achievement_level === 'kecamatan') border-green-500 text-green-500 hover:bg-green-500 @elseif($achievement->achievement_level === 'kota') border-yellow-500 text-yellow-500 hover:bg-yellow-500 @elseif($achievement->achievement_level === 'provinsi') border-orange-500 text-orange-500 hover:bg-orange-500 @elseif($achievement->achievement_level === 'nasional') border-red-500 text-red-500 hover:bg-red-500 @elseif($achievement->achievement_level === 'internasional') border-purple-500 text-purple-500 hover:bg-purple-500 @else border-gray-500 text-gray-500 hover:bg-gray-500 @endif hover:text-white transition-colors rounded-lg">
                                 Lihat Detail <i class="fas fa-arrow-right ml-2"></i>
                             </a>
                         </div>
@@ -360,6 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endsection
+
 
 
 

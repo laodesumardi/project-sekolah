@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Login Logo Update</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #f0f4ff 100%);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .info { color: #17a2b8; font-weight: bold; }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        .button:hover { background: #0056b3; }
+        .code {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .logo-preview {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            background: #f3f4f6;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏫 Test Login Logo Update</h1>
+        <p>Halaman ini untuk memverifikasi penggantian logo di halaman login dengan logo sekolah yang sebenarnya.</p>
+
+        <div class="test-section">
+            <h2>✅ Perubahan Logo yang Dilakukan</h2>
+            <ul>
+                <li class="success">✅ Logo sekolah asli (logo.png) digunakan</li>
+                <li class="success">✅ Menghilangkan icon lock yang bukan logo sekolah</li>
+                <li class="success">✅ Ukuran logo diperbesar (h-20 w-20)</li>
+                <li class="success">✅ Object-contain untuk menjaga proporsi</li>
+                <li class="success">✅ Alt text yang sesuai</li>
+                <li class="success">✅ "SMP Negeri 01 Namrole" ditampilkan dengan jelas</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🏫 Preview Logo Sekolah</h2>
+            <div class="logo-preview">
+                <div class="logo-placeholder">
+                    Logo Sekolah<br>SMP Negeri 01 Namrole
+                </div>
+                <h2 style="font-size: 24px; font-weight: bold; color: #1f2937; margin-bottom: 8px;">Admin Portal</h2>
+                <p style="color: #374151; font-weight: 600; margin-bottom: 4px;">SMP Negeri 01 Namrole</p>
+                <p style="color: #6b7280; font-size: 14px;">Masuk ke dashboard admin</p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Kode yang Diperbaiki</h2>
+            <div class="code">
+<strong>Sebelum (Logo Icon):</strong>
+&lt;div class="mx-auto h-16 w-16 bg-gradient-to-r from-primary-500 to-indigo-600 rounded-full flex items-center justify-center mb-4"&gt;
+    &lt;svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"&gt;
+        &lt;path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/&gt;
+    &lt;/svg&gt;
+&lt;/div&gt;
+
+<strong>Sesudah (Logo Sekolah):</strong>
+&lt;div class="mx-auto h-20 w-20 mb-4"&gt;
+    &lt;img src="{{ asset('images/logos/logo.png') }}" 
+         alt="Logo SMP Negeri 01 Namrole" 
+         class="h-20 w-20 object-contain mx-auto"&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎨 Fitur Logo Baru</h2>
+            <ul>
+                <li><strong>Logo Asli:</strong> Menggunakan logo sekolah yang sebenarnya</li>
+                <li><strong>Ukuran:</strong> h-20 w-20 (lebih besar dari sebelumnya)</li>
+                <li><strong>Object-contain:</strong> Menjaga proporsi logo</li>
+                <li><strong>Alt Text:</strong> "Logo SMP Negeri 01 Namrole"</li>
+                <li><strong>Branding:</strong> "SMP Negeri 01 Namrole" ditampilkan dengan font-semibold</li>
+                <li><strong>Responsive:</strong> Logo tetap terlihat baik di semua device</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Test Links</h2>
+            <a href="/login" class="button">Halaman Login</a>
+            <a href="/" class="button">Homepage</a>
+            <a href="/admin" class="button">Admin Dashboard</a>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Cara Verifikasi</h2>
+            <ol>
+                <li>Buka halaman <a href="/login" target="_blank">/login</a></li>
+                <li>Pastikan logo sekolah asli muncul (bukan icon lock)</li>
+                <li>Verifikasi ukuran logo sudah lebih besar</li>
+                <li>Pastikan "SMP Negeri 01 Namrole" ditampilkan dengan jelas</li>
+                <li>Test responsive design di mobile</li>
+                <li>Pastikan logo tidak terdistorsi</li>
+                <li>Verifikasi alt text pada logo</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>📁 File Logo</h2>
+            <p><strong>Logo yang digunakan:</strong> <code>public/images/logos/logo.png</code></p>
+            <p><strong>Alternatif:</strong> <code>public/images/logos/logo.svg</code> (jika PNG tidak tersedia)</p>
+            <p><strong>Path di template:</strong> <code>{{ asset('images/logos/logo.png') }}</code></p>
+        </div>
+
+        <div class="test-section">
+            <h2>✅ Hasil Implementasi</h2>
+            <ul>
+                <li class="success">✅ Logo sekolah asli ditampilkan</li>
+                <li class="success">✅ Icon lock yang bukan logo sekolah dihilangkan</li>
+                <li class="success">✅ Ukuran logo diperbesar untuk visibilitas</li>
+                <li class="success">✅ Branding sekolah ditampilkan dengan jelas</li>
+                <li class="success">✅ Logo responsive untuk semua device</li>
+                <li class="success">✅ Alt text yang sesuai untuk accessibility</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Status</h2>
+            <p class="success">✅ <strong>Login Logo Update - COMPLETED</strong></p>
+            <p>Logo sekolah asli berhasil ditampilkan di halaman login dengan branding "SMP Negeri 01 Namrole" yang jelas.</p>
+        </div>
+    </div>
+</body>
+</html>

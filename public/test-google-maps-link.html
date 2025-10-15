@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Google Maps Link</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .info { color: #17a2b8; font-weight: bold; }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        .button:hover { background: #0056b3; }
+        .maps-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        .maps-link:hover { background: #c82333; }
+        .code {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ Test Google Maps Link</h1>
+        <p>Halaman ini untuk memverifikasi penambahan link Google Maps di halaman yang menyimpan lokasi.</p>
+
+        <div class="test-section">
+            <h2>✅ Link Google Maps Ditambahkan</h2>
+            <ul>
+                <li class="success">✅ Link Google Maps ditambahkan di halaman Kontak</li>
+                <li class="success">✅ Link Google Maps ditambahkan di halaman Tentang Kami</li>
+                <li class="success">✅ Link membuka di tab baru (target="_blank")</li>
+                <li class="success">✅ Styling konsisten dengan desain website</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🔗 Link Google Maps</h2>
+            <p><strong>URL:</strong> <code>https://maps.app.goo.gl/MayRvY9qK43PTnbK9</code></p>
+            <a href="https://maps.app.goo.gl/MayRvY9qK43PTnbK9" target="_blank" class="maps-link">
+                🗺️ Lihat di Google Maps
+            </a>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 File yang Diperbaiki</h2>
+            <ul>
+                <li><strong>resources/views/frontend/contact/index.blade.php</strong> - Ditambahkan link Google Maps di bagian alamat</li>
+                <li><strong>resources/views/frontend/about/index.blade.php</strong> - Ditambahkan link Google Maps di bagian "Kontak & Lokasi"</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🎨 Fitur Link Google Maps</h2>
+            <div class="code">
+<strong>Styling:</strong>
+- Background: Merah (#dc3545)
+- Hover: Merah gelap (#c82333)
+- Icon: Google Maps pin
+- Text: "Lihat di Google Maps"
+- Target: _blank (buka di tab baru)
+
+<strong>HTML:</strong>
+&lt;a href="https://maps.app.goo.gl/MayRvY9qK43PTnbK9" 
+   target="_blank" 
+   class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"&gt;
+    &lt;svg&gt;...&lt;/svg&gt;
+    Lihat di Google Maps
+&lt;/a&gt;
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Test Links</h2>
+            <a href="/kontak" class="button">Halaman Kontak</a>
+            <a href="/tentang-kami" class="button">Halaman Tentang Kami</a>
+            <a href="/" class="button">Homepage</a>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Cara Verifikasi</h2>
+            <ol>
+                <li>Buka halaman <a href="/kontak" target="_blank">/kontak</a></li>
+                <li>Scroll ke bagian "Informasi Kontak"</li>
+                <li>Lihat bagian "Alamat" - harus ada tombol merah "Lihat di Google Maps"</li>
+                <li>Klik tombol tersebut - harus membuka Google Maps di tab baru</li>
+                <li>Lakukan hal yang sama di halaman <a href="/tentang-kami" target="_blank">/tentang-kami</a></li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>✅ Hasil Implementasi</h2>
+            <ul>
+                <li class="success">✅ Link Google Maps berhasil ditambahkan</li>
+                <li class="success">✅ Link membuka di tab baru untuk UX yang baik</li>
+                <li class="success">✅ Styling konsisten dengan desain website</li>
+                <li class="success">✅ Icon Google Maps pin untuk identifikasi yang jelas</li>
+                <li class="success">✅ Responsive design untuk mobile dan desktop</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Status</h2>
+            <p class="success">✅ <strong>Google Maps Link - COMPLETED</strong></p>
+            <p>Link Google Maps berhasil ditambahkan di halaman Kontak dan Tentang Kami.</p>
+        </div>
+    </div>
+</body>
+</html>

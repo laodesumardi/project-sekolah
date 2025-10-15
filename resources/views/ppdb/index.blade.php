@@ -5,21 +5,16 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-20">
-    <div class="container mx-auto px-4">
-        <div class="text-center">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6">
-                PPDB {{ $setting->academicYear->year }}
-            </h1>
-            <p class="text-xl md:text-2xl mb-8">
-                Penerimaan Peserta Didik Baru SMP Negeri 01 Namrole
-            </p>
-            
-            @php
-                $status = $setting->getRegistrationStatus();
-            @endphp
+<x-background-section 
+    section="ppdb"
+    title="PPDB {{ $setting->academicYear->year }}" 
+    subtitle="Penerimaan Peserta Didik Baru SMP Negeri 01 Namrole" 
+>
+    @php
+        $status = $setting->getRegistrationStatus();
+    @endphp
 
-            @if($status === 'open')
+    @if($status === 'open')
                 <!-- Registration Status Cards -->
                 <div class="status-cards-container mb-8 max-w-4xl mx-auto">
                     <div class="status-cards-grid">
@@ -76,10 +71,8 @@
                     <h3 class="text-2xl font-semibold mb-2">Status Tidak Diketahui</h3>
                     <p class="text-lg">Status pendaftaran tidak dapat ditentukan</p>
                 </div>
-            @endif
-        </div>
-    </div>
-</section>
+    @endif
+</x-background-section>
 
 <!-- Statistics Section -->
 <section class="py-16 bg-gray-50">

@@ -10,7 +10,8 @@
 ]" />
 
 <!-- Page Header -->
-<x-page-header 
+<x-background-section 
+    section="news"
     title="Berita Sekolah" 
     subtitle="Informasi terkini dan berita terbaru dari SMP Negeri 01 Namrole" 
 />

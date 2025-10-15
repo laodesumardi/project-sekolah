@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test News Section Size</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Background Section Styles */
+        .background-section {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        
+        .background-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
+        .background-section .relative {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Overlay tambahan untuk kontras yang lebih baik */
+        .background-section-overlay {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Responsive background */
+        @media (max-width: 768px) {
+            .background-section {
+                background-attachment: scroll;
+            }
+        }
+        
+        /* Animasi fade in untuk background section */
+        @keyframes fadeInBackgroundSection {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .background-section {
+            animation: fadeInBackgroundSection 1s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Test News Section Size</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Before -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Sebelum (Normal Size)</h2>
+                    
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-blue-900 mb-2">Ukuran Normal</h3>
+                        <div class="text-sm text-blue-800 space-y-2">
+                            <div class="bg-white p-3 rounded border-l-4 border-blue-500">
+                                <strong>Padding:</strong><br>
+                                • <code>py-16</code> (64px top/bottom)<br>
+                                • <code>lg:py-20</code> (80px top/bottom)<br>
+                                • Ukuran standar untuk semua section
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- After -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Sesudah (Extended Size)</h2>
+                    
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-green-900 mb-2">Ukuran Memanjang</h3>
+                        <div class="text-sm text-green-800 space-y-2">
+                            <div class="bg-white p-3 rounded border-l-4 border-green-500">
+                                <strong>Padding:</strong><br>
+                                • <code>py-20</code> (80px top/bottom)<br>
+                                • <code>lg:py-24</code> (96px top/bottom)<br>
+                                • Khusus untuk section news
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center space-x-4">
+                <a href="http://127.0.0.1:8000/berita" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-newspaper mr-2"></i>
+                    Test Halaman Berita
+                </a>
+                <a href="http://127.0.0.1:8000/admin/homepage-settings/edit" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-cog mr-2"></i>
+                    Admin Panel
+                </a>
+            </div>
+        </div>
+        
+        <!-- Demo Comparison -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Demo Perbandingan Ukuran</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Normal Size -->
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-gray-900">Normal Size (py-16)</h3>
+                    <div class="background-section rounded-lg overflow-hidden relative" 
+                         style="background-image: url('/images/placeholders/placeholder-news-background.jpg');">
+                        <div class="absolute inset-0 background-section-overlay"></div>
+                        <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'2\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+                        
+                        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+                            <div class="text-white">
+                                <h1 class="text-2xl font-bold text-white mb-2">Normal Size</h1>
+                                <p class="text-sm text-gray-200">py-16 (64px padding)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Extended Size -->
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-gray-900">Extended Size (py-20 lg:py-24)</h3>
+                    <div class="background-section rounded-lg overflow-hidden relative" 
+                         style="background-image: url('/images/placeholders/placeholder-news-background.jpg');">
+                        <div class="absolute inset-0 background-section-overlay"></div>
+                        <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'2\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+                        
+                        <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-24 text-center">
+                            <div class="text-white">
+                                <h1 class="text-2xl font-bold text-white mb-2">Extended Size</h1>
+                                <p class="text-sm text-gray-200">py-20 lg:py-24 (80px/96px padding)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Implementation -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Detail Implementasi Teknis</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">CSS Changes:</h3>
+                    <div class="text-sm text-gray-700 space-y-1">
+                        <p>• Conditional padding based on section</p>
+                        <p>• <code>{{ $section === 'news' ? 'py-20 lg:py-24' : 'py-16' }}</code></p>
+                        <p>• Only applies to news section</p>
+                        <p>• Status: ✅ Implemented</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">Component Updates:</h3>
+                    <div class="text-sm text-gray-700 space-y-1">
+                        <p>• <code>x-background-section</code> component</p>
+                        <p>• Dynamic padding based on section prop</p>
+                        <p>• News section gets extended padding</p>
+                        <p>• Status: ✅ Implemented</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Testing Steps -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Langkah Testing</h2>
+            
+            <div class="bg-yellow-50 rounded-lg p-4">
+                <h3 class="font-semibold text-yellow-900 mb-2">Cara Test Perubahan:</h3>
+                <div class="text-sm text-yellow-800 space-y-2">
+                    <p>1. <strong>Buka Halaman Berita:</strong> <code>http://127.0.0.1:8000/berita</code></p>
+                    <p>2. <strong>Perhatikan Section Header:</strong> Background section harus lebih tinggi</p>
+                    <p>3. <strong>Bandingkan dengan halaman lain:</strong> Coba buka halaman lain untuk melihat perbedaan</p>
+                    <p>4. <strong>Test Responsive:</strong> Coba di mobile dan desktop</p>
+                    <p>5. <strong>Verify:</strong> Section news harus memiliki padding yang lebih besar</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

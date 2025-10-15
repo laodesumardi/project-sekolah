@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Login Redesign</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #f0f4ff 100%);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .info { color: #17a2b8; font-weight: bold; }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        .button:hover { background: #0056b3; }
+        .code {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .login-preview {
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #f0f4ff 100%);
+            padding: 40px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .login-card {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+        }
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .form-group {
+            margin: 20px 0;
+            text-align: left;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: #f9fafb;
+            transition: all 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Test Login Redesign</h1>
+        <p>Halaman ini untuk memverifikasi redesign halaman login yang lebih modern dan profesional.</p>
+
+        <div class="test-section">
+            <h2>✅ Perubahan yang Dilakukan</h2>
+            <ul>
+                <li class="success">✅ Menghilangkan informasi demo accounts</li>
+                <li class="success">✅ Menghilangkan link "Belum punya akun? Daftar di sini"</li>
+                <li class="success">✅ Mengubah judul menjadi "Admin Portal"</li>
+                <li class="success">✅ Menambahkan logo sekolah dengan icon</li>
+                <li class="success">✅ Background gradient yang modern</li>
+                <li class="success">✅ Card design dengan shadow dan border radius</li>
+                <li class="success">✅ Icon di input field (email & password)</li>
+                <li class="success">✅ Button dengan gradient dan hover effect</li>
+                <li class="success">✅ Typography yang lebih baik</li>
+                <li class="success">✅ Responsive design</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🎨 Preview Login Design</h2>
+            <div class="login-preview">
+                <div class="login-card">
+                    <div class="logo">
+                        <svg width="32" height="32" fill="white" viewBox="0 0 24 24">
+                            <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    </div>
+                    <h2 style="font-size: 24px; font-weight: bold; color: #1f2937; margin-bottom: 8px;">Admin Portal</h2>
+                    <p style="color: #6b7280; margin-bottom: 4px;">SMP Negeri 01 Namrole</p>
+                    <p style="color: #9ca3af; font-size: 14px; margin-bottom: 30px;">Masuk ke dashboard admin</p>
+                    
+                    <div class="form-group">
+                        <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 8px; font-size: 14px;">Email</label>
+                        <input type="email" class="form-input" placeholder="admin@smpn01namrole.sch.id" style="padding-left: 40px;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 8px; font-size: 14px;">Password</label>
+                        <input type="password" class="form-input" placeholder="Masukkan password" style="padding-left: 40px;">
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+                        <label style="display: flex; align-items: center; font-size: 14px; color: #6b7280;">
+                            <input type="checkbox" style="margin-right: 8px;"> Ingat saya
+                        </label>
+                        <a href="#" style="color: #3b82f6; text-decoration: none; font-size: 14px; font-weight: 500;">Lupa password?</a>
+                    </div>
+                    
+                    <button class="login-btn">Masuk ke Dashboard</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Fitur Baru Login</h2>
+            <div class="code">
+<strong>Design Features:</strong>
+- Background gradient: from-blue-50 via-white to-indigo-50
+- Logo dengan icon lock dalam circle gradient
+- Card dengan shadow-xl dan rounded-2xl
+- Input fields dengan icon dan placeholder
+- Button dengan gradient dan hover effects
+- Typography yang konsisten
+- Responsive design untuk mobile
+
+<strong>Removed Elements:</strong>
+- Demo accounts information
+- Register link ("Belum punya akun? Daftar di sini")
+- Unnecessary text clutter
+
+<strong>New Elements:</strong>
+- School branding (SMP Negeri 01 Namrole)
+- Professional admin portal title
+- Modern card design
+- Icon integration
+- Better visual hierarchy
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Test Links</h2>
+            <a href="/login" class="button">Halaman Login</a>
+            <a href="/" class="button">Homepage</a>
+            <a href="/admin" class="button">Admin Dashboard</a>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Cara Verifikasi</h2>
+            <ol>
+                <li>Buka halaman <a href="/login" target="_blank">/login</a></li>
+                <li>Pastikan tampilan sudah modern dengan gradient background</li>
+                <li>Verifikasi logo dan branding sekolah muncul</li>
+                <li>Pastikan tidak ada informasi demo accounts</li>
+                <li>Pastikan tidak ada link "Daftar di sini"</li>
+                <li>Test responsive design di mobile</li>
+                <li>Test hover effects pada button</li>
+                <li>Verifikasi icon di input fields</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>✅ Hasil Implementasi</h2>
+            <ul>
+                <li class="success">✅ Tampilan login lebih modern dan profesional</li>
+                <li class="success">✅ Informasi demo accounts dihilangkan</li>
+                <li class="success">✅ Link registrasi dihilangkan (khusus admin)</li>
+                <li class="success">✅ Branding sekolah ditambahkan</li>
+                <li class="success">✅ Design konsisten dengan website</li>
+                <li class="success">✅ User experience yang lebih baik</li>
+                <li class="success">✅ Responsive untuk semua device</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Status</h2>
+            <p class="success">✅ <strong>Login Redesign - COMPLETED</strong></p>
+            <p>Halaman login berhasil di-redesign dengan tampilan yang lebih modern, profesional, dan sesuai untuk admin portal.</p>
+        </div>
+    </div>
+</body>
+</html>

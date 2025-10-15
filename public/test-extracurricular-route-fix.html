@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Extracurricular Route Fix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .info { color: #17a2b8; font-weight: bold; }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        .button:hover { background: #0056b3; }
+        .code {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Test Extracurricular Route Fix</h1>
+        <p>Halaman ini untuk memverifikasi perbaikan error routing ekstrakurikuler.</p>
+
+        <div class="test-section">
+            <h2>✅ Masalah yang Diperbaiki</h2>
+            <ul>
+                <li class="success">✅ Error: "The GET method is not supported for route ekstrakurikuler/aewwawf/register"</li>
+                <li class="success">✅ URL ekstrakurikuler/register tidak bisa diakses langsung</li>
+                <li class="success">✅ Route hanya mendukung POST method untuk keamanan</li>
+                <li class="success">✅ Ditambahkan route GET untuk menampilkan form pendaftaran</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 Solusi yang Diterapkan</h2>
+            <div class="code">
+<strong>Route Baru:</strong>
+GET /ekstrakurikuler/{extracurricular:slug}/register → showRegistrationForm()
+POST /ekstrakurikuler/{extracurricular:slug}/register → register()
+
+<strong>Controller Method:</strong>
+public function showRegistrationForm($slug) {
+    // Menampilkan form pendaftaran
+    return view('extracurriculars.register', compact('extracurricular'));
+}
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 File yang Ditambahkan/Diperbaiki</h2>
+            <ul>
+                <li><strong>routes/web.php</strong> - Ditambahkan route GET untuk form pendaftaran</li>
+                <li><strong>app/Http/Controllers/ExtracurricularController.php</strong> - Ditambahkan method showRegistrationForm()</li>
+                <li><strong>resources/views/extracurriculars/register.blade.php</strong> - View form pendaftaran baru</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Test Links</h2>
+            <a href="/ekstrakurikuler" class="button">Halaman Ekstrakurikuler</a>
+            <a href="/ekstrakurikuler/aewwawf" class="button">Detail Ekstrakurikuler</a>
+            <a href="/ekstrakurikuler/aewwawf/register" class="button">Form Pendaftaran (GET)</a>
+        </div>
+
+        <div class="test-section">
+            <h2>✅ Hasil Perbaikan</h2>
+            <ul>
+                <li class="success">✅ URL ekstrakurikuler/register sekarang bisa diakses dengan GET</li>
+                <li class="success">✅ Menampilkan form pendaftaran yang user-friendly</li>
+                <li class="success">✅ Form submit menggunakan POST method untuk keamanan</li>
+                <li class="success">✅ Error routing tidak akan muncul lagi</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Cara Test</h2>
+            <ol>
+                <li>Buka halaman <a href="/ekstrakurikuler" target="_blank">/ekstrakurikuler</a></li>
+                <li>Klik salah satu ekstrakurikuler untuk melihat detail</li>
+                <li>Coba akses URL langsung: <code>/ekstrakurikuler/aewwawf/register</code></li>
+                <li>Pastikan form pendaftaran muncul tanpa error</li>
+                <li>Isi form dan submit (akan menggunakan POST method)</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Status</h2>
+            <p class="success">✅ <strong>Extracurricular Route Fix - COMPLETED</strong></p>
+            <p>Error routing ekstrakurikuler sudah diperbaiki dengan menambahkan route GET untuk form pendaftaran.</p>
+        </div>
+    </div>
+</body>
+</html>

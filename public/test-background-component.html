@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Background Component</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .background-section {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+            min-height: 400px;
+        }
+        .background-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        .background-section .relative {
+            position: relative;
+            z-index: 2;
+        }
+        .test-content {
+            padding: 100px 20px;
+            text-align: center;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Test Background Section -->
+    <section class="background-section" 
+             style="background-image: url('/images/placeholders/placeholder-news-background.jpg');">
+        <div class="relative">
+            <div class="test-content">
+                <h1 style="font-size: 3rem; margin-bottom: 1rem;">Test Background Section</h1>
+                <p style="font-size: 1.2rem;">Jika background image muncul, maka CSS berfungsi dengan baik</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <h1>🧪 Test Background Component</h1>
+        <p>Halaman ini untuk test apakah background section berfungsi dengan baik.</p>
+
+        <div style="margin: 20px 0; padding: 20px; background: #f9f9f9; border-radius: 8px;">
+            <h2>✅ Test Results</h2>
+            <ul>
+                <li><strong>Background Image:</strong> <span id="bg-status">Checking...</span></li>
+                <li><strong>CSS Classes:</strong> <span id="css-status">Checking...</span></li>
+                <li><strong>Image URL:</strong> <span id="url-status">Checking...</span></li>
+            </ul>
+        </div>
+
+        <div style="margin: 20px 0; padding: 20px; background: #e7f3ff; border-radius: 8px;">
+            <h2>🔧 Next Steps</h2>
+            <a href="/berita" class="button">Check Berita Page</a>
+            <a href="/admin/homepage-settings/edit" class="button">Admin Panel</a>
+            <a href="/debug-news-background.html" class="button">Debug Page</a>
+        </div>
+    </div>
+
+    <script>
+        // Test background image loading
+        const img = new Image();
+        img.onload = function() {
+            document.getElementById('bg-status').innerHTML = '✅ Background image loaded successfully';
+            document.getElementById('bg-status').style.color = '#28a745';
+        };
+        img.onerror = function() {
+            document.getElementById('bg-status').innerHTML = '❌ Background image failed to load';
+            document.getElementById('bg-status').style.color = '#dc3545';
+        };
+        img.src = '/images/placeholders/placeholder-news-background.jpg';
+
+        // Test CSS classes
+        const section = document.querySelector('.background-section');
+        const computedStyle = window.getComputedStyle(section);
+        const bgImage = computedStyle.backgroundImage;
+        
+        if (bgImage && bgImage !== 'none') {
+            document.getElementById('css-status').innerHTML = '✅ CSS background-image applied';
+            document.getElementById('css-status').style.color = '#28a745';
+        } else {
+            document.getElementById('css-status').innerHTML = '❌ CSS background-image not applied';
+            document.getElementById('css-status').style.color = '#dc3545';
+        }
+
+        // Test URL
+        document.getElementById('url-status').innerHTML = '/images/placeholders/placeholder-news-background.jpg';
+    </script>
+</body>
+</html>

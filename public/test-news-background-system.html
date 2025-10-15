@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test News Background System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+        .code {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test News Background System</h1>
+        <p>Halaman ini untuk menguji sistem background halaman berita yang dapat diedit dari admin panel.</p>
+
+        <div class="test-section">
+            <h2>✅ Implementasi yang Sudah Selesai</h2>
+            <ul>
+                <li class="success">✅ Model HomepageSetting sudah memiliki field news_page_background_image</li>
+                <li class="success">✅ Accessor getNewsPageBackgroundImageUrlAttribute() sudah ada</li>
+                <li class="success">✅ Controller sudah memiliki validation rules untuk news_page_background_image</li>
+                <li class="success">✅ Controller sudah memiliki handling untuk upload dan removal</li>
+                <li class="success">✅ Admin form sudah memiliki section untuk upload news background</li>
+                <li class="success">✅ JavaScript functions sudah ditambahkan untuk news background</li>
+                <li class="success">✅ Component background-section sudah mendukung case 'news'</li>
+                <li class="success">✅ Halaman berita sudah menggunakan x-background-section</li>
+                <li class="success">✅ Placeholder image sudah dibuat</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 Fitur yang Tersedia</h2>
+            <ul>
+                <li><strong>Upload Background:</strong> Admin dapat mengupload gambar background untuk halaman berita</li>
+                <li><strong>Preview Image:</strong> Preview gambar yang akan diupload</li>
+                <li><strong>Remove Image:</strong> Hapus gambar background yang sudah ada</li>
+                <li><strong>Cancel Upload:</strong> Batalkan upload gambar baru</li>
+                <li><strong>Validation:</strong> Validasi file type dan size (max 2MB)</li>
+                <li><strong>Dynamic Display:</strong> Background ditampilkan secara dinamis di halaman berita</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📝 Cara Penggunaan</h2>
+            <ol>
+                <li>Login ke admin panel</li>
+                <li>Buka halaman <code>/admin/homepage-settings/edit</code></li>
+                <li>Scroll ke bagian "Gambar Background Halaman Berita"</li>
+                <li>Upload gambar background baru atau hapus yang sudah ada</li>
+                <li>Simpan perubahan</li>
+                <li>Lihat hasil di halaman <code>/berita</code></li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Test Links</h2>
+            <a href="/admin/homepage-settings/edit" class="button">Admin Homepage Settings</a>
+            <a href="/berita" class="button">Halaman Berita</a>
+            <a href="/" class="button">Homepage</a>
+        </div>
+
+        <div class="test-section">
+            <h2>📋 Database Schema</h2>
+            <div class="code">
+homepage_settings table:
+- news_page_background_image (string, nullable)
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎨 CSS Classes</h2>
+            <div class="code">
+.background-section {
+    background-image: url('{{ $backgroundImage }}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.background-section-overlay {
+    background: rgba(0, 0, 0, 0.5);
+}
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>⚡ JavaScript Functions</h2>
+            <div class="code">
+- previewNewsBackground(input)
+- removeNewNewsBackground()
+- removeCurrentNewsBackground()
+- cancelRemoveNewsBackground()
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Troubleshooting</h2>
+            <ul>
+                <li><strong>Gambar tidak muncul:</strong> Pastikan symlink storage sudah dibuat</li>
+                <li><strong>Upload gagal:</strong> Periksa permission folder storage</li>
+                <li><strong>Background tidak berubah:</strong> Clear cache browser</li>
+                <li><strong>JavaScript error:</strong> Periksa console browser</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Status Implementasi</h2>
+            <p class="success">✅ <strong>News Background System - COMPLETED</strong></p>
+            <p>Sistem background halaman berita sudah berhasil diimplementasikan dengan fitur lengkap:</p>
+            <ul>
+                <li>✅ Upload dan preview gambar</li>
+                <li>✅ Hapus gambar yang sudah ada</li>
+                <li>✅ Validasi file type dan size</li>
+                <li>✅ Display dinamis di halaman berita</li>
+                <li>✅ Admin interface yang user-friendly</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

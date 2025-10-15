@@ -19,16 +19,6 @@
             <!-- Background Pattern -->
             <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'2\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
             
-            <!-- Logo Section -->
-            <div class="relative z-10 mb-8">
-                <a href="/" class="flex items-center space-x-3 text-white hover:text-yellow-300 transition-colors duration-300">
-                    <img src="{{ asset('logo.png') }}" alt="Logo Sekolah" class="h-16 w-16 object-contain">
-                    <div>
-                        <h1 class="text-2xl font-bold">SMP Negeri 01</h1>
-                        <p class="text-sm text-gray-200">Namrole</p>
-                    </div>
-                </a>
-            </div>
 
             <!-- Auth Card -->
             <div class="relative z-10 w-full sm:max-w-md mt-6 px-6 py-8 bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden sm:rounded-2xl border border-white/20">

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Achievement Statistics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen py-8">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Test Achievement Statistics</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Statistics Preview -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Statistics Preview</h2>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-blue-50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-blue-600 mb-1">324</div>
+                            <div class="text-sm text-gray-600">Total Siswa</div>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-green-600 mb-1">24</div>
+                            <div class="text-sm text-gray-600">Tenaga Pendidik</div>
+                        </div>
+                        <div class="bg-yellow-50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-yellow-600 mb-1">45</div>
+                            <div class="text-sm text-gray-600">Prestasi</div>
+                        </div>
+                        <div class="bg-purple-50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-purple-600 mb-1">40</div>
+                            <div class="text-sm text-gray-600">Tahun Berdiri</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Achievement Categories -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Achievement Categories</h2>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-book text-white text-sm"></i>
+                                </div>
+                                <span class="font-medium text-gray-700">Akademik</span>
+                            </div>
+                            <span class="text-lg font-bold text-blue-600">89</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-running text-white text-sm"></i>
+                                </div>
+                                <span class="font-medium text-gray-700">Olahraga</span>
+                            </div>
+                            <span class="text-lg font-bold text-green-600">34</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-palette text-white text-sm"></i>
+                                </div>
+                                <span class="font-medium text-gray-700">Seni</span>
+                            </div>
+                            <span class="text-lg font-bold text-purple-600">23</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <a href="http://127.0.0.1:8000/prestasi/statistik" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-external-link-alt mr-2"></i>
+                    Buka Halaman Statistik Prestasi
+                </a>
+            </div>
+        </div>
+        
+        <!-- Counter Animation Test -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Counter Animation Test</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl font-bold text-gray-900 mb-2" data-count="324">0</div>
+                    <div class="text-sm text-gray-600">Total Siswa</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl font-bold text-gray-900 mb-2" data-count="24">0</div>
+                    <div class="text-sm text-gray-600">Tenaga Pendidik</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl font-bold text-gray-900 mb-2" data-count="45">0</div>
+                    <div class="text-sm text-gray-600">Prestasi</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl font-bold text-gray-900 mb-2" data-count="40">0</div>
+                    <div class="text-sm text-gray-600">Tahun Berdiri</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Counter animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const counters = document.querySelectorAll('[data-count]');
+            
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-count'));
+                const duration = 2000; // 2 seconds
+                const increment = target / (duration / 16); // 60fps
+                let current = 0;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    counter.textContent = Math.floor(current);
+                }, 16);
+            });
+        });
+    </script>
+</body>
+</html>

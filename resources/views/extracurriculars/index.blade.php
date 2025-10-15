@@ -5,36 +5,11 @@
 @section('content')
 <div class="min-h-screen bg-gray-50">
     <!-- Header Section -->
-    <div class="bg-gradient-to-r from-blue-900 to-blue-800 text-white">
-        <div class="container mx-auto px-4 py-16">
-            <div class="max-w-4xl mx-auto text-center">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4">Ekstrakurikuler</h1>
-                <p class="text-xl text-blue-100 mb-8">Temukan kegiatan ekstrakurikuler yang sesuai dengan minat dan bakat Anda</p>
-                
-                <!-- Breadcrumb -->
-                <nav class="flex justify-center" aria-label="Breadcrumb">
-                    <ol class="inline-flex items-center space-x-1 md:space-x-3">
-                        <li class="inline-flex items-center">
-                            <a href="{{ route('home') }}" class="text-blue-200 hover:text-white">
-                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-                                </svg>
-                                Beranda
-                            </a>
-                        </li>
-                        <li>
-                            <div class="flex items-center">
-                                <svg class="w-6 h-6 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span class="ml-1 text-blue-200">Ekstrakurikuler</span>
-                            </div>
-                        </li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-    </div>
+    <x-background-section 
+        section="extracurricular"
+        title="Ekstrakurikuler" 
+        subtitle="Temukan kegiatan ekstrakurikuler yang sesuai dengan minat dan bakat Anda" 
+    />
 
     <!-- Main Content -->
     <div class="container mx-auto px-4 py-12">
@@ -220,20 +195,6 @@
                            class="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg text-center font-medium hover:bg-blue-700 transition-colors">
                             Detail
                         </a>
-                        @if($extracurricular->is_registration_open && !$extracurricular->is_full)
-                        <a href="{{ route('extracurriculars.register', $extracurricular->slug) }}" 
-                           class="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg text-center font-medium hover:bg-green-700 transition-colors">
-                            Daftar
-                        </a>
-                        @elseif($extracurricular->is_full)
-                        <button disabled class="flex-1 bg-gray-400 text-white px-4 py-2 rounded-lg text-center font-medium cursor-not-allowed">
-                            Penuh
-                        </button>
-                        @else
-                        <button disabled class="flex-1 bg-gray-400 text-white px-4 py-2 rounded-lg text-center font-medium cursor-not-allowed">
-                            Tutup
-                        </button>
-                        @endif
                     </div>
                 </div>
             </div>

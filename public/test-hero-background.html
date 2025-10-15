@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Hero Background Upload</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Test Hero Background Upload</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Upload Form -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Upload Background Hero</h2>
+                    
+                    <!-- Upload Area -->
+                    <div class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors duration-200" 
+                         id="hero-background-upload-area">
+                        <div class="upload-content">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="mt-4">
+                                <label for="hero_background_image" class="cursor-pointer">
+                                    <span class="mt-2 block text-sm font-medium text-gray-900">
+                                        Upload Gambar Background Hero
+                                    </span>
+                                    <span class="mt-1 block text-sm text-gray-500">
+                                        PNG, JPG, GIF hingga 2MB
+                                    </span>
+                                </label>
+                                <input type="file" id="hero_background_image" name="hero_background_image" accept="image/*" 
+                                       class="sr-only" onchange="previewHeroBackground(this)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Image Preview -->
+                    <div id="hero-background-preview" class="hidden p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <img id="hero-background-preview-img" src="" alt="Preview Background Baru" 
+                                     class="w-20 h-20 rounded-lg object-cover border-2 border-blue-300">
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-blue-900">Background Baru</h4>
+                                <p id="hero-background-preview-name" class="text-sm text-blue-700"></p>
+                                <div class="mt-2">
+                                    <button type="button" onclick="removeNewHeroBackground()" 
+                                            class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                        Batalkan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Preview Section -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Preview</h2>
+                    
+                    <!-- Hero Section Preview -->
+                    <div class="relative h-64 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg overflow-hidden" 
+                         id="hero-preview">
+                        <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+                        <div class="relative z-10 flex items-center justify-center h-full text-center text-white p-6">
+                            <div>
+                                <h1 class="text-2xl font-bold mb-2" id="hero-title">SMP Negeri 01 Namrole</h1>
+                                <p class="text-lg mb-4" id="hero-subtitle">Sekolah Unggulan di Maluku Tengah</p>
+                                <p class="text-sm mb-6" id="hero-description">Membangun generasi yang berkarakter, berprestasi, dan berakhlak mulia untuk masa depan yang gemilang.</p>
+                                <div class="flex space-x-4 justify-center">
+                                    <button class="bg-white text-blue-600 px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+                                        Lihat Prestasi
+                                    </button>
+                                    <button class="border-2 border-white text-white px-6 py-2 rounded-lg font-medium hover:bg-white hover:text-blue-600 transition-colors">
+                                        Daftar PPDB
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <a href="http://127.0.0.1:8000/admin/homepage-settings/edit" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-external-link-alt mr-2"></i>
+                    Buka Admin Homepage Settings
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Hero Background Image Upload Functions
+        function previewHeroBackground(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const preview = document.getElementById('hero-background-preview');
+                    const previewImg = document.getElementById('hero-background-preview-img');
+                    const previewName = document.getElementById('hero-background-preview-name');
+                    
+                    previewImg.src = e.target.result;
+                    previewName.textContent = file.name;
+                    preview.classList.remove('hidden');
+                    preview.classList.add('photo-preview');
+                    
+                    // Hide upload area
+                    document.getElementById('hero-background-upload-area').style.display = 'none';
+                    
+                    // Update hero preview background
+                    const heroPreview = document.getElementById('hero-preview');
+                    heroPreview.style.backgroundImage = `url(${e.target.result})`;
+                    heroPreview.style.backgroundSize = 'cover';
+                    heroPreview.style.backgroundPosition = 'center';
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeNewHeroBackground() {
+            const preview = document.getElementById('hero-background-preview');
+            const uploadArea = document.getElementById('hero-background-upload-area');
+            const fileInput = document.getElementById('hero_background_image');
+            
+            preview.classList.add('hidden');
+            uploadArea.style.display = 'block';
+            fileInput.value = '';
+            
+            // Reset hero preview background
+            const heroPreview = document.getElementById('hero-preview');
+            heroPreview.style.backgroundImage = '';
+        }
+
+        // Drag and drop functionality for hero background
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('hero-background-upload-area');
+            const fileInput = document.getElementById('hero_background_image');
+            
+            if (uploadArea) {
+                // Drag and drop events
+                uploadArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+                
+                uploadArea.addEventListener('dragleave', function(e) {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                });
+                
+                uploadArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        fileInput.files = files;
+                        previewHeroBackground(fileInput);
+                    }
+                });
+                
+                // Click to upload
+                uploadArea.addEventListener('click', function() {
+                    fileInput.click();
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .upload-area {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #3B82F6;
+            background-color: #EFF6FF;
+        }
+
+        .upload-area.dragover {
+            border-color: #3B82F6;
+            background-color: #EFF6FF;
+            transform: scale(1.02);
+        }
+
+        .upload-content {
+            pointer-events: none;
+        }
+
+        .upload-area:hover .upload-content svg {
+            color: #3B82F6;
+        }
+
+        .photo-preview {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .photo-preview img {
+            transition: transform 0.2s ease;
+        }
+
+        .photo-preview img:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</body>
+</html>

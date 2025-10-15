@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\News;
 use App\Models\NewsCategory;
 use App\Models\Tag;
+use App\Models\HomepageSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 
@@ -51,21 +52,29 @@ class NewsController extends Controller
         $popularNews = News::popular(5)->get();
         $recentNews = News::recent(5)->get();
         $popularTags = Tag::popular(10)->get();
+        $homepageSetting = HomepageSetting::getActive();
 
         return view('frontend.news.index', compact(
             'news', 
             'categories', 
             'popularNews', 
             'recentNews', 
-            'popularTags'
+            'popularTags',
+            'homepageSetting'
         ));
     }
 
     /**
      * Display the specified news.
      */
-    public function show(News $news)
+    public function show($slug)
     {
+        $news = News::where('slug', $slug)->first();
+        
+        if (!$news) {
+            abort(404);
+        }
+        
         // Check if news is published
         if (!$news->published_at || $news->published_at > now()) {
             abort(404);
@@ -95,7 +104,9 @@ class NewsController extends Controller
             ->limit(5)
             ->get();
 
-        return view('frontend.news.show', compact('news', 'relatedNews', 'popularTags', 'recentNews'));
+        $homepageSetting = HomepageSetting::getActive();
+
+        return view('frontend.news.show', compact('news', 'relatedNews', 'popularTags', 'recentNews', 'homepageSetting'));
     }
 
     /**
@@ -113,12 +124,15 @@ class NewsController extends Controller
         $popularNews = News::popular(5)->get();
         $recentNews = News::recent(5)->get();
 
+        $homepageSetting = HomepageSetting::getActive();
+
         return view('frontend.news.category', compact(
             'news', 
             'category', 
             'categories', 
             'popularNews', 
-            'recentNews'
+            'recentNews',
+            'homepageSetting'
         ));
     }
 
@@ -139,12 +153,15 @@ class NewsController extends Controller
         $popularNews = News::popular(5)->get();
         $recentNews = News::recent(5)->get();
 
+        $homepageSetting = HomepageSetting::getActive();
+
         return view('frontend.news.tag', compact(
             'news', 
             'tag', 
             'categories', 
             'popularNews', 
-            'recentNews'
+            'recentNews',
+            'homepageSetting'
         ));
     }
 

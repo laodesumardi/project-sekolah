@@ -4,6 +4,47 @@
 
 @push('head')
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<style>
+    /* Gentle smooth scroll behavior */
+    html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 100px;
+    }
+    
+    /* Ensure proper scrolling for admin pages */
+    body {
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+    }
+    
+    /* Fix for navigation tabs */
+    .nav-tab {
+        transition: all 0.3s ease;
+    }
+    
+    /* Better spacing for sections with gentle scroll */
+    .admin-section {
+        scroll-margin-top: 120px;
+        scroll-snap-align: start;
+    }
+    
+    /* Fix for form elements */
+    .form-container {
+        min-height: 100vh;
+    }
+    
+    /* Gentle scroll animation */
+    * {
+        scroll-behavior: smooth;
+    }
+    
+    /* Reduce scroll speed */
+    @media (prefers-reduced-motion: no-preference) {
+        html {
+            scroll-behavior: smooth;
+        }
+    }
+</style>
 @endpush
 
 @section('content')
@@ -81,7 +122,7 @@
         @method('PUT')
 
         <!-- Hero Section -->
-        <div id="hero-section" class="bg-white rounded-lg shadow-lg p-6">
+        <div id="hero-section" class="admin-section bg-white rounded-lg shadow-lg p-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-6">Hero Section</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -155,16 +196,77 @@
 
             <!-- File Uploads -->
             <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Hero Background Image Upload -->
                 <div>
                     <label for="hero_background_image" class="block text-sm font-medium text-gray-700 mb-2">Gambar Background Hero</label>
-                    <input type="file" id="hero_background_image" name="hero_background_image" accept="image/*" 
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    
+                    <!-- Current Image Preview -->
+                    @if($homepageSetting && $homepageSetting->hero_background_image)
+                        <div class="mb-4 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <img src="{{ $homepageSetting->hero_background_image_url }}" alt="Background Hero Saat Ini" 
+                                         class="w-20 h-20 rounded-lg object-cover border-2 border-gray-300">
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-medium text-gray-900">Background Hero Saat Ini</h4>
+                                    <p class="text-sm text-gray-500">{{ $homepageSetting->hero_background_image }}</p>
+                                    <div class="mt-2 flex space-x-2">
+                                        <button type="button" onclick="removeCurrentHeroBackground()" 
+                                                class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                            Hapus Gambar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <!-- Upload Area -->
+                    <div class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors duration-200" 
+                         id="hero-background-upload-area">
+                        <div class="upload-content">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="mt-4">
+                                <label for="hero_background_image" class="cursor-pointer">
+                                    <span class="mt-2 block text-sm font-medium text-gray-900">
+                                        Upload Gambar Background Hero
+                                    </span>
+                                    <span class="mt-1 block text-sm text-gray-500">
+                                        PNG, JPG, GIF hingga 2MB
+                                    </span>
+                                </label>
+                                <input type="file" id="hero_background_image" name="hero_background_image" accept="image/*" 
+                                       class="sr-only" onchange="previewHeroBackground(this)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Image Preview -->
+                    <div id="hero-background-preview" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <img id="hero-background-preview-img" src="" alt="Preview Background Baru" 
+                                     class="w-20 h-20 rounded-lg object-cover border-2 border-blue-300">
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-blue-900">Background Baru</h4>
+                                <p id="hero-background-preview-name" class="text-sm text-blue-700"></p>
+                                <div class="mt-2">
+                                    <button type="button" onclick="removeNewHeroBackground()" 
+                                            class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                        Batalkan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     @error('hero_background_image')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    @if($homepageSetting && $homepageSetting->hero_background_image)
-                        <p class="mt-2 text-sm text-gray-600">Gambar saat ini: {{ $homepageSetting->hero_background_image }}</p>
-                    @endif
                 </div>
 
                 <div>
@@ -195,7 +297,7 @@
 
 
         <!-- Contact Information -->
-        <div id="contact-info" class="bg-white rounded-lg shadow-lg p-6">
+        <div id="contact-info" class="admin-section bg-white rounded-lg shadow-lg p-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-6">Informasi Kontak</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -229,7 +331,7 @@
         </div>
 
         <!-- Principal Information -->
-        <div id="principal-info" class="bg-white rounded-lg shadow-lg p-6">
+        <div id="principal-info" class="admin-section bg-white rounded-lg shadow-lg p-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-6">Informasi Kepala Sekolah</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -281,7 +383,7 @@
         </div>
 
         <!-- Accreditation Information -->
-        <div id="accreditation" class="bg-white rounded-lg shadow-lg p-6">
+        <div id="accreditation" class="admin-section bg-white rounded-lg shadow-lg p-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-6">Informasi Akreditasi Sekolah</h2>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -333,7 +435,7 @@
         </div>
 
         <!-- About Page Information -->
-        <div id="about-page" class="bg-white rounded-lg shadow-lg p-6">
+        <div id="about-page" class="admin-section bg-white rounded-lg shadow-lg p-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-6">Informasi Halaman Tentang Kami</h2>
             
             <div class="space-y-8">
@@ -357,6 +459,444 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+                </div>
+
+                <!-- About Page Background Image -->
+                <div>
+                    <label for="about_page_background_image" class="block text-sm font-medium text-gray-700 mb-2">Gambar Background Halaman Tentang Kami</label>
+                    
+                    <!-- Current Image Preview -->
+                    @if($homepageSetting && $homepageSetting->about_page_background_image)
+                        <div class="mb-4 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <img src="{{ $homepageSetting->about_page_background_image_url }}" alt="Background Tentang Kami Saat Ini" 
+                                         class="w-20 h-20 rounded-lg object-cover border-2 border-gray-300">
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-medium text-gray-900">Background Tentang Kami Saat Ini</h4>
+                                    <p class="text-sm text-gray-500">{{ $homepageSetting->about_page_background_image }}</p>
+                                    <div class="mt-2 flex space-x-2">
+                                        <button type="button" onclick="removeCurrentAboutBackground()" 
+                                                class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                            Hapus Gambar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <!-- Upload Area -->
+                    <div class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors duration-200" 
+                         id="about-background-upload-area">
+                        <div class="upload-content">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="mt-4">
+                                <label for="about_page_background_image" class="cursor-pointer">
+                                    <span class="mt-2 block text-sm font-medium text-gray-900">
+                                        Upload Gambar Background Tentang Kami
+                                    </span>
+                                    <span class="mt-1 block text-sm text-gray-500">
+                                        PNG, JPG, GIF hingga 2MB
+                                    </span>
+                                </label>
+                                <input type="file" id="about_page_background_image" name="about_page_background_image" accept="image/*" 
+                                       class="sr-only" onchange="previewAboutBackground(this)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Image Preview -->
+                    <div id="about-background-preview" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <img id="about-background-preview-img" src="" alt="Preview Background Baru" 
+                                     class="w-20 h-20 rounded-lg object-cover border-2 border-blue-300">
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-blue-900">Background Baru</h4>
+                                <p id="about-background-preview-name" class="text-sm text-blue-700"></p>
+                                <div class="mt-2">
+                                    <button type="button" onclick="removeNewAboutBackground()" 
+                                            class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                        Batalkan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @error('about_page_background_image')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Curriculum Page Background Image -->
+                <div>
+                    <label for="curriculum_page_background_image" class="block text-sm font-medium text-gray-700 mb-2">Gambar Background Halaman Kurikulum</label>
+                    
+                    <!-- Current Image Preview -->
+                    @if($homepageSetting && $homepageSetting->curriculum_page_background_image)
+                        <div class="mb-4 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <img src="{{ $homepageSetting->curriculum_page_background_image_url }}" alt="Background Kurikulum Saat Ini" 
+                                         class="w-20 h-20 rounded-lg object-cover border-2 border-gray-300">
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-medium text-gray-900">Background Kurikulum Saat Ini</h4>
+                                    <p class="text-sm text-gray-500">{{ $homepageSetting->curriculum_page_background_image }}</p>
+                                    <div class="mt-2 flex space-x-2">
+                                        <button type="button" onclick="removeCurrentCurriculumBackground()" 
+                                                class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                            Hapus Gambar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <!-- Upload Area -->
+                    <div class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors duration-200" 
+                         id="curriculum-background-upload-area">
+                        <div class="upload-content">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="mt-4">
+                                <label for="curriculum_page_background_image" class="cursor-pointer">
+                                    <span class="mt-2 block text-sm font-medium text-gray-900">
+                                        Upload Gambar Background Kurikulum
+                                    </span>
+                                    <span class="mt-1 block text-sm text-gray-500">
+                                        PNG, JPG, GIF hingga 2MB
+                                    </span>
+                                </label>
+                                <input type="file" id="curriculum_page_background_image" name="curriculum_page_background_image" accept="image/*" 
+                                       class="sr-only" onchange="previewCurriculumBackground(this)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Image Preview -->
+                    <div id="curriculum-background-preview" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <img id="curriculum-background-preview-img" src="" alt="Preview Background Baru" 
+                                     class="w-20 h-20 rounded-lg object-cover border-2 border-blue-300">
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-blue-900">Background Baru</h4>
+                                <p id="curriculum-background-preview-name" class="text-sm text-blue-700"></p>
+                                <div class="mt-2">
+                                    <button type="button" onclick="removeNewCurriculumBackground()" 
+                                            class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                        Batalkan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @error('curriculum_page_background_image')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Extracurricular Page Background Image -->
+                <div>
+                    <label for="extracurricular_page_background_image" class="block text-sm font-medium text-gray-700 mb-2">Gambar Background Halaman Ekstrakurikuler</label>
+                    
+                    <!-- Current Image Preview -->
+                    @if($homepageSetting && $homepageSetting->extracurricular_page_background_image)
+                        <div class="mb-4 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <img src="{{ $homepageSetting->extracurricular_page_background_image_url }}" alt="Background Ekstrakurikuler Saat Ini" 
+                                         class="w-20 h-20 rounded-lg object-cover border-2 border-gray-300">
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-medium text-gray-900">Background Ekstrakurikuler Saat Ini</h4>
+                                    <p class="text-sm text-gray-500">{{ $homepageSetting->extracurricular_page_background_image }}</p>
+                                    <div class="mt-2 flex space-x-2">
+                                        <button type="button" onclick="removeCurrentExtracurricularBackground()" 
+                                                class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                            Hapus Gambar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <!-- Upload Area -->
+                    <div class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors duration-200" 
+                         id="extracurricular-background-upload-area">
+                        <div class="upload-content">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="mt-4">
+                                <label for="extracurricular_page_background_image" class="cursor-pointer">
+                                    <span class="mt-2 block text-sm font-medium text-gray-900">
+                                        Upload Gambar Background Ekstrakurikuler
+                                    </span>
+                                    <span class="mt-1 block text-sm text-gray-500">
+                                        PNG, JPG, GIF hingga 2MB
+                                    </span>
+                                </label>
+                                <input type="file" id="extracurricular_page_background_image" name="extracurricular_page_background_image" accept="image/*" 
+                                       class="sr-only" onchange="previewExtracurricularBackground(this)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Image Preview -->
+                    <div id="extracurricular-background-preview" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <img id="extracurricular-background-preview-img" src="" alt="Preview Background Baru" 
+                                     class="w-20 h-20 rounded-lg object-cover border-2 border-blue-300">
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-blue-900">Background Baru</h4>
+                                <p id="extracurricular-background-preview-name" class="text-sm text-blue-700"></p>
+                                <div class="mt-2">
+                                    <button type="button" onclick="removeNewExtracurricularBackground()" 
+                                            class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                        Batalkan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @error('extracurricular_page_background_image')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Gallery Page Background Image -->
+                <div>
+                    <label for="gallery_page_background_image" class="block text-sm font-medium text-gray-700 mb-2">Gambar Background Halaman Galeri</label>
+                    
+                    <!-- Current Image Preview -->
+                    @if($homepageSetting && $homepageSetting->gallery_page_background_image)
+                        <div class="mb-4 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <img src="{{ $homepageSetting->gallery_page_background_image_url }}" alt="Background Galeri Saat Ini" 
+                                         class="w-20 h-20 rounded-lg object-cover border-2 border-gray-300">
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-medium text-gray-900">Background Galeri Saat Ini</h4>
+                                    <p class="text-sm text-gray-500">{{ $homepageSetting->gallery_page_background_image }}</p>
+                                    <div class="mt-2 flex space-x-2">
+                                        <button type="button" onclick="removeCurrentGalleryBackground()" 
+                                                class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                            Hapus Gambar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <!-- Upload Area -->
+                    <div class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors duration-200" 
+                         id="gallery-background-upload-area">
+                        <div class="upload-content">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="mt-4">
+                                <label for="gallery_page_background_image" class="cursor-pointer">
+                                    <span class="mt-2 block text-sm font-medium text-gray-900">
+                                        Upload Gambar Background Galeri
+                                    </span>
+                                    <span class="mt-1 block text-sm text-gray-500">
+                                        PNG, JPG, GIF hingga 2MB
+                                    </span>
+                                </label>
+                                <input type="file" id="gallery_page_background_image" name="gallery_page_background_image" accept="image/*" 
+                                       class="sr-only" onchange="previewGalleryBackground(this)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Image Preview -->
+                    <div id="gallery-background-preview" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <img id="gallery-background-preview-img" src="" alt="Preview Background Baru" 
+                                     class="w-20 h-20 rounded-lg object-cover border-2 border-blue-300">
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-blue-900">Background Baru</h4>
+                                <p id="gallery-background-preview-name" class="text-sm text-blue-700"></p>
+                                <div class="mt-2">
+                                    <button type="button" onclick="removeNewGalleryBackground()" 
+                                            class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                        Batalkan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @error('gallery_page_background_image')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- PPDB Page Background Image -->
+                <div>
+                    <label for="ppdb_page_background_image" class="block text-sm font-medium text-gray-700 mb-2">Gambar Background Halaman PPDB</label>
+                    
+                    <!-- Current Image Preview -->
+                    @if($homepageSetting && $homepageSetting->ppdb_page_background_image)
+                        <div class="mb-4 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <img src="{{ $homepageSetting->ppdb_page_background_image_url }}" alt="Background PPDB Saat Ini" 
+                                         class="w-20 h-20 rounded-lg object-cover border-2 border-gray-300">
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-medium text-gray-900">Background PPDB Saat Ini</h4>
+                                    <p class="text-sm text-gray-500">{{ $homepageSetting->ppdb_page_background_image }}</p>
+                                    <div class="mt-2 flex space-x-2">
+                                        <button type="button" onclick="removeCurrentPpdbBackground()" 
+                                                class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                            Hapus Gambar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <!-- Upload Area -->
+                    <div class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors duration-200" 
+                         id="ppdb-background-upload-area">
+                        <div class="upload-content">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="mt-4">
+                                <label for="ppdb_page_background_image" class="cursor-pointer">
+                                    <span class="mt-2 block text-sm font-medium text-gray-900">
+                                        Upload Gambar Background PPDB
+                                    </span>
+                                    <span class="mt-1 block text-sm text-gray-500">
+                                        PNG, JPG, GIF hingga 2MB
+                                    </span>
+                                </label>
+                                <input type="file" id="ppdb_page_background_image" name="ppdb_page_background_image" accept="image/*" 
+                                       class="sr-only" onchange="previewPpdbBackground(this)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Image Preview -->
+                    <div id="ppdb-background-preview" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <img id="ppdb-background-preview-img" src="" alt="Preview Background Baru" 
+                                     class="w-20 h-20 rounded-lg object-cover border-2 border-blue-300">
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-blue-900">Background Baru</h4>
+                                <p id="ppdb-background-preview-name" class="text-sm text-blue-700"></p>
+                                <div class="mt-2">
+                                    <button type="button" onclick="removeNewPpdbBackground()" 
+                                            class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                        Batalkan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @error('ppdb_page_background_image')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- News Page Background Image -->
+                <div>
+                    <label for="news_page_background_image" class="block text-sm font-medium text-gray-700 mb-2">Gambar Background Halaman Berita</label>
+                    
+                    <!-- Current Image Preview -->
+                    @if($homepageSetting && $homepageSetting->news_page_background_image)
+                        <div class="mb-4 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <img src="{{ $homepageSetting->news_page_background_image_url }}" alt="Background Berita Saat Ini" 
+                                         class="w-20 h-20 rounded-lg object-cover border-2 border-gray-300">
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-medium text-gray-900">Background Berita Saat Ini</h4>
+                                    <p class="text-sm text-gray-500">{{ $homepageSetting->news_page_background_image }}</p>
+                                    <div class="mt-2 flex space-x-2">
+                                        <button type="button" onclick="removeCurrentNewsBackground()" 
+                                                class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                            Hapus Gambar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <!-- Upload Area -->
+                    <div class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors duration-200" 
+                         id="news-background-upload-area">
+                        <div class="upload-content">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="mt-4">
+                                <label for="news_page_background_image" class="cursor-pointer">
+                                    <span class="mt-2 block text-sm font-medium text-gray-900">
+                                        Upload Gambar Background Berita
+                                    </span>
+                                    <span class="mt-1 block text-sm text-gray-500">
+                                        PNG, JPG, GIF hingga 2MB
+                                    </span>
+                                </label>
+                                <input type="file" id="news_page_background_image" name="news_page_background_image" accept="image/*" 
+                                       class="sr-only" onchange="previewNewsBackground(this)">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Image Preview -->
+                    <div id="news-background-preview" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex-shrink-0">
+                                <img id="news-background-preview-img" src="" alt="Preview Background Baru" 
+                                     class="w-20 h-20 rounded-lg object-cover border-2 border-blue-300">
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-medium text-blue-900">Background Baru</h4>
+                                <p id="news-background-preview-name" class="text-sm text-blue-700"></p>
+                                <div class="mt-2">
+                                    <button type="button" onclick="removeNewNewsBackground()" 
+                                            class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                        Batalkan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    @error('news_page_background_image')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- Vision & Mission -->
@@ -499,7 +1039,7 @@
         </div>
 
         <!-- Organization Structure -->
-        <div id="organization-structure" class="bg-white rounded-lg shadow-lg p-6">
+        <div id="organization-structure" class="admin-section bg-white rounded-lg shadow-lg p-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-6">Struktur Organisasi</h2>
             
             <div class="space-y-6">
@@ -543,7 +1083,7 @@
         </div>
 
         <!-- Library Structure -->
-        <div id="library-structure" class="bg-white rounded-lg shadow-lg p-6">
+        <div id="library-structure" class="admin-section bg-white rounded-lg shadow-lg p-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-6">Struktur Organisasi Perpustakaan</h2>
             
             <div class="space-y-6">
@@ -667,10 +1207,32 @@ document.addEventListener('DOMContentLoaded', function() {
             const targetId = this.getAttribute('href').substring(1);
             const targetElement = document.getElementById(targetId);
             if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
+                // Smooth scroll with gentle animation
+                const offset = 100; // Account for fixed header
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                // Use requestAnimationFrame for smoother scroll
+                const startPosition = window.pageYOffset;
+                const distance = offsetPosition - startPosition;
+                const duration = 800; // Slower, more gentle scroll
+                let start = null;
+
+                function step(timestamp) {
+                    if (!start) start = timestamp;
+                    const progress = Math.min((timestamp - start) / duration, 1);
+                    
+                    // Easing function for smooth deceleration
+                    const ease = 1 - Math.pow(1 - progress, 3);
+                    
+                    window.scrollTo(0, startPosition + distance * ease);
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    }
+                }
+                
+                requestAnimationFrame(step);
                 
                 // Update active tab
                 updateActiveTab(this);
@@ -905,6 +1467,861 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 500);
         }
     }
+
+    // Hero Background Image Upload Functions
+    function previewHeroBackground(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const preview = document.getElementById('hero-background-preview');
+                const previewImg = document.getElementById('hero-background-preview-img');
+                const previewName = document.getElementById('hero-background-preview-name');
+                
+                previewImg.src = e.target.result;
+                previewName.textContent = file.name;
+                preview.classList.remove('hidden');
+                preview.classList.add('photo-preview');
+                
+                // Hide upload area
+                document.getElementById('hero-background-upload-area').style.display = 'none';
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeNewHeroBackground() {
+        const preview = document.getElementById('hero-background-preview');
+        const uploadArea = document.getElementById('hero-background-upload-area');
+        const fileInput = document.getElementById('hero_background_image');
+        
+        preview.classList.add('hidden');
+        uploadArea.style.display = 'block';
+        fileInput.value = '';
+    }
+
+    function removeCurrentHeroBackground() {
+        if (confirm('Apakah Anda yakin ingin menghapus gambar background hero saat ini?')) {
+            // Add hidden input to indicate image should be removed
+            const form = document.querySelector('form');
+            
+            // Remove existing hidden input if any
+            const existingInput = document.querySelector('input[name="remove_hero_background"]');
+            if (existingInput) {
+                existingInput.remove();
+            }
+            
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'remove_hero_background';
+            hiddenInput.value = '1';
+            form.appendChild(hiddenInput);
+            
+            // Hide current image section
+            const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+            if (currentImageSection) {
+                currentImageSection.style.display = 'none';
+            }
+            
+            // Show upload area
+            const uploadArea = document.getElementById('hero-background-upload-area');
+            if (uploadArea) {
+                uploadArea.style.display = 'block';
+            }
+            
+            // Clear file input
+            const fileInput = document.getElementById('hero_background_image');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            
+            // Show visual feedback
+            const uploadArea = document.getElementById('hero-background-upload-area');
+            if (uploadArea) {
+                uploadArea.innerHTML = `
+                    <div class="text-center p-8">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-red-600 mb-2">Gambar Akan Dihapus</h3>
+                        <p class="text-sm text-gray-600 mb-4">Gambar background hero akan dihapus saat Anda menyimpan perubahan.</p>
+                        <button type="button" onclick="cancelRemoveHeroBackground()" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm">
+                            Batalkan
+                        </button>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    function cancelRemoveHeroBackground() {
+        // Remove hidden input
+        const existingInput = document.querySelector('input[name="remove_hero_background"]');
+        if (existingInput) {
+            existingInput.remove();
+        }
+        
+        // Show current image section again
+        const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+        if (currentImageSection) {
+            currentImageSection.style.display = 'block';
+        }
+        
+        // Reset upload area
+        const uploadArea = document.getElementById('hero-background-upload-area');
+        if (uploadArea) {
+            uploadArea.innerHTML = `
+                <div class="text-center p-8">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Upload Gambar Baru</h3>
+                    <p class="text-sm text-gray-600 mb-4">Klik atau drag & drop gambar untuk mengganti background hero</p>
+                    <p class="text-xs text-gray-500">Format: JPG, PNG, GIF (Maksimal 2MB)</p>
+                </div>
+            `;
+            uploadArea.style.display = 'block';
+        }
+    }
+
+    // About Page Background Functions
+    function previewAboutBackground(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('about-background-preview-img').src = e.target.result;
+                document.getElementById('about-background-preview-name').textContent = input.files[0].name;
+                document.getElementById('about-background-preview').classList.remove('hidden');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function removeNewAboutBackground() {
+        document.getElementById('about-background-preview').classList.add('hidden');
+        document.getElementById('about_page_background_image').value = '';
+    }
+
+    function removeCurrentAboutBackground() {
+        if (confirm('Apakah Anda yakin ingin menghapus gambar background tentang kami saat ini?')) {
+            // Add hidden input to indicate image should be removed
+            const form = document.querySelector('form');
+            
+            // Remove existing hidden input if any
+            const existingInput = document.querySelector('input[name="remove_about_background"]');
+            if (existingInput) {
+                existingInput.remove();
+            }
+            
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'remove_about_background';
+            hiddenInput.value = '1';
+            form.appendChild(hiddenInput);
+            
+            // Hide current image section
+            const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+            if (currentImageSection) {
+                currentImageSection.style.display = 'none';
+            }
+            
+            // Show upload area
+            const uploadArea = document.getElementById('about-background-upload-area');
+            if (uploadArea) {
+                uploadArea.style.display = 'block';
+            }
+            
+            // Clear file input
+            const fileInput = document.getElementById('about_page_background_image');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            
+            // Show visual feedback
+            const uploadArea = document.getElementById('about-background-upload-area');
+            if (uploadArea) {
+                uploadArea.innerHTML = `
+                    <div class="text-center p-8">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-red-600 mb-2">Gambar Akan Dihapus</h3>
+                        <p class="text-sm text-gray-600 mb-4">Gambar background tentang kami akan dihapus saat Anda menyimpan perubahan.</p>
+                        <button type="button" onclick="cancelRemoveAboutBackground()" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm">
+                            Batalkan
+                        </button>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    function cancelRemoveAboutBackground() {
+        // Remove hidden input
+        const existingInput = document.querySelector('input[name="remove_about_background"]');
+        if (existingInput) {
+            existingInput.remove();
+        }
+        
+        // Show current image section again
+        const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+        if (currentImageSection) {
+            currentImageSection.style.display = 'block';
+        }
+        
+        // Reset upload area
+        const uploadArea = document.getElementById('about-background-upload-area');
+        if (uploadArea) {
+            uploadArea.innerHTML = `
+                <div class="text-center p-8">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Upload Gambar Baru</h3>
+                    <p class="text-sm text-gray-600 mb-4">Klik atau drag & drop gambar untuk mengganti background tentang kami</p>
+                    <p class="text-xs text-gray-500">Format: JPG, PNG, GIF (Maksimal 2MB)</p>
+                </div>
+            `;
+            uploadArea.style.display = 'block';
+        }
+    }
+
+    // Curriculum Background Functions
+    function previewCurriculumBackground(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            
+            // Validate file size (2MB max)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                input.value = '';
+                return;
+            }
+            
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('File harus berupa gambar.');
+                input.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('curriculum-background-preview-img').src = e.target.result;
+                document.getElementById('curriculum-background-preview-name').textContent = file.name;
+                document.getElementById('curriculum-background-preview').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeNewCurriculumBackground() {
+        document.getElementById('curriculum-background-preview').classList.add('hidden');
+        document.getElementById('curriculum_page_background_image').value = '';
+    }
+
+    function removeCurrentCurriculumBackground() {
+        if (confirm('Apakah Anda yakin ingin menghapus gambar background kurikulum saat ini?')) {
+            // Add hidden input to indicate image should be removed
+            const form = document.querySelector('form');
+            
+            // Remove existing hidden input if any
+            const existingInput = document.querySelector('input[name="remove_curriculum_background"]');
+            if (existingInput) {
+                existingInput.remove();
+            }
+            
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'remove_curriculum_background';
+            hiddenInput.value = '1';
+            form.appendChild(hiddenInput);
+            
+            // Hide current image section
+            const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+            if (currentImageSection) {
+                currentImageSection.style.display = 'none';
+            }
+            
+            // Show upload area
+            const uploadArea = document.getElementById('curriculum-background-upload-area');
+            if (uploadArea) {
+                uploadArea.style.display = 'block';
+            }
+            
+            // Clear file input
+            const fileInput = document.getElementById('curriculum_page_background_image');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            
+            // Show visual feedback
+            const uploadArea = document.getElementById('curriculum-background-upload-area');
+            if (uploadArea) {
+                uploadArea.innerHTML = `
+                    <div class="text-center p-8">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-red-600 mb-2">Gambar Akan Dihapus</h3>
+                        <p class="text-sm text-gray-600 mb-4">Gambar background kurikulum akan dihapus saat Anda menyimpan perubahan.</p>
+                        <button type="button" onclick="cancelRemoveCurriculumBackground()" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm">
+                            Batalkan
+                        </button>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    function cancelRemoveCurriculumBackground() {
+        // Remove hidden input
+        const existingInput = document.querySelector('input[name="remove_curriculum_background"]');
+        if (existingInput) {
+            existingInput.remove();
+        }
+        
+        // Show current image section again
+        const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+        if (currentImageSection) {
+            currentImageSection.style.display = 'block';
+        }
+        
+        // Reset upload area
+        const uploadArea = document.getElementById('curriculum-background-upload-area');
+        if (uploadArea) {
+            uploadArea.innerHTML = `
+                <div class="text-center p-8">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Upload Gambar Baru</h3>
+                    <p class="text-sm text-gray-600 mb-4">Klik atau drag & drop gambar untuk mengganti background kurikulum</p>
+                    <p class="text-xs text-gray-500">Format: JPG, PNG, GIF (Maksimal 2MB)</p>
+                </div>
+            `;
+            uploadArea.style.display = 'block';
+        }
+    }
+
+    // Extracurricular Background Functions
+    function previewExtracurricularBackground(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            
+            // Validate file size (2MB max)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                input.value = '';
+                return;
+            }
+            
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('File harus berupa gambar.');
+                input.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('extracurricular-background-preview-img').src = e.target.result;
+                document.getElementById('extracurricular-background-preview-name').textContent = file.name;
+                document.getElementById('extracurricular-background-preview').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeNewExtracurricularBackground() {
+        document.getElementById('extracurricular-background-preview').classList.add('hidden');
+        document.getElementById('extracurricular_page_background_image').value = '';
+    }
+
+    function removeCurrentExtracurricularBackground() {
+        if (confirm('Apakah Anda yakin ingin menghapus gambar background ekstrakurikuler saat ini?')) {
+            // Add hidden input to indicate image should be removed
+            const form = document.querySelector('form');
+            
+            // Remove existing hidden input if any
+            const existingInput = document.querySelector('input[name="remove_extracurricular_background"]');
+            if (existingInput) {
+                existingInput.remove();
+            }
+            
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'remove_extracurricular_background';
+            hiddenInput.value = '1';
+            form.appendChild(hiddenInput);
+            
+            // Hide current image section
+            const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+            if (currentImageSection) {
+                currentImageSection.style.display = 'none';
+            }
+            
+            // Show upload area
+            const uploadArea = document.getElementById('extracurricular-background-upload-area');
+            if (uploadArea) {
+                uploadArea.style.display = 'block';
+            }
+            
+            // Clear file input
+            const fileInput = document.getElementById('extracurricular_page_background_image');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            
+            // Show visual feedback
+            const uploadArea = document.getElementById('extracurricular-background-upload-area');
+            if (uploadArea) {
+                uploadArea.innerHTML = `
+                    <div class="text-center p-8">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-red-600 mb-2">Gambar Akan Dihapus</h3>
+                        <p class="text-sm text-gray-600 mb-4">Gambar background ekstrakurikuler akan dihapus saat Anda menyimpan perubahan.</p>
+                        <button type="button" onclick="cancelRemoveExtracurricularBackground()" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm">
+                            Batalkan
+                        </button>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    function cancelRemoveExtracurricularBackground() {
+        // Remove hidden input
+        const existingInput = document.querySelector('input[name="remove_extracurricular_background"]');
+        if (existingInput) {
+            existingInput.remove();
+        }
+        
+        // Show current image section again
+        const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+        if (currentImageSection) {
+            currentImageSection.style.display = 'block';
+        }
+        
+        // Reset upload area
+        const uploadArea = document.getElementById('extracurricular-background-upload-area');
+        if (uploadArea) {
+            uploadArea.innerHTML = `
+                <div class="text-center p-8">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Upload Gambar Baru</h3>
+                    <p class="text-sm text-gray-600 mb-4">Klik atau drag & drop gambar untuk mengganti background ekstrakurikuler</p>
+                    <p class="text-xs text-gray-500">Format: JPG, PNG, GIF (Maksimal 2MB)</p>
+                </div>
+            `;
+            uploadArea.style.display = 'block';
+        }
+    }
+
+    // Gallery Background Functions
+    function previewGalleryBackground(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            
+            // Validate file size (2MB max)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                input.value = '';
+                return;
+            }
+            
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('File harus berupa gambar.');
+                input.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('gallery-background-preview-img').src = e.target.result;
+                document.getElementById('gallery-background-preview-name').textContent = file.name;
+                document.getElementById('gallery-background-preview').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeNewGalleryBackground() {
+        document.getElementById('gallery-background-preview').classList.add('hidden');
+        document.getElementById('gallery_page_background_image').value = '';
+    }
+
+    function removeCurrentGalleryBackground() {
+        if (confirm('Apakah Anda yakin ingin menghapus gambar background galeri saat ini?')) {
+            // Add hidden input to indicate image should be removed
+            const form = document.querySelector('form');
+            
+            // Remove existing hidden input if any
+            const existingInput = document.querySelector('input[name="remove_gallery_background"]');
+            if (existingInput) {
+                existingInput.remove();
+            }
+            
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'remove_gallery_background';
+            hiddenInput.value = '1';
+            form.appendChild(hiddenInput);
+            
+            // Hide current image section
+            const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+            if (currentImageSection) {
+                currentImageSection.style.display = 'none';
+            }
+            
+            // Show upload area
+            const uploadArea = document.getElementById('gallery-background-upload-area');
+            if (uploadArea) {
+                uploadArea.style.display = 'block';
+            }
+            
+            // Clear file input
+            const fileInput = document.getElementById('gallery_page_background_image');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            
+            // Show visual feedback
+            const uploadArea = document.getElementById('gallery-background-upload-area');
+            if (uploadArea) {
+                uploadArea.innerHTML = `
+                    <div class="text-center p-8">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-red-600 mb-2">Gambar Akan Dihapus</h3>
+                        <p class="text-sm text-gray-600 mb-4">Gambar background galeri akan dihapus saat Anda menyimpan perubahan.</p>
+                        <button type="button" onclick="cancelRemoveGalleryBackground()" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm">
+                            Batalkan
+                        </button>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    function cancelRemoveGalleryBackground() {
+        // Remove hidden input
+        const existingInput = document.querySelector('input[name="remove_gallery_background"]');
+        if (existingInput) {
+            existingInput.remove();
+        }
+        
+        // Show current image section again
+        const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+        if (currentImageSection) {
+            currentImageSection.style.display = 'block';
+        }
+        
+        // Reset upload area
+        const uploadArea = document.getElementById('gallery-background-upload-area');
+        if (uploadArea) {
+            uploadArea.innerHTML = `
+                <div class="text-center p-8">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Upload Gambar Baru</h3>
+                    <p class="text-sm text-gray-600 mb-4">Klik atau drag & drop gambar untuk mengganti background galeri</p>
+                    <p class="text-xs text-gray-500">Format: JPG, PNG, GIF (Maksimal 2MB)</p>
+                </div>
+            `;
+            uploadArea.style.display = 'block';
+        }
+    }
+
+    // PPDB Background Functions
+    function previewPpdbBackground(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                document.getElementById('ppdb-background-preview-img').src = e.target.result;
+                document.getElementById('ppdb-background-preview-name').textContent = file.name;
+                document.getElementById('ppdb-background-preview').classList.remove('hidden');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeNewPpdbBackground() {
+        document.getElementById('ppdb_page_background_image').value = '';
+        document.getElementById('ppdb-background-preview').classList.add('hidden');
+    }
+
+    function removeCurrentPpdbBackground() {
+        // Add hidden input to indicate removal
+        const existingInput = document.querySelector('input[name="remove_ppdb_background"]');
+        if (existingInput) {
+            existingInput.remove();
+        }
+        
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'remove_ppdb_background';
+        hiddenInput.value = '1';
+        document.querySelector('form').appendChild(hiddenInput);
+        
+        // Hide current image section
+        const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+        if (currentImageSection) {
+            currentImageSection.style.display = 'none';
+        }
+        
+        // Show upload area
+        const uploadArea = document.getElementById('ppdb-background-upload-area');
+        if (uploadArea) {
+            uploadArea.style.display = 'block';
+        }
+    }
+
+    function cancelRemovePpdbBackground() {
+        // Remove hidden input
+        const existingInput = document.querySelector('input[name="remove_ppdb_background"]');
+        if (existingInput) {
+            existingInput.remove();
+        }
+        
+        // Show current image section again
+        const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+        if (currentImageSection) {
+            currentImageSection.style.display = 'block';
+        }
+        
+        // Reset upload area
+        const uploadArea = document.getElementById('ppdb-background-upload-area');
+        if (uploadArea) {
+            uploadArea.innerHTML = `
+                <div class="text-center p-8">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Upload Gambar Baru</h3>
+                    <p class="text-sm text-gray-600 mb-4">Klik atau drag & drop gambar untuk mengganti background PPDB</p>
+                    <p class="text-xs text-gray-500">Format: JPG, PNG, GIF (Maksimal 2MB)</p>
+                </div>
+            `;
+            uploadArea.style.display = 'block';
+        }
+    }
+
+    // News Background Functions
+    function previewNewsBackground(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                document.getElementById('news-background-preview-img').src = e.target.result;
+                document.getElementById('news-background-preview-name').textContent = file.name;
+                document.getElementById('news-background-preview').classList.remove('hidden');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeNewNewsBackground() {
+        document.getElementById('news_page_background_image').value = '';
+        document.getElementById('news-background-preview').classList.add('hidden');
+    }
+
+    function removeCurrentNewsBackground() {
+        // Add hidden input to indicate removal
+        const existingInput = document.querySelector('input[name="remove_news_background"]');
+        if (existingInput) {
+            existingInput.remove();
+        }
+        
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'remove_news_background';
+        hiddenInput.value = '1';
+        document.querySelector('form').appendChild(hiddenInput);
+        
+        // Hide current image section
+        const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+        if (currentImageSection) {
+            currentImageSection.style.display = 'none';
+        }
+        
+        // Show upload area
+        const uploadArea = document.getElementById('news-background-upload-area');
+        if (uploadArea) {
+            uploadArea.style.display = 'block';
+        }
+    }
+
+    function cancelRemoveNewsBackground() {
+        // Remove hidden input
+        const existingInput = document.querySelector('input[name="remove_news_background"]');
+        if (existingInput) {
+            existingInput.remove();
+        }
+        
+        // Show current image section again
+        const currentImageSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+        if (currentImageSection) {
+            currentImageSection.style.display = 'block';
+        }
+        
+        // Reset upload area
+        const uploadArea = document.getElementById('news-background-upload-area');
+        if (uploadArea) {
+            uploadArea.innerHTML = `
+                <div class="text-center p-8">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Upload Gambar Baru</h3>
+                    <p class="text-sm text-gray-600 mb-4">Klik atau drag & drop gambar untuk mengganti background berita</p>
+                    <p class="text-xs text-gray-500">Format: JPG, PNG, GIF (Maksimal 2MB)</p>
+                </div>
+            `;
+            uploadArea.style.display = 'block';
+        }
+    }
+
+    // Drag and drop functionality for hero background
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadArea = document.getElementById('hero-background-upload-area');
+        const fileInput = document.getElementById('hero_background_image');
+        
+        if (uploadArea) {
+            // Drag and drop events
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    previewHeroBackground(fileInput);
+                }
+            });
+            
+            // Click to upload
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+        }
+    });
+
+    // Form validation for hero background
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const fileInput = document.getElementById('hero_background_image');
+        const file = fileInput.files[0];
+        
+        if (file) {
+            // Check file size (2MB limit)
+            if (file.size > 2 * 1024 * 1024) {
+                e.preventDefault();
+                alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                return;
+            }
+            
+            // Check file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                e.preventDefault();
+                alert('Format file tidak didukung. Gunakan JPG, PNG, atau GIF.');
+                return;
+            }
+        }
+    });
 });
 </script>
+
+@push('styles')
+<style>
+.upload-area {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: #3B82F6;
+    background-color: #EFF6FF;
+}
+
+.upload-area.dragover {
+    border-color: #3B82F6;
+    background-color: #EFF6FF;
+    transform: scale(1.02);
+}
+
+.upload-content {
+    pointer-events: none;
+}
+
+.upload-area:hover .upload-content svg {
+    color: #3B82F6;
+}
+
+.photo-preview {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.photo-preview img {
+    transition: transform 0.2s ease;
+}
+
+.photo-preview img:hover {
+    transform: scale(1.05);
+}
+</style>
+@endpush
 @endsection

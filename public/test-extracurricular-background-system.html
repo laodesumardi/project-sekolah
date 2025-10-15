@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Extracurricular Background System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Background Section Styles */
+        .background-section {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        
+        .background-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
+        .background-section .relative {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Overlay tambahan untuk kontras yang lebih baik */
+        .background-section-overlay {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Responsive background */
+        @media (max-width: 768px) {
+            .background-section {
+                background-attachment: scroll;
+            }
+        }
+        
+        /* Animasi fade in untuk background section */
+        @keyframes fadeInBackgroundSection {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .background-section {
+            animation: fadeInBackgroundSection 1s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Test Extracurricular Background System</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- System Overview -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Sistem Extracurricular Background</h2>
+                    
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-blue-900 mb-2">✅ Fitur yang Diimplementasikan</h3>
+                        <div class="text-sm text-blue-800 space-y-2">
+                            <div class="bg-white p-3 rounded border-l-4 border-blue-500">
+                                <strong>Database:</strong><br>
+                                • Field <code>extracurricular_page_background_image</code><br>
+                                • Migration berhasil dijalankan<br>
+                                • Model HomepageSetting updated
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Admin Panel -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Admin Panel</h2>
+                    
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-green-900 mb-2">✅ Upload System</h3>
+                        <div class="text-sm text-green-800 space-y-2">
+                            <div class="bg-white p-3 rounded border-l-4 border-green-500">
+                                <strong>Admin Form:</strong><br>
+                                • Upload extracurricular background<br>
+                                • Preview & delete functionality<br>
+                                • JavaScript validation<br>
+                                • Drag & drop support
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center space-x-4">
+                <a href="http://127.0.0.1:8000/admin/homepage-settings/edit" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-cog mr-2"></i>
+                    Admin Panel
+                </a>
+                <a href="http://127.0.0.1:8000/ekstrakurikuler" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-running mr-2"></i>
+                    Halaman Ekstrakurikuler
+                </a>
+            </div>
+        </div>
+        
+        <!-- Demo Background Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Demo Background Section</h2>
+            
+            <div class="background-section rounded-lg overflow-hidden relative" 
+                 style="background-image: url('/images/placeholders/placeholder-extracurricular-background.jpg');">
+                <div class="absolute inset-0 background-section-overlay"></div>
+                <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'2\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+                
+                <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+                    <div class="text-white">
+                        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                            Ekstrakurikuler
+                        </h1>
+                        <p class="text-xl text-primary-100">
+                            Temukan kegiatan ekstrakurikuler yang sesuai dengan minat dan bakat Anda
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Implementation -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Detail Implementasi Teknis</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">Database Changes:</h3>
+                    <div class="text-sm text-gray-700 space-y-1">
+                        <p>• Migration: <code>add_extracurricular_page_background_image_to_homepage_settings_table</code></p>
+                        <p>• Field: <code>extracurricular_page_background_image</code></p>
+                        <p>• Type: <code>string nullable</code></p>
+                        <p>• Status: ✅ Migrated</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">Model Updates:</h3>
+                    <div class="text-sm text-gray-700 space-y-1">
+                        <p>• <code>HomepageSetting.php</code> - Added field to fillable</p>
+                        <p>• <code>getExtracurricularPageBackgroundImageUrlAttribute()</code></p>
+                        <p>• Controller validation & handling</p>
+                        <p>• Status: ✅ Implemented</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">Admin Form:</h3>
+                    <div class="text-sm text-gray-700 space-y-1">
+                        <p>• Upload section with preview</p>
+                        <p>• Delete functionality</p>
+                        <p>• JavaScript validation</p>
+                        <p>• Status: ✅ Implemented</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="font-semibold text-gray-900 mb-2">Frontend Display:</h3>
+                    <div class="text-sm text-gray-700 space-y-1">
+                        <p>• <code>x-background-section</code> component</p>
+                        <p>• Section: <code>extracurricular</code></p>
+                        <p>• Dynamic background loading</p>
+                        <p>• Status: ✅ Implemented</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Testing Steps -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Langkah Testing</h2>
+            
+            <div class="bg-yellow-50 rounded-lg p-4">
+                <h3 class="font-semibold text-yellow-900 mb-2">Cara Test Sistem:</h3>
+                <div class="text-sm text-yellow-800 space-y-2">
+                    <p>1. <strong>Buka Admin Panel:</strong> <code>http://127.0.0.1:8000/admin/homepage-settings/edit</code></p>
+                    <p>2. <strong>Scroll ke Section "Tentang Kami"</strong> - cari "Gambar Background Halaman Ekstrakurikuler"</p>
+                    <p>3. <strong>Upload Gambar:</strong> Klik area upload dan pilih gambar</p>
+                    <p>4. <strong>Preview:</strong> Lihat preview gambar yang akan diupload</p>
+                    <p>5. <strong>Save:</strong> Klik "Simpan Perubahan"</p>
+                    <p>6. <strong>Test Frontend:</strong> Buka <code>http://127.0.0.1:8000/ekstrakurikuler</code></p>
+                    <p>7. <strong>Verify:</strong> Background section harus menampilkan gambar yang diupload</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

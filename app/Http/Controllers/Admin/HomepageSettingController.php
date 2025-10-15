@@ -41,6 +41,7 @@ class HomepageSettingController extends Controller
             'hero_button_2_text' => 'nullable|string|max:255',
             'hero_button_2_url' => 'nullable|string|max:255',
             'hero_background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'remove_hero_background' => 'nullable|boolean',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'school_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'contact_phone' => 'nullable|string|max:255',
@@ -65,6 +66,18 @@ class HomepageSettingController extends Controller
             'about_page_principal_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'about_page_school_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'about_page_organization_chart' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'about_page_background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'remove_about_background' => 'nullable|boolean',
+            'curriculum_page_background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'remove_curriculum_background' => 'nullable|boolean',
+            'extracurricular_page_background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'remove_extracurricular_background' => 'nullable|boolean',
+            'gallery_page_background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'remove_gallery_background' => 'nullable|boolean',
+            'ppdb_page_background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'remove_ppdb_background' => 'nullable|boolean',
+            'news_page_background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'remove_news_background' => 'nullable|boolean',
             'about_page_achievements' => 'nullable|string',
             'about_page_facilities_description' => 'nullable|string',
             'organization_structure_title' => 'nullable|string|max:255',
@@ -82,6 +95,62 @@ class HomepageSettingController extends Controller
 
         if (!$homepageSetting) {
             $homepageSetting = new HomepageSetting();
+        }
+
+        // Handle hero background image removal
+        if ($request->has('remove_hero_background') && $request->remove_hero_background) {
+            if ($homepageSetting->hero_background_image) {
+                Storage::delete($homepageSetting->hero_background_image);
+                $homepageSetting->hero_background_image = null;
+            }
+        }
+
+        // Handle about page background image removal
+        if ($request->has('remove_about_background') && $request->remove_about_background) {
+            if ($homepageSetting->about_page_background_image) {
+                Storage::delete($homepageSetting->about_page_background_image);
+                $homepageSetting->about_page_background_image = null;
+            }
+        }
+
+        // Handle curriculum page background image removal
+        if ($request->has('remove_curriculum_background') && $request->remove_curriculum_background) {
+            if ($homepageSetting->curriculum_page_background_image) {
+                Storage::delete($homepageSetting->curriculum_page_background_image);
+                $homepageSetting->curriculum_page_background_image = null;
+            }
+        }
+
+        // Handle extracurricular page background image removal
+        if ($request->has('remove_extracurricular_background') && $request->remove_extracurricular_background) {
+            if ($homepageSetting->extracurricular_page_background_image) {
+                Storage::delete($homepageSetting->extracurricular_page_background_image);
+                $homepageSetting->extracurricular_page_background_image = null;
+            }
+        }
+
+        // Handle gallery page background image removal
+        if ($request->has('remove_gallery_background') && $request->remove_gallery_background) {
+            if ($homepageSetting->gallery_page_background_image) {
+                Storage::delete($homepageSetting->gallery_page_background_image);
+                $homepageSetting->gallery_page_background_image = null;
+            }
+        }
+
+        // Handle PPDB page background image removal
+        if ($request->has('remove_ppdb_background') && $request->remove_ppdb_background) {
+            if ($homepageSetting->ppdb_page_background_image) {
+                Storage::delete($homepageSetting->ppdb_page_background_image);
+                $homepageSetting->ppdb_page_background_image = null;
+            }
+        }
+
+        // Handle News page background image removal
+        if ($request->has('remove_news_background') && $request->remove_news_background) {
+            if ($homepageSetting->news_page_background_image) {
+                Storage::delete($homepageSetting->news_page_background_image);
+                $homepageSetting->news_page_background_image = null;
+            }
         }
 
         // Handle file uploads
@@ -149,6 +218,48 @@ class HomepageSettingController extends Controller
             $homepageSetting->about_page_organization_chart = $request->file('about_page_organization_chart')->store('homepage', 'public');
         }
 
+        if ($request->hasFile('about_page_background_image')) {
+            if ($homepageSetting->about_page_background_image) {
+                Storage::delete($homepageSetting->about_page_background_image);
+            }
+            $homepageSetting->about_page_background_image = $request->file('about_page_background_image')->store('homepage', 'public');
+        }
+
+        if ($request->hasFile('curriculum_page_background_image')) {
+            if ($homepageSetting->curriculum_page_background_image) {
+                Storage::delete($homepageSetting->curriculum_page_background_image);
+            }
+            $homepageSetting->curriculum_page_background_image = $request->file('curriculum_page_background_image')->store('homepage', 'public');
+        }
+
+        if ($request->hasFile('extracurricular_page_background_image')) {
+            if ($homepageSetting->extracurricular_page_background_image) {
+                Storage::delete($homepageSetting->extracurricular_page_background_image);
+            }
+            $homepageSetting->extracurricular_page_background_image = $request->file('extracurricular_page_background_image')->store('homepage', 'public');
+        }
+
+        if ($request->hasFile('gallery_page_background_image')) {
+            if ($homepageSetting->gallery_page_background_image) {
+                Storage::delete($homepageSetting->gallery_page_background_image);
+            }
+            $homepageSetting->gallery_page_background_image = $request->file('gallery_page_background_image')->store('homepage', 'public');
+        }
+
+        if ($request->hasFile('ppdb_page_background_image')) {
+            if ($homepageSetting->ppdb_page_background_image) {
+                Storage::delete($homepageSetting->ppdb_page_background_image);
+            }
+            $homepageSetting->ppdb_page_background_image = $request->file('ppdb_page_background_image')->store('homepage', 'public');
+        }
+
+        if ($request->hasFile('news_page_background_image')) {
+            if ($homepageSetting->news_page_background_image) {
+                Storage::delete($homepageSetting->news_page_background_image);
+            }
+            $homepageSetting->news_page_background_image = $request->file('news_page_background_image')->store('homepage', 'public');
+        }
+
         if ($request->hasFile('organization_structure_image')) {
             if ($homepageSetting->organization_structure_image) {
                 Storage::delete($homepageSetting->organization_structure_image);
@@ -164,7 +275,7 @@ class HomepageSettingController extends Controller
         }
 
         // Update other fields
-        $homepageSetting->fill($request->except(['hero_background_image', 'logo', 'school_image', 'principal_photo', 'accreditation_certificate', 'about_page_principal_photo', 'about_page_school_photo', 'about_page_organization_chart', 'organization_structure_image', 'library_structure_image']));
+        $homepageSetting->fill($request->except(['hero_background_image', 'logo', 'school_image', 'principal_photo', 'accreditation_certificate', 'about_page_principal_photo', 'about_page_school_photo', 'about_page_organization_chart', 'about_page_background_image', 'curriculum_page_background_image', 'extracurricular_page_background_image', 'gallery_page_background_image', 'news_page_background_image', 'ppdb_page_background_image', 'organization_structure_image', 'library_structure_image', 'remove_hero_background', 'remove_about_background', 'remove_curriculum_background', 'remove_extracurricular_background', 'remove_gallery_background', 'remove_news_background', 'remove_ppdb_background']));
         $homepageSetting->is_active = true;
         $homepageSetting->save();
 

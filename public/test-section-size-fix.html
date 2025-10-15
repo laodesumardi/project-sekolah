@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Section Size Fix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Background Section Styles */
+        .background-section {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        
+        .background-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+        
+        .background-section .relative {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Overlay tambahan untuk kontras yang lebih baik */
+        .background-section-overlay {
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Responsive background */
+        @media (max-width: 768px) {
+            .background-section {
+                background-attachment: scroll;
+            }
+        }
+        
+        /* Animasi fade in untuk background section */
+        @keyframes fadeInBackgroundSection {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .background-section {
+            animation: fadeInBackgroundSection 1s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Test Section Size Fix</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Problem -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Masalah Sebelumnya</h2>
+                    
+                    <div class="bg-red-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-red-900 mb-2">❌ Ukuran Tidak Berubah</h3>
+                        <div class="text-sm text-red-800 space-y-2">
+                            <div class="bg-white p-3 rounded border-l-4 border-red-500">
+                                <strong>Masalah:</strong><br>
+                                • Masih menggunakan <code>min-h-screen</code><br>
+                                • Section terlalu tinggi<br>
+                                • Tidak sama dengan halaman kurikulum<br>
+                                • Cache mungkin belum clear
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Solution -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Solusi yang Diterapkan</h2>
+                    
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-green-900 mb-2">✅ Perbaikan Lengkap</h3>
+                        <div class="text-sm text-green-800 space-y-2">
+                            <div class="bg-white p-3 rounded border-l-4 border-green-500">
+                                <strong>Perbaikan:</strong><br>
+                                • Hapus <code>min-h-screen</code><br>
+                                • Gunakan <code>py-16</code> saja<br>
+                                • <code>max-w-4xl</code> untuk lebar<br>
+                                • Clear cache Laravel
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center space-x-4">
+                <a href="http://127.0.0.1:8000/tentang-kami" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Halaman Tentang Kami
+                </a>
+                <a href="http://127.0.0.1:8000/akademik/kurikulum" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-book mr-2"></i>
+                    Halaman Kurikulum
+                </a>
+            </div>
+        </div>
+        
+        <!-- Demo Before/After -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Before -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Sebelum (min-h-screen)</h2>
+                
+                <div class="background-section min-h-screen rounded-lg overflow-hidden relative" 
+                     style="background-image: url('/images/placeholders/placeholder-hero-background.jpg');">
+                    <div class="absolute inset-0 background-section-overlay"></div>
+                    <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'2\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+                    
+                    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+                        <div class="text-white">
+                            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                                Terlalu Tinggi
+                            </h1>
+                            <p class="text-xl text-primary-100">
+                                min-h-screen membuat section terlalu tinggi
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- After -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Sesudah (py-16)</h2>
+                
+                <div class="background-section rounded-lg overflow-hidden relative" 
+                     style="background-image: url('/images/placeholders/placeholder-hero-background.jpg');">
+                    <div class="absolute inset-0 background-section-overlay"></div>
+                    <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'2\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+                    
+                    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+                        <div class="text-white">
+                            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                                Ukuran Pas
+                            </h1>
+                            <p class="text-xl text-primary-100">
+                                py-16 memberikan ukuran yang tepat
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Details -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Detail Teknis Perbaikan</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-900 mb-2">Perubahan CSS:</h3>
+                    <div class="text-sm text-blue-800 space-y-1">
+                        <p>• <strong>Hapus:</strong> <code>min-h-screen</code></p>
+                        <p>• <strong>Gunakan:</strong> <code>py-16</code></p>
+                        <p>• <strong>Container:</strong> <code>max-w-4xl</code></p>
+                        <p>• <strong>Text:</strong> <code>text-4xl md:text-5xl</code></p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-900 mb-2">Cache Clear:</h3>
+                    <div class="text-sm text-green-800 space-y-1">
+                        <p>• <code>php artisan cache:clear</code></p>
+                        <p>• <code>php artisan view:clear</code></p>
+                        <p>• Browser cache refresh</p>
+                        <p>• Hard refresh (Ctrl+F5)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Verification Steps -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Langkah Verifikasi</h2>
+            
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h3 class="font-semibold text-gray-900 mb-2">Cara Test Perbaikan:</h3>
+                <div class="text-sm text-gray-700 space-y-2">
+                    <p>1. <strong>Clear Browser Cache:</strong> Tekan Ctrl+F5 atau Cmd+Shift+R</p>
+                    <p>2. <strong>Buka Halaman Tentang Kami:</strong> <code>http://127.0.0.1:8000/tentang-kami</code></p>
+                    <p>3. <strong>Bandingkan dengan Kurikulum:</strong> <code>http://127.0.0.1:8000/akademik/kurikulum</code></p>
+                    <p>4. <strong>Periksa Ukuran:</strong> Section harus sama tingginya</p>
+                    <p>5. <strong>Test Responsive:</strong> Cek di mobile dan desktop</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

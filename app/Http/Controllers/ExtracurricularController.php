@@ -121,6 +121,25 @@ class ExtracurricularController extends Controller
         ));
     }
 
+    public function showRegistrationForm($slug)
+    {
+        $extracurricular = Extracurricular::where('slug', $slug)->firstOrFail();
+        
+        // Check if registration open
+        if (!$extracurricular->isRegistrationPeriod()) {
+            return redirect()->route('extracurriculars.show', $extracurricular->slug)
+                ->with('error', 'Pendaftaran tidak dibuka saat ini');
+        }
+        
+        // Check if full
+        if ($extracurricular->is_full) {
+            return redirect()->route('extracurriculars.show', $extracurricular->slug)
+                ->with('error', 'Kuota pendaftaran sudah penuh');
+        }
+        
+        return view('extracurriculars.register', compact('extracurricular'));
+    }
+
     public function register(Request $request, $id)
     {
         // Check if logged in

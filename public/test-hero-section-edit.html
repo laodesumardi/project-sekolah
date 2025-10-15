@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Hero Section Edit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Test Hero Section Edit</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Problem -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Masalah yang Dilaporkan</h2>
+                    
+                    <div class="bg-red-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-red-900 mb-2">❌ Tidak Ada Form Edit</h3>
+                        <div class="text-sm text-red-800 space-y-2">
+                            <div class="bg-white p-3 rounded border-l-4 border-red-500">
+                                <strong>User Report:</strong><br>
+                                "kenapa tidak ada untuk mengedit @http://127.0.0.1:8000/admin/homepage-settings/edit#hero-section"
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Solution -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Solusi</h2>
+                    
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-green-900 mb-2">✅ Form Edit Tersedia</h3>
+                        <div class="text-sm text-green-800 space-y-2">
+                            <div class="bg-white p-3 rounded border-l-4 border-green-500">
+                                <strong>Form Fields:</strong><br>
+                                • Judul Utama<br>
+                                • Subtitle<br>
+                                • Deskripsi<br>
+                                • Tombol 1 & 2<br>
+                                • Background Image
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center space-x-4">
+                <a href="http://127.0.0.1:8000/admin/homepage-settings/edit#hero-section" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-edit mr-2"></i>
+                    Buka Hero Section Edit
+                </a>
+                <a href="http://127.0.0.1:8000/" class="inline-flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-home mr-2"></i>
+                    Lihat Hasil
+                </a>
+            </div>
+        </div>
+        
+        <!-- Form Fields Available -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Form Fields yang Tersedia di Hero Section</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-gray-900">Text Fields</h3>
+                    <div class="space-y-2">
+                        <div class="bg-blue-50 rounded-lg p-3">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-heading text-blue-600 mr-2"></i>
+                                <span class="font-medium text-blue-900">Judul Utama</span>
+                            </div>
+                            <p class="text-sm text-blue-800">Field: hero_title</p>
+                        </div>
+                        
+                        <div class="bg-green-50 rounded-lg p-3">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-subscript text-green-600 mr-2"></i>
+                                <span class="font-medium text-green-900">Subtitle</span>
+                            </div>
+                            <p class="text-sm text-green-800">Field: hero_subtitle</p>
+                        </div>
+                        
+                        <div class="bg-purple-50 rounded-lg p-3">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-align-left text-purple-600 mr-2"></i>
+                                <span class="font-medium text-purple-900">Deskripsi</span>
+                            </div>
+                            <p class="text-sm text-purple-800">Field: hero_description</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <h3 class="font-semibold text-gray-900">Button Fields</h3>
+                    <div class="space-y-2">
+                        <div class="bg-yellow-50 rounded-lg p-3">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-mouse-pointer text-yellow-600 mr-2"></i>
+                                <span class="font-medium text-yellow-900">Tombol 1</span>
+                            </div>
+                            <p class="text-sm text-yellow-800">Fields: hero_button_1_text, hero_button_1_url</p>
+                        </div>
+                        
+                        <div class="bg-orange-50 rounded-lg p-3">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-mouse-pointer text-orange-600 mr-2"></i>
+                                <span class="font-medium text-orange-900">Tombol 2</span>
+                            </div>
+                            <p class="text-sm text-orange-800">Fields: hero_button_2_text, hero_button_2_url</p>
+                        </div>
+                        
+                        <div class="bg-red-50 rounded-lg p-3">
+                            <div class="flex items-center mb-1">
+                                <i class="fas fa-image text-red-600 mr-2"></i>
+                                <span class="font-medium text-red-900">Background Image</span>
+                            </div>
+                            <p class="text-sm text-red-800">Field: hero_background_image</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Troubleshooting -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Troubleshooting</h2>
+            
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h3 class="font-semibold text-gray-900 mb-2">Jika Form Tidak Muncul:</h3>
+                <div class="text-sm text-gray-700 space-y-2">
+                    <p>1. <strong>Periksa Database:</strong> Pastikan ada data HomepageSetting</p>
+                    <p>2. <strong>Clear Cache:</strong> <code>php artisan cache:clear</code></p>
+                    <p>3. <strong>Run Seeder:</strong> <code>php artisan db:seed --class=HomepageSettingSeeder</code></p>
+                    <p>4. <strong>Check Permissions:</strong> Pastikan file bisa diakses</p>
+                    <p>5. <strong>Browser Cache:</strong> Hard refresh (Ctrl+F5)</p>
+                </div>
+            </div>
+            
+            <div class="mt-4 bg-blue-50 rounded-lg p-4">
+                <h3 class="font-semibold text-blue-900 mb-2">URL yang Benar:</h3>
+                <div class="text-sm text-blue-800">
+                    <p><strong>Admin Panel:</strong> <code>http://127.0.0.1:8000/admin/homepage-settings/edit</code></p>
+                    <p><strong>Hero Section:</strong> <code>http://127.0.0.1:8000/admin/homepage-settings/edit#hero-section</code></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Verification Steps -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Langkah Verifikasi</h2>
+            
+            <div class="bg-gray-50 rounded-lg p-4">
+                <h3 class="font-semibold text-gray-900 mb-2">Cara Test Hero Section Edit:</h3>
+                <div class="text-sm text-gray-700 space-y-2">
+                    <p>1. <strong>Buka Admin Panel:</strong> Akses URL admin homepage settings</p>
+                    <p>2. <strong>Scroll ke Hero Section:</strong> Cari bagian dengan ID "hero-section"</p>
+                    <p>3. <strong>Isi Form:</strong> Masukkan data di field yang tersedia</p>
+                    <p>4. <strong>Upload Gambar:</strong> Upload background image jika diperlukan</p>
+                    <p>5. <strong>Simpan:</strong> Klik tombol "Simpan Perubahan"</p>
+                    <p>6. <strong>Verifikasi:</strong> Lihat hasil di halaman utama</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

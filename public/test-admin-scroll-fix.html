@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Admin Scroll Fix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Gentle smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+        
+        /* Ensure proper scrolling for admin pages */
+        body {
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        /* Fix for navigation tabs */
+        .nav-tab {
+            transition: all 0.3s ease;
+        }
+        
+        /* Better spacing for sections with gentle scroll */
+        .admin-section {
+            scroll-margin-top: 120px;
+            scroll-snap-align: start;
+        }
+        
+        /* Fix for form elements */
+        .form-container {
+            min-height: 100vh;
+        }
+        
+        /* Gentle scroll animation */
+        * {
+            scroll-behavior: smooth;
+        }
+        
+        /* Reduce scroll speed */
+        @media (prefers-reduced-motion: no-preference) {
+            html {
+                scroll-behavior: smooth;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">Test Admin Scroll Fix</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Problem -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Masalah Sebelumnya</h2>
+                    
+                    <div class="bg-red-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-red-900 mb-2">❌ Scroll Terlalu Keras</h3>
+                        <div class="text-sm text-red-800 space-y-2">
+                            <div class="bg-white p-3 rounded border-l-4 border-red-500">
+                                <strong>Masalah:</strong><br>
+                                • Scroll terlalu cepat<br>
+                                • Animasi terlalu keras<br>
+                                • Tidak smooth<br>
+                                • Jarak scroll tidak tepat
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Solution -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-semibold text-gray-900">Solusi yang Diterapkan</h2>
+                    
+                    <div class="bg-green-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-green-900 mb-2">✅ Scroll Halus & Lembut</h3>
+                        <div class="text-sm text-green-800 space-y-2">
+                            <div class="bg-white p-3 rounded border-l-4 border-green-500">
+                                <strong>Perbaikan:</strong><br>
+                                • Duration 800ms (lebih lambat)<br>
+                                • Easing function smooth<br>
+                                • requestAnimationFrame<br>
+                                • Scroll margin 120px
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center space-x-4">
+                <a href="http://127.0.0.1:8000/admin/homepage-settings/edit" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-cog mr-2"></i>
+                    Test Admin Panel
+                </a>
+            </div>
+        </div>
+        
+        <!-- Demo Navigation -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Demo Navigation Scroll</h2>
+            
+            <!-- Navigation Tabs -->
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <div class="flex flex-wrap gap-2">
+                    <a href="#section1" class="nav-tab px-4 py-2 bg-primary-100 text-primary-700 rounded-lg hover:bg-primary-200 transition-colors duration-200 text-sm font-medium">
+                        Section 1
+                    </a>
+                    <a href="#section2" class="nav-tab px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm font-medium">
+                        Section 2
+                    </a>
+                    <a href="#section3" class="nav-tab px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm font-medium">
+                        Section 3
+                    </a>
+                    <a href="#section4" class="nav-tab px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 text-sm font-medium">
+                        Section 4
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Demo Sections -->
+            <div class="space-y-8">
+                <div id="section1" class="admin-section bg-blue-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-blue-900 mb-4">Section 1 - Hero Section</h3>
+                    <p class="text-blue-800">Ini adalah demo section 1. Scroll ke sini menggunakan navigation di atas akan lebih halus dan lembut.</p>
+                    <div class="mt-4 h-32 bg-blue-100 rounded flex items-center justify-center">
+                        <span class="text-blue-600 font-medium">Content Area</span>
+                    </div>
+                </div>
+                
+                <div id="section2" class="admin-section bg-green-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-green-900 mb-4">Section 2 - Contact Info</h3>
+                    <p class="text-green-800">Ini adalah demo section 2. Scroll behavior sudah diperbaiki untuk lebih smooth.</p>
+                    <div class="mt-4 h-32 bg-green-100 rounded flex items-center justify-center">
+                        <span class="text-green-600 font-medium">Content Area</span>
+                    </div>
+                </div>
+                
+                <div id="section3" class="admin-section bg-yellow-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-yellow-900 mb-4">Section 3 - Principal Info</h3>
+                    <p class="text-yellow-800">Ini adalah demo section 3. Scroll sekarang menggunakan easing function yang lebih lembut.</p>
+                    <div class="mt-4 h-32 bg-yellow-100 rounded flex items-center justify-center">
+                        <span class="text-yellow-600 font-medium">Content Area</span>
+                    </div>
+                </div>
+                
+                <div id="section4" class="admin-section bg-purple-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-purple-900 mb-4">Section 4 - Accreditation</h3>
+                    <p class="text-purple-800">Ini adalah demo section 4. Scroll behavior sudah dioptimalkan dengan requestAnimationFrame.</p>
+                    <div class="mt-4 h-32 bg-purple-100 rounded flex items-center justify-center">
+                        <span class="text-purple-600 font-medium">Content Area</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Details -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Detail Teknis Perbaikan Scroll</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h3 class="font-semibold text-blue-900 mb-2">JavaScript Improvements:</h3>
+                    <div class="text-sm text-blue-800 space-y-1">
+                        <p>• <strong>Duration:</strong> 800ms (lebih lambat)</p>
+                        <p>• <strong>Easing:</strong> <code>1 - Math.pow(1 - progress, 3)</code></p>
+                        <p>• <strong>Animation:</strong> <code>requestAnimationFrame</code></p>
+                        <p>• <strong>Offset:</strong> 100px untuk header</p>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 rounded-lg p-4">
+                    <h3 class="font-semibold text-green-900 mb-2">CSS Improvements:</h3>
+                    <div class="text-sm text-green-800 space-y-1">
+                        <p>• <strong>Scroll Behavior:</strong> <code>smooth</code></p>
+                        <p>• <strong>Scroll Padding:</strong> <code>100px</code></p>
+                        <p>• <strong>Scroll Margin:</strong> <code>120px</code></p>
+                        <p>• <strong>Reduced Motion:</strong> Support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling for navigation tabs
+        const navLinks = document.querySelectorAll('a[href^="#"]');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    // Smooth scroll with gentle animation
+                    const offset = 100; // Account for fixed header
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                    // Use requestAnimationFrame for smoother scroll
+                    const startPosition = window.pageYOffset;
+                    const distance = offsetPosition - startPosition;
+                    const duration = 800; // Slower, more gentle scroll
+                    let start = null;
+
+                    function step(timestamp) {
+                        if (!start) start = timestamp;
+                        const progress = Math.min((timestamp - start) / duration, 1);
+                        
+                        // Easing function for smooth deceleration
+                        const ease = 1 - Math.pow(1 - progress, 3);
+                        
+                        window.scrollTo(0, startPosition + distance * ease);
+                        
+                        if (progress < 1) {
+                            requestAnimationFrame(step);
+                        }
+                    }
+                    
+                    requestAnimationFrame(step);
+                    
+                    // Update active tab
+                    updateActiveTab(this);
+                }
+            });
+        });
+
+        // Update active tab based on scroll position
+        function updateActiveTab(activeLink) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('bg-primary-100', 'text-primary-700');
+                tab.classList.add('bg-gray-100', 'text-gray-700');
+            });
+            
+            // Add active class to clicked tab
+            activeLink.classList.remove('bg-gray-100', 'text-gray-700');
+            activeLink.classList.add('bg-primary-100', 'text-primary-700');
+        }
+    </script>
+</body>
+</html>

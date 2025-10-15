@@ -33,6 +33,9 @@ Route::get('/tentang-kami', [AboutController::class, 'index'])->name('about');
 Route::get('/kontak', [\App\Http\Controllers\ContactController::class, 'index'])->name('contact');
 Route::post('/kontak', [\App\Http\Controllers\MessageController::class, 'store'])->name('contact.message');
 Route::get('/akreditasi', [\App\Http\Controllers\AccreditationController::class, 'index'])->name('accreditation');
+Route::get('/gambar-section', function () {
+    return view('section-images.index');
+})->name('section-images');
 
 // PPDB Routes
 Route::prefix('ppdb')->name('ppdb.')->group(function () {
@@ -54,6 +57,7 @@ Route::get('/berita/tag/{tag}', [NewsController::class, 'tag'])->name('news.tag'
 
 // Achievement Routes
 Route::get('/prestasi', [\App\Http\Controllers\AchievementController::class, 'index'])->name('achievements');
+Route::get('/prestasi/statistik', [\App\Http\Controllers\AchievementStatisticsController::class, 'index'])->name('achievements.statistics');
 Route::get('/prestasi/{slug}', [\App\Http\Controllers\AchievementController::class, 'show'])->name('achievements.show');
 Route::get('/prestasi/filter', [\App\Http\Controllers\AchievementController::class, 'filter'])->name('achievements.filter');
 Route::get('/feed', [NewsController::class, 'feed'])->name('news.feed');
@@ -91,6 +95,7 @@ Route::prefix('akademik')->name('academic.')->group(function () {
 // Extracurricular Routes
 Route::get('/ekstrakurikuler', [\App\Http\Controllers\ExtracurricularController::class, 'index'])->name('extracurriculars.index');
 Route::get('/ekstrakurikuler/{extracurricular:slug}', [\App\Http\Controllers\ExtracurricularController::class, 'show'])->name('extracurriculars.show');
+Route::get('/ekstrakurikuler/{extracurricular:slug}/register', [\App\Http\Controllers\ExtracurricularController::class, 'showRegistrationForm'])->name('extracurriculars.register.form');
 Route::post('/ekstrakurikuler/{extracurricular:slug}/register', [\App\Http\Controllers\ExtracurricularController::class, 'register'])->name('extracurriculars.register');
 Route::delete('/ekstrakurikuler/{extracurricular:slug}/cancel', [\App\Http\Controllers\ExtracurricularController::class, 'cancelRegistration'])->name('extracurriculars.cancel');
 Route::get('/ekstrakurikuler/filter', [\App\Http\Controllers\ExtracurricularController::class, 'filter'])->name('extracurriculars.filter');

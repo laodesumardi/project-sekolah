@@ -11,7 +11,8 @@
 ]" />
 
 <!-- Page Header -->
-<x-page-header 
+<x-background-section 
+    section="curriculum"
     title="Kurikulum Sekolah" 
     subtitle="Struktur kurikulum dan mata pelajaran yang diajarkan di SMP Negeri 01 Namrole" 
 />

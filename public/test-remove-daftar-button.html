@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Remove Daftar Button</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .info { color: #17a2b8; font-weight: bold; }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        .button:hover { background: #0056b3; }
+        .code {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗑️ Test Remove Daftar Button</h1>
+        <p>Halaman ini untuk memverifikasi penghapusan tombol "Daftar" dari halaman ekstrakurikuler.</p>
+
+        <div class="test-section">
+            <h2>✅ Perubahan yang Dilakukan</h2>
+            <ul>
+                <li class="success">✅ Tombol "Daftar" dihilangkan dari halaman ekstrakurikuler</li>
+                <li class="success">✅ Form POST untuk pendaftaran dihapus</li>
+                <li class="success">✅ Kondisi untuk status pendaftaran (Penuh/Tutup) dihapus</li>
+                <li class="success">✅ Hanya tersisa tombol "Detail" untuk setiap ekstrakurikuler</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 File yang Diperbaiki</h2>
+            <div class="code">
+<strong>resources/views/extracurriculars/index.blade.php</strong>
+
+<strong>Sebelum:</strong>
+&lt;div class="flex space-x-2"&gt;
+    &lt;a href="..."&gt;Detail&lt;/a&gt;
+    &lt;form method="POST"&gt;
+        &lt;button&gt;Daftar&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+
+<strong>Sesudah:</strong>
+&lt;div class="flex space-x-2"&gt;
+    &lt;a href="..."&gt;Detail&lt;/a&gt;
+&lt;/div&gt;
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🧪 Test Links</h2>
+            <a href="/ekstrakurikuler" class="button">Halaman Ekstrakurikuler</a>
+            <a href="/" class="button">Homepage</a>
+        </div>
+
+        <div class="test-section">
+            <h2>✅ Hasil Perubahan</h2>
+            <ul>
+                <li class="success">✅ Tombol "Daftar" tidak muncul lagi</li>
+                <li class="success">✅ Tombol "Penuh" tidak muncul lagi</li>
+                <li class="success">✅ Tombol "Tutup" tidak muncul lagi</li>
+                <li class="success">✅ Hanya tombol "Detail" yang tersisa</li>
+                <li class="success">✅ Layout tetap rapi dan konsisten</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Cara Verifikasi</h2>
+            <ol>
+                <li>Buka halaman <a href="/ekstrakurikuler" target="_blank">/ekstrakurikuler</a></li>
+                <li>Periksa setiap card ekstrakurikuler</li>
+                <li>Pastikan hanya ada tombol "Detail" (warna biru)</li>
+                <li>Pastikan tidak ada tombol "Daftar" (warna hijau)</li>
+                <li>Pastikan tidak ada tombol "Penuh" atau "Tutup" (warna abu-abu)</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Status</h2>
+            <p class="success">✅ <strong>Remove Daftar Button - COMPLETED</strong></p>
+            <p>Tombol "Daftar" sudah berhasil dihilangkan dari halaman ekstrakurikuler.</p>
+        </div>
+    </div>
+</body>
+</html>

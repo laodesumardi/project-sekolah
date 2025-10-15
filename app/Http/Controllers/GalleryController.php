@@ -5,64 +5,41 @@ namespace App\Http\Controllers;
 use App\Models\Gallery;
 use App\Models\GalleryImage;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class GalleryController extends Controller
 {
     /**
-     * Display a listing of galleries.
+     * Display the gallery index page.
      */
-    public function index(Request $request): View
+    public function index(Request $request)
     {
-        $query = Gallery::published()->with(['images' => function ($q) {
-            $q->orderBy('sort_order')->orderBy('created_at');
+        $query = Gallery::published()->with(['images' => function($q) {
+            $q->orderBy('sort_order')->orderBy('id');
         }]);
 
         // Filter by category
-        if ($request->filled('category') && $request->category !== 'all') {
+        if ($request->has('category') && $request->category !== 'all') {
             $query->byCategory($request->category);
         }
 
-        // Search
-        if ($request->filled('search')) {
+        // Search functionality
+        if ($request->has('search') && $request->search) {
             $query->search($request->search);
         }
 
-        // Sort
-        $sort = $request->get('sort', 'recent');
-        switch ($sort) {
-            case 'oldest':
-                $query->orderBy('date', 'asc')->orderBy('created_at', 'asc');
-                break;
-            case 'views':
-                $query->orderBy('view_count', 'desc');
-                break;
-            case 'title_asc':
-                $query->orderBy('title', 'asc');
-                break;
-            case 'title_desc':
-                $query->orderBy('title', 'desc');
-                break;
-            default: // recent
-                $query->recent();
-                break;
+        // Sort by date or created_at
+        $sortBy = $request->get('sort', 'recent');
+        if ($sortBy === 'oldest') {
+            $query->orderBy('date', 'asc')->orderBy('created_at', 'asc');
+        } else {
+            $query->recent();
         }
 
         $galleries = $query->paginate(12);
 
-        // Get featured galleries for carousel
-        $featuredGalleries = Gallery::published()
-            ->featured()
-            ->with(['images' => function ($q) {
-                $q->orderBy('sort_order')->orderBy('created_at');
-            }])
-            ->recent()
-            ->limit(3)
-            ->get();
-
         // Get categories for filter
         $categories = [
-            'all' => 'Semua',
+            'all' => 'Semua Kategori',
             'kegiatan' => 'Kegiatan',
             'prestasi' => 'Prestasi',
             'fasilitas' => 'Fasilitas',
@@ -73,18 +50,28 @@ class GalleryController extends Controller
             'lainnya' => 'Lainnya'
         ];
 
-        return view('gallery.index', compact('galleries', 'featuredGalleries', 'categories'));
+        // Get featured galleries
+        $featuredGalleries = Gallery::published()
+            ->featured()
+            ->with(['images' => function($q) {
+                $q->orderBy('sort_order')->orderBy('id');
+            }])
+            ->recent()
+            ->limit(6)
+            ->get();
+
+        return view('gallery.index', compact('galleries', 'categories', 'featuredGalleries'));
     }
 
     /**
-     * Display the specified gallery.
+     * Display a specific gallery.
      */
-    public function show(string $slug): View
+    public function show($slug)
     {
         $gallery = Gallery::published()
             ->where('slug', $slug)
-            ->with(['images' => function ($q) {
-                $q->orderBy('sort_order')->orderBy('created_at');
+            ->with(['images' => function($q) {
+                $q->orderBy('sort_order')->orderBy('id');
             }])
             ->firstOrFail();
 
@@ -93,59 +80,42 @@ class GalleryController extends Controller
 
         // Get related galleries
         $relatedGalleries = Gallery::published()
-            ->where('category', $gallery->category)
             ->where('id', '!=', $gallery->id)
-            ->with(['images' => function ($q) {
-                $q->orderBy('sort_order')->orderBy('created_at');
+            ->where('category', $gallery->category)
+            ->with(['images' => function($q) {
+                $q->orderBy('sort_order')->orderBy('id');
             }])
             ->recent()
-            ->limit(3)
+            ->limit(4)
             ->get();
 
         return view('gallery.show', compact('gallery', 'relatedGalleries'));
     }
 
     /**
-     * Filter galleries via AJAX.
+     * Display gallery by category.
      */
-    public function filter(Request $request)
+    public function category($category)
     {
-        $query = Gallery::published()->with(['images' => function ($q) {
-            $q->orderBy('sort_order')->orderBy('created_at');
-        }]);
+        $galleries = Gallery::published()
+            ->byCategory($category)
+            ->with(['images' => function($q) {
+                $q->orderBy('sort_order')->orderBy('id');
+            }])
+            ->recent()
+            ->paginate(12);
 
-        // Filter by category
-        if ($request->filled('category') && $request->category !== 'all') {
-            $query->byCategory($request->category);
-        }
+        $categoryName = [
+            'kegiatan' => 'Kegiatan',
+            'prestasi' => 'Prestasi',
+            'fasilitas' => 'Fasilitas',
+            'event' => 'Event',
+            'olahraga' => 'Olahraga',
+            'seni' => 'Seni',
+            'akademik' => 'Akademik',
+            'lainnya' => 'Lainnya'
+        ][$category] ?? 'Kategori';
 
-        // Search
-        if ($request->filled('search')) {
-            $query->search($request->search);
-        }
-
-        // Sort
-        $sort = $request->get('sort', 'recent');
-        switch ($sort) {
-            case 'oldest':
-                $query->orderBy('date', 'asc')->orderBy('created_at', 'asc');
-                break;
-            case 'views':
-                $query->orderBy('view_count', 'desc');
-                break;
-            case 'title_asc':
-                $query->orderBy('title', 'asc');
-                break;
-            case 'title_desc':
-                $query->orderBy('title', 'desc');
-                break;
-            default: // recent
-                $query->recent();
-                break;
-        }
-
-        $galleries = $query->paginate(12);
-
-        return view('gallery.partials.gallery-grid', compact('galleries'));
+        return view('gallery.category', compact('galleries', 'categoryName', 'category'));
     }
 }
