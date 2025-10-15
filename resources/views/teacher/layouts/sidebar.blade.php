@@ -1,5 +1,5 @@
 <div class="flex flex-col h-full bg-white">
-    <!-- Logo -->
+        <!-- Logo -->
     <div class="flex items-center justify-between h-16 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg">
         <div class="flex items-center">
             <i class="fas fa-graduation-cap text-2xl mr-3"></i>
@@ -51,15 +51,15 @@
                             Profil Belum Lengkap
                         </span>
                     </div>
-                </div>
+        </div>
             </div>
         @endif
-    </div>
-
-    <!-- Navigation -->
+        </div>
+        
+        <!-- Navigation -->
     <nav class="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
-        <!-- Dashboard -->
-        <a href="{{ route('teacher.dashboard') }}" 
+                        <!-- Dashboard -->
+                            <a href="{{ route('teacher.dashboard') }}" 
            class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('teacher.dashboard') ? 'bg-blue-100 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
             <i class="fas fa-tachometer-alt w-5 h-5 mr-3 {{ request()->routeIs('teacher.dashboard') ? 'text-blue-600' : 'text-gray-500' }}"></i>
             <span>Dashboard</span>
@@ -158,7 +158,7 @@
         </div>
 
         <!-- Profile -->
-        <a href="{{ route('teacher.profile.show') }}" 
+                            <a href="{{ route('teacher.profile.show') }}" 
            class="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 {{ request()->routeIs('teacher.profile.*') ? 'bg-blue-100 text-blue-700 shadow-sm' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
             <i class="fas fa-user w-5 h-5 mr-3 {{ request()->routeIs('teacher.profile.*') ? 'text-blue-600' : 'text-gray-500' }}"></i>
             <span>Profil</span>
@@ -184,13 +184,13 @@
 
     <!-- Footer -->
     <div class="px-4 py-4 border-t border-gray-200 bg-gray-50">
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" 
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" 
                     class="flex items-center w-full px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-700 transition-all duration-200">
                 <i class="fas fa-sign-out-alt w-5 h-5 mr-3 text-red-500"></i>
                 <span>Keluar</span>
-            </button>
-        </form>
+                                </button>
+                            </form>
     </div>
 </div>

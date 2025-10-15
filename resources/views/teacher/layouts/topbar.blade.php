@@ -3,17 +3,17 @@
     <div class="flex items-center">
         <button onclick="toggleSidebar()" class="md:hidden text-gray-600 hover:text-gray-900">
             <i class="fas fa-bars text-xl"></i>
-        </button>
-        
+    </button>
+
         <div class="ml-4">
             <h1 class="text-xl font-semibold text-gray-900">@yield('title', 'Dashboard Guru')</h1>
             <p class="text-sm text-gray-600">@yield('subtitle', 'Selamat datang di dashboard guru')</p>
-        </div>
-    </div>
+                    </div>
+                    </div>
 
     <!-- Right side -->
     <div class="flex items-center space-x-4">
-        <!-- Notifications -->
+            <!-- Notifications -->
         <div class="relative">
             <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-200">
                 <i class="fas fa-bell text-xl"></i>
@@ -21,7 +21,7 @@
             </button>
         </div>
 
-        <!-- Messages -->
+            <!-- Messages -->
         <div class="relative">
             <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-200">
                 <i class="fas fa-envelope text-xl"></i>
@@ -30,7 +30,7 @@
         </div>
 
         <!-- Profile Dropdown -->
-        <div class="relative">
+            <div class="relative">
             <button onclick="toggleProfileDropdown()" class="flex items-center space-x-3 p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200">
                 @if(Auth::user()->teacher)
                     <img src="{{ Auth::user()->teacher->profile_picture_url }}" 
@@ -46,7 +46,7 @@
                     <p class="text-xs text-gray-600">Guru</p>
                 </div>
                 <i class="fas fa-chevron-down text-xs"></i>
-            </button>
+                </button>
 
             <!-- Profile Dropdown Menu -->
             <div id="profile-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50">
@@ -82,18 +82,18 @@
 </div>
 
 <script>
-    function toggleProfileDropdown() {
-        const dropdown = document.getElementById('profile-dropdown');
-        dropdown.classList.toggle('hidden');
-    }
+function toggleProfileDropdown() {
+    const dropdown = document.getElementById('profile-dropdown');
+    dropdown.classList.toggle('hidden');
+}
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(event) {
-        const dropdown = document.getElementById('profile-dropdown');
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('profile-dropdown');
         const button = event.target.closest('button[onclick="toggleProfileDropdown()"]');
-        
+    
         if (!button && !dropdown.contains(event.target)) {
-            dropdown.classList.add('hidden');
-        }
-    });
+        dropdown.classList.add('hidden');
+    }
+});
 </script>

@@ -189,7 +189,7 @@ class LearningMaterialController extends Controller
             if ($learningMaterial->file_path && Storage::disk('public')->exists($learningMaterial->file_path)) {
                 Storage::disk('public')->delete($learningMaterial->file_path);
             }
-            
+
             $file = $request->file('file');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $filePath = $file->storeAs('learning-materials', $fileName, 'public');

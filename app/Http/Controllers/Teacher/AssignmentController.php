@@ -214,7 +214,7 @@ class AssignmentController extends Controller
             if ($assignment->file_path && Storage::disk('public')->exists($assignment->file_path)) {
                 Storage::disk('public')->delete($assignment->file_path);
             }
-            
+
             $file = $request->file('file');
             $fileName = time() . '_' . $file->getClientOriginalName();
             $filePath = $file->storeAs('assignments', $fileName, 'public');

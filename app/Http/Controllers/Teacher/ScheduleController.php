@@ -146,7 +146,7 @@ class ScheduleController extends Controller
         }
 
         $schedule->load(['class', 'subject']);
-
+        
         return view('teacher.schedules.show', compact('schedule'));
     }
 
@@ -303,7 +303,7 @@ class ScheduleController extends Controller
                 'start' => $schedule->start_time->format('H:i'),
                 'end' => $schedule->end_time->format('H:i'),
                 'day' => $schedule->day_of_week,
-                'room' => $schedule->room,
+                    'room' => $schedule->room,
                 'color' => $this->getScheduleColor($schedule->subject->name),
             ];
         }

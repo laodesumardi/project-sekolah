@@ -24,10 +24,10 @@ class ProfileController extends Controller
 
         $documents = $teacher->documents()->orderBy('created_at', 'desc')->get();
         $certifications = $teacher->certifications()->orderBy('issue_date', 'desc')->get();
-
+        
         return view('teacher.profile.show', compact('teacher', 'documents', 'certifications'));
     }
-
+    
     public function create()
     {
         return view('teacher.profile.create');
@@ -139,10 +139,10 @@ class ProfileController extends Controller
         }
 
         $teacher->load('user');
-
+        
         return view('teacher.profile.edit', compact('teacher'));
     }
-
+    
     public function update(Request $request)
     {
         $teacher = Auth::user()->teacher;
@@ -151,7 +151,7 @@ class ProfileController extends Controller
             return redirect()->route('teacher.profile.create')
                 ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
         }
-
+        
         $request->validate([
             'email' => 'required|email|unique:users,email,' . Auth::id(),
             'phone' => 'required|string|max:15',
@@ -161,12 +161,12 @@ class ProfileController extends Controller
             'current_password' => 'nullable|current_password',
             'new_password' => 'nullable|min:8|confirmed',
         ]);
-
+        
         // Update user email
         Auth::user()->update([
             'email' => $request->email,
         ]);
-
+        
         // Handle photo upload
         if ($request->hasFile('photo')) {
             // Delete old photo if exists
@@ -178,25 +178,25 @@ class ProfileController extends Controller
             $photoPath = $request->file('photo')->store('teacher-photos', 'public');
             $teacher->update(['photo' => $photoPath]);
         }
-
+        
         // Handle password update
         if ($request->filled('new_password')) {
             Auth::user()->update([
                 'password' => Hash::make($request->new_password),
             ]);
         }
-
+        
         // Update teacher profile
         $teacher->update([
             'phone' => $request->phone,
             'address' => $request->address,
             'bio' => $request->bio,
         ]);
-
+        
         return redirect()->route('teacher.profile.show')
             ->with('success', 'Profil guru berhasil diperbarui!');
     }
-
+    
     public function updatePhoto(Request $request)
     {
         $teacher = Auth::user()->teacher;
@@ -208,7 +208,7 @@ class ProfileController extends Controller
         $request->validate([
             'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
+        
         // Delete old photo if exists
         if ($teacher->photo && Storage::disk('public')->exists($teacher->photo)) {
             Storage::disk('public')->delete($teacher->photo);
@@ -217,28 +217,28 @@ class ProfileController extends Controller
         // Store new photo
         $photoPath = $request->file('photo')->store('teacher-photos', 'public');
         $teacher->update(['photo' => $photoPath]);
-
+        
         return response()->json([
             'success' => true,
             'photo_url' => $teacher->fresh()->profile_picture_url,
         ]);
     }
-
+    
     public function updatePassword(Request $request)
     {
         $request->validate([
             'current_password' => 'required|current_password',
             'new_password' => 'required|min:8|confirmed',
         ]);
-
+        
         Auth::user()->update([
             'password' => Hash::make($request->new_password),
         ]);
-
+        
         return redirect()->route('teacher.profile.show')
             ->with('success', 'Password berhasil diperbarui!');
     }
-
+    
     public function portfolio()
     {
         $teacher = Auth::user()->teacher;
@@ -284,13 +284,13 @@ class ProfileController extends Controller
         $request->validate([
             'password' => 'required|current_password',
         ]);
-
+        
         Auth::logoutOtherDevices($request->password);
-
+        
         return redirect()->route('teacher.profile.sessions')
             ->with('success', 'Sesi lain telah diakhiri!');
     }
-
+    
     public function updatePrivacy(Request $request)
     {
         $teacher = Auth::user()->teacher;
@@ -299,7 +299,7 @@ class ProfileController extends Controller
             return redirect()->route('teacher.profile.create')
                 ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
         }
-
+        
         $request->validate([
             'is_public' => 'boolean',
         ]);

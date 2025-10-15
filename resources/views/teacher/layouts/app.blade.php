@@ -16,7 +16,7 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
+    
     <!-- Custom Styles -->
     <style>
         .sidebar-transition {
@@ -70,7 +70,7 @@
         .notification-transition {
             transition: all 0.3s ease;
         }
-        
+
         .notification-enter {
             transform: translateX(100%);
             opacity: 0;
@@ -96,14 +96,14 @@
     <div class="min-h-screen flex">
         <!-- Sidebar -->
         <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg sidebar-transition sidebar-visible md:translate-x-0">
-            @include('teacher.layouts.sidebar')
+        @include('teacher.layouts.sidebar')
         </div>
 
         <!-- Main Content -->
         <div id="main-content" class="flex-1 main-content-transition main-content-expanded md:ml-64">
             <!-- Top Navigation -->
             <div class="bg-white shadow-sm border-b border-gray-200">
-                @include('teacher.layouts.topbar')
+            @include('teacher.layouts.topbar')
             </div>
 
             <!-- Page Content -->
@@ -157,7 +157,7 @@
                 if (sidebar.classList.contains('sidebar-visible')) {
                     sidebar.classList.remove('sidebar-visible');
                     sidebar.classList.add('sidebar-hidden');
-                    overlay.classList.remove('hidden');
+                overlay.classList.remove('hidden');
                 } else {
                     sidebar.classList.remove('sidebar-hidden');
                     sidebar.classList.add('sidebar-visible');
@@ -189,7 +189,7 @@
         // Close sidebar on escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && window.innerWidth < 768) {
-                const sidebar = document.getElementById('sidebar');
+            const sidebar = document.getElementById('sidebar');
                 if (sidebar.classList.contains('sidebar-visible')) {
                     toggleSidebar();
                 }

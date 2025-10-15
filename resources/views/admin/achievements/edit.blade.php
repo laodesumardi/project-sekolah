@@ -542,7 +542,7 @@ function handleDocumentationUpload(event) {
     
     // Validate files
     for (let file of files) {
-        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
         if (!allowedTypes.includes(file.type)) {
             alert(`File ${file.name} tidak didukung. Hanya JPG dan PNG yang diperbolehkan.`);
             return;

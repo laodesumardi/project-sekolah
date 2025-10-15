@@ -23,7 +23,7 @@ class DashboardController extends Controller
             return redirect()->route('teacher.profile.create')
                 ->with('error', 'Profil guru belum lengkap. Silakan lengkapi profil terlebih dahulu.');
         }
-
+        
         // Get today's schedule
         $todaySchedule = $teacher->schedules()
             ->where('day_of_week', Carbon::now()->dayOfWeek)
@@ -38,7 +38,7 @@ class DashboardController extends Controller
             ->orderBy('due_date')
             ->limit(5)
             ->get();
-
+        
         // Get recent activities
         $recentActivities = $teacher->activities()
             ->orderBy('date', 'desc')
@@ -82,7 +82,7 @@ class DashboardController extends Controller
             'overdueAssignments'
         ));
     }
-
+    
     public function getStats()
     {
         $teacher = Auth::user()->teacher;
@@ -99,10 +99,10 @@ class DashboardController extends Controller
             'total_classes' => $teacher->classes()->count(),
             'total_subjects' => $teacher->subjects()->count(),
         ];
-
+        
         return response()->json($stats);
     }
-
+    
     public function getScheduleToday()
     {
         $teacher = Auth::user()->teacher;
