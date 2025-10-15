@@ -47,7 +47,10 @@ class AboutPageSetting extends Model
      */
     public function getPrincipalPhotoUrlAttribute()
     {
-        return $this->principal_photo ? asset('storage/' . $this->principal_photo) : asset('images/placeholder-principal.jpg');
+        if ($this->principal_photo) {
+            return asset('storage/' . $this->principal_photo);
+        }
+        return asset('images/placeholders/placeholder-principal.jpg');
     }
 
     /**
@@ -55,7 +58,10 @@ class AboutPageSetting extends Model
      */
     public function getSchoolPhotoUrlAttribute()
     {
-        return $this->school_photo ? asset('storage/' . $this->school_photo) : asset('images/placeholder-school.jpg');
+        if ($this->school_photo) {
+            return asset('storage/' . $this->school_photo);
+        }
+        return asset('images/placeholders/placeholder-school.jpg');
     }
 
     /**
@@ -63,6 +69,9 @@ class AboutPageSetting extends Model
      */
     public function getOrganizationChartUrlAttribute()
     {
-        return $this->organization_chart ? asset('storage/' . $this->organization_chart) : asset('images/placeholder-org-chart.jpg');
+        if ($this->organization_chart) {
+            return asset('storage/' . $this->organization_chart);
+        }
+        return asset('images/placeholders/placeholder-org-chart.jpg');
     }
 }

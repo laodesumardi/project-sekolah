@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Principal Photo Upload</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Test Principal Photo Upload System</h1>
+            
+            <div class="space-y-6">
+                <!-- Current Photo Preview -->
+                <div class="mb-4 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <img src="images/placeholders/placeholder-principal.jpg" alt="Foto Kepala Sekolah Saat Ini" 
+                                 class="w-20 h-20 rounded-full object-cover border-2 border-gray-300">
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-sm font-medium text-gray-900">Foto Saat Ini</h4>
+                            <p class="text-sm text-gray-500">placeholder-principal.jpg</p>
+                            <div class="mt-2 flex space-x-2">
+                                <button type="button" onclick="removeCurrentPhoto()" 
+                                        class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                    Hapus Foto
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upload Area -->
+                <div class="upload-area border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors duration-200" 
+                     id="principal-photo-upload-area">
+                    <div class="upload-content">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <div class="mt-4">
+                            <label for="principal_photo" class="cursor-pointer">
+                                <span class="mt-2 block text-sm font-medium text-gray-900">
+                                    Upload Foto Kepala Sekolah
+                                </span>
+                                <span class="mt-1 block text-sm text-gray-500">
+                                    PNG, JPG, GIF hingga 2MB
+                                </span>
+                            </label>
+                            <input type="file" id="principal_photo" name="principal_photo" accept="image/*" 
+                                   class="sr-only" onchange="previewPrincipalPhoto(this)">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- New Photo Preview -->
+                <div id="principal-photo-preview" class="hidden mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex-shrink-0">
+                            <img id="principal-photo-preview-img" src="" alt="Preview Foto Baru" 
+                                 class="w-20 h-20 rounded-full object-cover border-2 border-blue-300">
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-sm font-medium text-blue-900">Foto Baru</h4>
+                            <p id="principal-photo-preview-name" class="text-sm text-blue-700"></p>
+                            <div class="mt-2">
+                                <button type="button" onclick="removeNewPhoto()" 
+                                        class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                    Batalkan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .upload-area {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .upload-area:hover {
+        border-color: #3B82F6;
+        background-color: #EFF6FF;
+    }
+
+    .upload-area.dragover {
+        border-color: #3B82F6;
+        background-color: #EFF6FF;
+        transform: scale(1.02);
+    }
+
+    .upload-content {
+        pointer-events: none;
+    }
+
+    .upload-area:hover .upload-content svg {
+        color: #3B82F6;
+    }
+
+    .photo-preview {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .photo-preview img {
+        transition: transform 0.2s ease;
+    }
+
+    .photo-preview img:hover {
+        transform: scale(1.05);
+    }
+    </style>
+
+    <script>
+    // Principal Photo Upload Functions
+    function previewPrincipalPhoto(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const preview = document.getElementById('principal-photo-preview');
+                const previewImg = document.getElementById('principal-photo-preview-img');
+                const previewName = document.getElementById('principal-photo-preview-name');
+                
+                previewImg.src = e.target.result;
+                previewName.textContent = file.name;
+                preview.classList.remove('hidden');
+                preview.classList.add('photo-preview');
+                
+                // Hide upload area
+                document.getElementById('principal-photo-upload-area').style.display = 'none';
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function removeNewPhoto() {
+        const preview = document.getElementById('principal-photo-preview');
+        const uploadArea = document.getElementById('principal-photo-upload-area');
+        const fileInput = document.getElementById('principal_photo');
+        
+        preview.classList.add('hidden');
+        uploadArea.style.display = 'block';
+        fileInput.value = '';
+    }
+
+    function removeCurrentPhoto() {
+        if (confirm('Apakah Anda yakin ingin menghapus foto kepala sekolah saat ini?')) {
+            // Hide current photo section
+            const currentPhotoSection = document.querySelector('.mb-4.p-4.bg-gray-50');
+            if (currentPhotoSection) {
+                currentPhotoSection.style.display = 'none';
+            }
+            
+            // Show upload area
+            document.getElementById('principal-photo-upload-area').style.display = 'block';
+        }
+    }
+
+    // Drag and drop functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadArea = document.getElementById('principal-photo-upload-area');
+        const fileInput = document.getElementById('principal_photo');
+        
+        if (uploadArea) {
+            // Drag and drop events
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    previewPrincipalPhoto(fileInput);
+                }
+            });
+            
+            // Click to upload
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+        }
+    });
+    </script>
+</body>
+</html>

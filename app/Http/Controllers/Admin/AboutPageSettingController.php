@@ -50,12 +50,21 @@ class AboutPageSettingController extends Controller
             'contact_email' => 'nullable|email|max:255',
             'contact_address' => 'nullable|string|max:255',
             'website' => 'nullable|url|max:255',
+            'remove_principal_photo' => 'nullable|boolean',
         ]);
 
         $aboutPageSetting = AboutPageSetting::getActive();
 
         if (!$aboutPageSetting) {
             $aboutPageSetting = new AboutPageSetting();
+        }
+
+        // Handle principal photo removal
+        if ($request->has('remove_principal_photo') && $request->remove_principal_photo) {
+            if ($aboutPageSetting->principal_photo) {
+                Storage::delete($aboutPageSetting->principal_photo);
+                $aboutPageSetting->principal_photo = null;
+            }
         }
 
         // Handle file uploads
