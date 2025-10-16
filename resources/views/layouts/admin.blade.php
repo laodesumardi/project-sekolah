@@ -44,11 +44,6 @@
                         Homepage Settings
                     </a>
 
-                    <!-- About Page Settings -->
-                    <a href="{{ route('admin.about-page-settings.index') }}" class="flex items-center px-4 py-2 text-gray-300 hover:bg-[#1e4d8b] hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.about-page-settings*') ? 'bg-[#1e4d8b] text-white' : '' }}">
-                        <i class="fas fa-info-circle mr-3"></i>
-                        About Page Settings
-                    </a>
 
                     <!-- News Management -->
                     <a href="{{ route('admin.news.index') }}" class="flex items-center px-4 py-2 text-gray-300 hover:bg-[#1e4d8b] hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.news*') ? 'bg-[#1e4d8b] text-white' : '' }}">
@@ -70,7 +65,7 @@
 
 
                     <!-- PPDB Management -->
-                    <a href="{{ route('admin.ppdb.index') }}" class="flex items-center px-4 py-2 text-gray-300 hover:bg-[#1e4d8b] hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.ppdb*') ? 'bg-[#1e4d8b] text-white' : '' }}">
+                    <a href="{{ route('admin.users.index') }}" class="flex items-center px-4 py-2 text-gray-300 hover:bg-[#1e4d8b] hover:text-white rounded-lg transition-colors {{ request()->routeIs('admin.users*') ? 'bg-[#1e4d8b] text-white' : '' }}">
                         <i class="fas fa-user-graduate mr-3"></i>
                         PPDB
                     </a>

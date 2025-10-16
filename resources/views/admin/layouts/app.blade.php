@@ -241,16 +241,6 @@
                         </a>
                     </li>
 
-                    <!-- Pengaturan Tentang -->
-                    <li>
-                        <a href="{{ route('admin.about-page-settings.edit') }}" 
-                           class="flex items-center px-4 py-3 text-white hover:bg-primary-600 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.about-page-settings.*') ? 'bg-primary-600' : '' }}">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            Pengaturan Tentang
-                        </a>
-                    </li>
 
                     <!-- Akademik -->
                     <li>
@@ -288,6 +278,19 @@
                         </div>
                     </li>
 
+
+
+                    <!-- Data Pendaftar PPDB -->
+                    <li>
+                        <a href="{{ route('admin.ppdb-registrations.index') }}" 
+                           class="flex items-center px-4 py-3 text-white hover:bg-primary-600 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.ppdb-registrations.*') ? 'bg-primary-600' : '' }}">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                            </svg>
+                            Data Pendaftar PPDB
+                        </a>
+                    </li>
+
                     <!-- Pengaturan PPDB -->
                     <li>
                         <a href="{{ route('admin.ppdb-settings.index') }}" 
@@ -297,17 +300,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
                             Pengaturan PPDB
-                        </a>
-                    </li>
-
-                    <!-- Data Pendaftar -->
-                    <li>
-                        <a href="{{ route('admin.ppdb.index') }}" 
-                           class="flex items-center px-4 py-3 text-white hover:bg-primary-600 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.ppdb.*') ? 'bg-primary-600' : '' }}">
-                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                            </svg>
-                            Data Pendaftar
                         </a>
                     </li>
 
@@ -568,7 +560,7 @@
             }
         }
 
-        function addNotification(type, title, message, url = null) {
+        function addNotification(type, title, message, url = null, id = null, isRead = false) {
             const content = document.getElementById('notification-content');
             const emptyState = content.querySelector('.text-center');
             
@@ -577,10 +569,8 @@
             }
 
             const notification = document.createElement('div');
-            notification.className = 'p-5 border-b border-gray-100 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 cursor-pointer transition-all duration-300 group relative overflow-hidden';
-            if (url) {
-                notification.onclick = () => window.location.href = url;
-            }
+            notification.className = `p-5 border-b border-gray-100 hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 transition-all duration-300 group relative overflow-hidden ${isRead ? 'opacity-75' : ''}`;
+            notification.setAttribute('data-id', id);
 
             const icon = type === 'message' ? 
                 '<div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg"><svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg></div>' :
@@ -595,9 +585,12 @@
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center justify-between mb-2">
                             <p class="text-base font-bold text-gray-900 group-hover:text-[#13315c] transition-colors duration-200">${title}</p>
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${type === 'message' ? 'bg-blue-100 text-blue-800 border border-blue-200' : 'bg-green-100 text-green-800 border border-green-200'}">
-                                ${type === 'message' ? 'Pesan' : 'Pendaftaran'}
-                            </span>
+                            <div class="flex items-center space-x-2">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${type === 'message' ? 'bg-blue-100 text-blue-800 border border-blue-200' : 'bg-green-100 text-green-800 border border-green-200'}">
+                                    ${type === 'message' ? 'Pesan' : 'Pendaftaran'}
+                                </span>
+                                ${!isRead ? '<div class="w-2 h-2 bg-red-500 rounded-full"></div>' : ''}
+                            </div>
                         </div>
                         <p class="text-sm text-gray-600 mb-3 leading-relaxed">${message}</p>
                         <div class="flex items-center justify-between">
@@ -607,11 +600,25 @@
                                 </svg>
                                 Baru saja
                             </p>
-                            <div class="flex items-center text-xs text-gray-400">
-                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                </svg>
-                                Klik untuk melihat
+                            <div class="flex items-center space-x-2">
+                                <button onclick="markAsRead('${id}')" class="text-xs text-blue-600 hover:text-blue-800 flex items-center">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    Tandai dibaca
+                                </button>
+                                <button onclick="deleteNotification('${id}')" class="text-xs text-red-600 hover:text-red-800 flex items-center">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                    Hapus
+                                </button>
+                                ${url ? `<button onclick="window.location.href='${url}'" class="text-xs text-gray-400 hover:text-gray-600 flex items-center">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                    Lihat
+                                </button>` : ''}
                             </div>
                         </div>
                     </div>
@@ -619,12 +626,14 @@
             `;
 
             content.insertBefore(notification, content.firstChild);
-            notificationCount++;
+            if (!isRead) {
+                notificationCount++;
+            }
             updateNotificationBadge();
         }
 
         function loadNotifications() {
-            fetch('/admin/notifications')
+            fetch('/admin/api/notifications')
                 .then(response => response.json())
                 .then(data => {
                     const content = document.getElementById('notification-content');
@@ -642,9 +651,9 @@
                         notificationCount = 0;
                     } else {
                         data.notifications.forEach(notification => {
-                            addNotification(notification.type, notification.title, notification.message, notification.url);
+                            addNotification(notification.type, notification.title, notification.message, null, notification.id, notification.is_read);
                         });
-                        notificationCount = data.notifications.length;
+                        notificationCount = data.unread_count;
                     }
                     updateNotificationBadge();
                 })
@@ -696,6 +705,81 @@
         // Request notification permission
         if (Notification.permission === 'default') {
             Notification.requestPermission();
+        }
+
+        // Mark notification as read
+        function markAsRead(notificationId) {
+            fetch(`/admin/api/notifications/${notificationId}/mark-read`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update notification appearance
+                    const notification = document.querySelector(`[data-id="${notificationId}"]`);
+                    if (notification) {
+                        notification.classList.add('opacity-75');
+                        const redDot = notification.querySelector('.bg-red-500');
+                        if (redDot) {
+                            redDot.remove();
+                        }
+                        // Update button text
+                        const markReadBtn = notification.querySelector('button[onclick*="markAsRead"]');
+                        if (markReadBtn) {
+                            markReadBtn.innerHTML = '<svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Sudah dibaca';
+                            markReadBtn.classList.add('text-green-600');
+                            markReadBtn.classList.remove('text-blue-600');
+                        }
+                    }
+                    notificationCount = Math.max(0, notificationCount - 1);
+                    updateNotificationBadge();
+                }
+            })
+            .catch(error => console.error('Error marking notification as read:', error));
+        }
+
+        // Delete notification
+        function deleteNotification(notificationId) {
+            if (confirm('Apakah Anda yakin ingin menghapus notifikasi ini?')) {
+                fetch('/admin/notifications/delete', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ id: notificationId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remove notification from DOM
+                        const notification = document.querySelector(`[data-id="${notificationId}"]`);
+                        if (notification) {
+                            notification.remove();
+                        }
+                        notificationCount = Math.max(0, notificationCount - 1);
+                        updateNotificationBadge();
+                        
+                        // Check if no notifications left
+                        const content = document.getElementById('notification-content');
+                        if (content.children.length === 0) {
+                            content.innerHTML = `
+                                <div class="p-4 text-center text-gray-500">
+                                    <svg class="mx-auto h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5-5-5h5v-5a7.5 7.5 0 1 0-15 0v5h5l-5 5-5-5h5v-5a7.5 7.5 0 1 0 15 0v5z"></path>
+                                    </svg>
+                                    <p class="text-sm">Tidak ada notifikasi baru</p>
+                                </div>
+                            `;
+                        }
+                    }
+                })
+                .catch(error => console.error('Error deleting notification:', error));
+            }
         }
 
         // Simulate new notifications for testing

@@ -105,6 +105,43 @@
         </a>
     </div>
 
+    <!-- Bulk Actions -->
+    <div class="bg-white rounded-lg shadow mb-6 p-4" id="bulk-actions" style="display: none;">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-medium text-gray-700">
+                    <span id="selected-count">0</span> item dipilih
+                </span>
+                <div class="flex space-x-2">
+                    <button onclick="bulkAction('activate')" 
+                            class="px-3 py-1 bg-green-100 text-green-700 rounded-md text-sm hover:bg-green-200 transition-colors">
+                        <i class="fas fa-check mr-1"></i>Aktifkan
+                    </button>
+                    <button onclick="bulkAction('deactivate')" 
+                            class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-md text-sm hover:bg-yellow-200 transition-colors">
+                        <i class="fas fa-pause mr-1"></i>Nonaktifkan
+                    </button>
+                    <button onclick="bulkAction('feature')" 
+                            class="px-3 py-1 bg-blue-100 text-blue-700 rounded-md text-sm hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-star mr-1"></i>Unggulan
+                    </button>
+                    <button onclick="bulkAction('unfeature')" 
+                            class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm hover:bg-gray-200 transition-colors">
+                        <i class="fas fa-star-o mr-1"></i>Hapus Unggulan
+                    </button>
+                    <button onclick="bulkAction('delete')" 
+                            class="px-3 py-1 bg-red-100 text-red-700 rounded-md text-sm hover:bg-red-200 transition-colors">
+                        <i class="fas fa-trash mr-1"></i>Hapus
+                    </button>
+                </div>
+            </div>
+            <button onclick="clearSelection()" 
+                    class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- Data Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200">
@@ -223,13 +260,21 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" 
-                                       class="sr-only peer" 
-                                       {{ $extracurricular->is_active ? 'checked' : '' }}
-                                       onchange="toggleActive({{ $extracurricular->id }})">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#13315c]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#13315c]"></div>
-                            </label>
+                            <button type="button" 
+                                    data-id="{{ $extracurricular->id }}"
+                                    onclick="toggleActive({{ $extracurricular->id }})"
+                                    class="inline-flex items-center justify-center w-12 h-6 rounded-full transition-colors duration-200 {{ $extracurricular->is_active ? 'bg-green-500' : 'bg-gray-300' }}"
+                                    title="{{ $extracurricular->is_active ? 'Aktif' : 'Tidak Aktif' }}">
+                                @if($extracurricular->is_active)
+                                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                @else
+                                    <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                    </svg>
+                                @endif
+                            </button>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($extracurricular->is_featured)
@@ -303,42 +348,224 @@
 
 <script>
 function toggleActive(id) {
+    const toggleButton = document.querySelector(`[data-id="${id}"]`);
+    const originalContent = toggleButton.innerHTML;
+    
+    // Show loading state
+    toggleButton.innerHTML = '<svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+    toggleButton.disabled = true;
+    
     fetch(`/admin/extracurriculars/${id}/toggle-active`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             'Content-Type': 'application/json',
+            'Accept': 'application/json'
         },
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Optionally show a success message
+            // Update the toggle button state
+            const isActive = data.is_active;
+            const newContent = isActive 
+                ? '<svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>'
+                : '<svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>';
+            
+            toggleButton.innerHTML = newContent;
+            toggleButton.title = isActive ? 'Aktif' : 'Tidak Aktif';
+            
+            // Show success message
+            const message = isActive ? 'Ekstrakurikuler berhasil diaktifkan!' : 'Ekstrakurikuler berhasil dinonaktifkan!';
+            const successMessage = document.createElement('div');
+            successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            successMessage.textContent = message;
+            document.body.appendChild(successMessage);
+            
+            setTimeout(() => {
+                successMessage.remove();
+            }, 3000);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        // Optionally show an error message
+        
+        // Show error message
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+        errorMessage.textContent = 'Gagal mengubah status ekstrakurikuler. Silakan coba lagi.';
+        document.body.appendChild(errorMessage);
+        
+        setTimeout(() => {
+            errorMessage.remove();
+        }, 5000);
+        
+        // Restore button state
+        toggleButton.innerHTML = originalContent;
+        toggleButton.disabled = false;
     });
 }
 
 function deleteExtracurricular(id) {
     if (confirm('Apakah Anda yakin ingin menghapus ekstrakurikuler ini? Data yang terkait juga akan dihapus.')) {
+        // Show loading state
+        const button = event.target.closest('button');
+        const originalContent = button.innerHTML;
+        button.innerHTML = '<svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+        button.disabled = true;
+        
         fetch(`/admin/extracurriculars/${id}`, {
             method: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
         })
         .then(response => {
             if (response.ok) {
-                location.reload();
+                // Show success message
+                const successMessage = document.createElement('div');
+                successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+                successMessage.textContent = 'Ekstrakurikuler berhasil dihapus!';
+                document.body.appendChild(successMessage);
+                
+                // Remove success message after 3 seconds
+                setTimeout(() => {
+                    successMessage.remove();
+                }, 3000);
+                
+                // Reload page after a short delay
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            } else {
+                throw new Error('Delete failed');
             }
         })
         .catch(error => {
             console.error('Error:', error);
+            
+            // Show error message
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            errorMessage.textContent = 'Gagal menghapus ekstrakurikuler. Silakan coba lagi.';
+            document.body.appendChild(errorMessage);
+            
+            // Remove error message after 5 seconds
+            setTimeout(() => {
+                errorMessage.remove();
+            }, 5000);
+            
+            // Restore button state
+            button.innerHTML = originalContent;
+            button.disabled = false;
         });
     }
 }
+
+// Bulk action functions
+function bulkAction(action) {
+    const selectedIds = getSelectedIds();
+    
+    if (selectedIds.length === 0) {
+        alert('Pilih minimal satu ekstrakurikuler!');
+        return;
+    }
+    
+    let confirmMessage = '';
+    switch(action) {
+        case 'activate':
+            confirmMessage = `Aktifkan ${selectedIds.length} ekstrakurikuler?`;
+            break;
+        case 'deactivate':
+            confirmMessage = `Nonaktifkan ${selectedIds.length} ekstrakurikuler?`;
+            break;
+        case 'feature':
+            confirmMessage = `Jadikan ${selectedIds.length} ekstrakurikuler sebagai unggulan?`;
+            break;
+        case 'unfeature':
+            confirmMessage = `Hapus ${selectedIds.length} ekstrakurikuler dari unggulan?`;
+            break;
+        case 'delete':
+            confirmMessage = `Hapus ${selectedIds.length} ekstrakurikuler? Data yang terkait juga akan dihapus.`;
+            break;
+    }
+    
+    if (confirm(confirmMessage)) {
+        const formData = new FormData();
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+        formData.append('action', action);
+        formData.append('ids', JSON.stringify(selectedIds));
+        
+        fetch('/admin/extracurriculars/bulk-action', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                throw new Error('Bulk action failed');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Gagal melakukan aksi bulk. Silakan coba lagi.');
+        });
+    }
+}
+
+function getSelectedIds() {
+    const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+    return Array.from(checkboxes).map(cb => cb.value);
+}
+
+function clearSelection() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(cb => cb.checked = false);
+    updateBulkActions();
+}
+
+function updateBulkActions() {
+    const selectedCount = getSelectedIds().length;
+    const bulkActions = document.getElementById('bulk-actions');
+    const selectedCountSpan = document.getElementById('selected-count');
+    
+    if (selectedCount > 0) {
+        bulkActions.style.display = 'block';
+        selectedCountSpan.textContent = selectedCount;
+    } else {
+        bulkActions.style.display = 'none';
+    }
+}
+
+// Add event listeners for checkboxes
+document.addEventListener('DOMContentLoaded', function() {
+    // Select all checkbox
+    const selectAllCheckbox = document.querySelector('thead input[type="checkbox"]');
+    const rowCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+    
+    selectAllCheckbox.addEventListener('change', function() {
+        rowCheckboxes.forEach(cb => {
+            cb.checked = this.checked;
+            cb.value = cb.checked ? cb.closest('tr').dataset.id : '';
+        });
+        updateBulkActions();
+    });
+    
+    // Individual row checkboxes
+    rowCheckboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+            this.value = this.checked ? this.closest('tr').dataset.id : '';
+            updateBulkActions();
+            
+            // Update select all checkbox
+            const checkedCount = document.querySelectorAll('tbody input[type="checkbox"]:checked').length;
+            selectAllCheckbox.checked = checkedCount === rowCheckboxes.length;
+            selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < rowCheckboxes.length;
+        });
+    });
+});
 </script>
 @endsection

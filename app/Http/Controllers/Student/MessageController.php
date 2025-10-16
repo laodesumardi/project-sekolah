@@ -171,13 +171,47 @@ class MessageController extends Controller
             'message' => 'required|string|max:1000'
         ]);
         
-        // In real implementation, save to database
+        // Get student info
+        $student = Auth::user()->profile;
+        $studentName = $student ? $student->name : Auth::user()->name;
+        
+        // Create message record
+        $message = \App\Models\Message::create([
+            'name' => $studentName,
+            'email' => Auth::user()->email,
+            'phone' => $student ? $student->phone : null,
+            'subject' => $request->subject,
+            'message' => $request->message,
+            'from_student_id' => Auth::id(),
+            'to_type' => $request->to, // teacher, homeroom, admin
+            'is_read' => false
+        ]);
+        
+        // Send notification to admins
+        \App\Services\NotificationService::notifyAdmins(
+            'Pesan Baru dari Siswa',
+            "Siswa {$studentName} mengirim pesan: " . \Str::limit($request->subject, 50),
+            [
+                'type' => 'info',
+                'icon' => 'fas fa-envelope',
+                'color' => 'blue',
+                'student_name' => $studentName,
+                'subject' => $request->subject,
+                'message_preview' => \Str::limit($request->message, 100)
+            ],
+            route('admin.messages.show', $message),
+            'message',
+            'App\Models\Message',
+            $message->id
+        );
+        
         return response()->json([
             'success' => true,
             'message' => 'Pesan berhasil dikirim'
         ]);
     }
 }
+
 
 
 

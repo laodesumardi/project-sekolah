@@ -161,4 +161,12 @@ class Gallery extends Model
         return $this->images()->where('is_cover', true)->first() 
             ?? $this->images()->first();
     }
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }

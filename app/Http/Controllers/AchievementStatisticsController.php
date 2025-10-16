@@ -17,7 +17,7 @@ class AchievementStatisticsController extends Controller
         $totalStudents = \App\Models\User::where('role', 'student')->count();
         $totalTeachers = \App\Models\Teacher::count();
         $totalAchievements = \App\Models\Achievement::where('is_published', true)->count();
-        $totalRegistrations = \App\Models\Registration::count();
+        $totalRegistrations = \App\Models\UserRegistration::count();
         $totalClasses = \App\Models\SchoolClass::count();
         
         // Get statistics from homepage settings

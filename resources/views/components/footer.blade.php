@@ -44,7 +44,7 @@
                     <li><a href="{{ route('home') }}" class="text-gray-300 hover:text-white transition-colors duration-200 text-sm">Home</a></li>
                     <li><a href="#tentang" class="text-gray-300 hover:text-white transition-colors duration-200 text-sm">Tentang Kami</a></li>
                     <li><a href="#akademik" class="text-gray-300 hover:text-white transition-colors duration-200 text-sm">Program Akademik</a></li>
-                    <li><a href="#ppdb" class="text-gray-300 hover:text-white transition-colors duration-200 text-sm">PPDB 2024</a></li>
+                    <li><a href="#ppdb" class="text-gray-300 hover:text-white transition-colors duration-200 text-sm">PPDB 2025</a></li>
                     <li><a href="#galeri" class="text-gray-300 hover:text-white transition-colors duration-200 text-sm">Galeri</a></li>
                     <li><a href="#berita" class="text-gray-300 hover:text-white transition-colors duration-200 text-sm">Berita & Artikel</a></li>
                     <li><a href="#kontak" class="text-gray-300 hover:text-white transition-colors duration-200 text-sm">Kontak</a></li>

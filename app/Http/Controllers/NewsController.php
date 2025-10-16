@@ -47,12 +47,30 @@ class NewsController extends Controller
 
         $news = $query->orderBy('published_at', 'desc')->paginate(15);
         
-        // Get sidebar data
-        $categories = NewsCategory::withCount('news')->get();
-        $popularNews = News::popular(5)->get();
-        $recentNews = News::recent(5)->get();
-        $popularTags = Tag::popular(10)->get();
-        $homepageSetting = HomepageSetting::getActive();
+        // Get sidebar data with caching
+        $categories = \Cache::remember('news_categories', 3600, function () {
+            return NewsCategory::withCount('news')->get();
+        });
+        
+        $popularNews = \Cache::remember('news_popular', 1800, function () {
+            return News::popular(5)
+                ->select(['id', 'title', 'excerpt', 'image', 'published_at', 'slug'])
+                ->get();
+        });
+        
+        $recentNews = \Cache::remember('news_recent', 900, function () {
+            return News::recent(5)
+                ->select(['id', 'title', 'excerpt', 'image', 'published_at', 'slug'])
+                ->get();
+        });
+        
+        $popularTags = \Cache::remember('news_popular_tags', 3600, function () {
+            return Tag::popular(10)->get();
+        });
+        
+        $homepageSetting = \Cache::remember('homepage_setting_active', 3600, function () {
+            return HomepageSetting::getActive();
+        });
 
         return view('frontend.news.index', compact(
             'news', 

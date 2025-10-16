@@ -45,7 +45,7 @@
                 </svg>
                 Edit Album
             </a>
-            <a href="{{ route('gallery.show', $gallery->slug) }}" 
+            <a href="{{ route('gallery.show', $gallery->slug ?? 'no-slug') }}" 
                target="_blank"
                class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -259,7 +259,7 @@
                         Edit Album
                     </a>
                     
-                    <a href="{{ route('gallery.show', $gallery->slug) }}" 
+                    <a href="{{ route('gallery.show', $gallery->slug ?? 'no-slug') }}" 
                        target="_blank"
                        class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors font-medium text-center block">
                         Lihat di Frontend

@@ -217,6 +217,38 @@
                 </div>
                 @endif
 
+                <!-- Add New Images -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Tambah Foto Baru</h3>
+                    
+                    <div class="space-y-4">
+                        <!-- File Upload -->
+                        <div>
+                            <label for="new_images" class="block text-sm font-medium text-gray-700 mb-2">
+                                Pilih Foto
+                            </label>
+                            <input type="file" 
+                                   id="new_images" 
+                                   name="new_images[]" 
+                                   multiple 
+                                   accept="image/*"
+                                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
+                                   onchange="previewNewImages(this)">
+                            <p class="mt-1 text-sm text-gray-500">
+                                Pilih satu atau lebih foto. Format yang didukung: JPG, PNG, WebP. Maksimal 5MB per foto.
+                            </p>
+                        </div>
+
+                        <!-- Image Preview Container -->
+                        <div id="new-images-preview" class="hidden">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Preview Foto Baru:</h4>
+                            <div id="new-images-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                <!-- Preview images will be added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Sidebar (Right Column - 30%) -->
@@ -318,7 +350,7 @@
                             Kembali ke Daftar
                         </a>
                         
-                        <a href="{{ route('gallery.show', $gallery->slug) }}" 
+                        <a href="{{ route('gallery.show', $gallery->slug ?? 'no-slug') }}" 
                            target="_blank"
                            class="block w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors font-medium text-center">
                             <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -440,6 +472,63 @@ function deleteExistingImage(imageId) {
         } else {
             console.error('Image container not found for ID:', imageId);
         }
+    }
+}
+
+// Preview new images function
+function previewNewImages(input) {
+    const previewContainer = document.getElementById('new-images-preview');
+    const gridContainer = document.getElementById('new-images-grid');
+    
+    // Clear previous previews
+    gridContainer.innerHTML = '';
+    
+    if (input.files && input.files.length > 0) {
+        previewContainer.classList.remove('hidden');
+        
+        Array.from(input.files).forEach((file, index) => {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert(`File ${file.name} bukan gambar.`);
+                return;
+            }
+            
+            // Validate file size (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                alert(`File ${file.name} terlalu besar. Maksimal 5MB.`);
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageDiv = document.createElement('div');
+                imageDiv.className = 'relative group';
+                imageDiv.innerHTML = `
+                    <div class="aspect-square overflow-hidden rounded-lg border border-gray-200">
+                        <img src="${e.target.result}" 
+                             alt="Preview ${index + 1}"
+                             class="w-full h-full object-cover">
+                    </div>
+                    <div class="mt-2 space-y-2">
+                        <input type="text" 
+                               name="new_image_titles[]" 
+                               placeholder="Judul foto (opsional)"
+                               class="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500">
+                        <textarea name="new_image_captions[]" 
+                                  placeholder="Caption (opsional)"
+                                  rows="2"
+                                  class="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-primary-500 focus:border-primary-500 resize-none"></textarea>
+                    </div>
+                    <div class="absolute top-2 right-2 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded">
+                        Baru
+                    </div>
+                `;
+                gridContainer.appendChild(imageDiv);
+            };
+            reader.readAsDataURL(file);
+        });
+    } else {
+        previewContainer.classList.add('hidden');
     }
 }
 

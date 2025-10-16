@@ -23,8 +23,13 @@ class ViewServiceProvider extends ServiceProvider
     {
         // Share HomepageSetting data with all views
         View::composer('*', function ($view) {
-            $homepageSetting = HomepageSetting::getActive();
-            $view->with('homepageSetting', $homepageSetting);
+            try {
+                $homepageSetting = HomepageSetting::getActive();
+                $view->with('homepageSetting', $homepageSetting);
+            } catch (\Exception $e) {
+                // If HomepageSetting is not available, pass null
+                $view->with('homepageSetting', null);
+            }
         });
     }
 }

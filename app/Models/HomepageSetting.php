@@ -87,6 +87,17 @@ class HomepageSetting extends Model
     }
 
     /**
+     * Get the school image URL.
+     */
+    public function getSchoolImageUrlAttribute()
+    {
+        if ($this->school_image) {
+            return asset('storage/' . $this->school_image);
+        }
+        return asset('images/placeholder-school.jpg');
+    }
+
+    /**
      * Get the hero background image URL.
      */
     public function getHeroBackgroundImageUrlAttribute()
@@ -95,14 +106,6 @@ class HomepageSetting extends Model
             return asset('storage/' . $this->hero_background_image);
         }
         return asset('images/placeholders/placeholder-hero-background.jpg');
-    }
-
-    /**
-     * Get the school image URL.
-     */
-    public function getSchoolImageUrlAttribute()
-    {
-        return $this->school_image ? asset('storage/' . $this->school_image) : asset('images/placeholder-school.jpg');
     }
 
     /**

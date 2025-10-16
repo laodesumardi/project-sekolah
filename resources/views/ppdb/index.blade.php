@@ -1,557 +1,592 @@
 @extends('layouts.app')
 
-@section('title', 'PPDB - Penerimaan Peserta Didik Baru')
-@section('description', 'Pendaftaran PPDB SMP Negeri 01 Namrole Tahun Ajaran ' . $setting->academicYear->year)
+@section('title', 'PPDB 2025 - SMP Negeri 01 Namrole')
 
 @section('content')
-<!-- Hero Section -->
-<x-background-section 
-    section="ppdb"
-    title="PPDB {{ $setting->academicYear->year }}" 
-    subtitle="Penerimaan Peserta Didik Baru SMP Negeri 01 Namrole" 
->
-    @php
-        $status = $setting->getRegistrationStatus();
-    @endphp
-
-    @if($status === 'open')
-                <!-- Registration Status Cards -->
-                <div class="status-cards-container mb-8 max-w-4xl mx-auto">
-                    <div class="status-cards-grid">
-                        <!-- Status Card -->
-                        <div class="status-card status-card-green">
-                            <div class="card-content">
-                                <div class="card-dot card-dot-green"></div>
-                                <div class="card-text">
-                                    <h3 class="card-title">Pendaftaran Sedang Berlangsung</h3>
-                                    <p class="card-subtitle">Berakhir dalam {{ $setting->getDaysUntilEnd() }} hari</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Period Card -->
-                        <div class="status-card status-card-blue">
-                            <div class="card-content">
-                                <div class="card-dot card-dot-blue"></div>
-                                <div class="card-text">
-                                    <h3 class="card-title">Periode Pendaftaran</h3>
-                                    <p class="card-subtitle">{{ $setting->start_date->format('d M Y') }} - {{ $setting->end_date->format('d M Y') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <a href="{{ route('ppdb.form') }}" 
-                   class="inline-flex items-center px-8 py-4 bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-xl rounded-lg transition-colors duration-200 shadow-lg">
-                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    MULAI PENDAFTARAN
-                </a>
-            @elseif($status === 'not_started')
-                <div class="bg-yellow-500/20 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-2xl mx-auto">
-                    <h3 class="text-2xl font-semibold mb-2">Pendaftaran Belum Dimulai</h3>
-                    <p class="text-lg">Pendaftaran akan dibuka pada {{ $setting->start_date->format('d F Y, H:i') }}</p>
-                    <p class="text-sm mt-2">Dimulai dalam {{ $setting->getDaysUntilStart() }} hari</p>
-                </div>
-            @elseif($status === 'ended')
-                <div class="bg-red-500/20 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-2xl mx-auto">
-                    <h3 class="text-2xl font-semibold mb-2">Pendaftaran Sudah Berakhir</h3>
-                    <p class="text-lg">Pendaftaran telah ditutup pada {{ $setting->end_date->format('d F Y, H:i') }}</p>
-                    <p class="text-sm mt-2">Sudah berakhir {{ $setting->end_date->diffInDays(now()) }} hari yang lalu</p>
-                </div>
-            @elseif($status === 'inactive')
-                <div class="bg-gray-500/20 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-2xl mx-auto">
-                    <h3 class="text-2xl font-semibold mb-2">Pendaftaran Tidak Aktif</h3>
-                    <p class="text-lg">Pendaftaran PPDB saat ini tidak aktif</p>
-                </div>
-            @else
-                <div class="bg-gray-500/20 backdrop-blur-sm rounded-lg p-6 mb-8 max-w-2xl mx-auto">
-                    <h3 class="text-2xl font-semibold mb-2">Status Tidak Diketahui</h3>
-                    <p class="text-lg">Status pendaftaran tidak dapat ditentukan</p>
-                </div>
+<!-- Page Header -->
+<section class="relative py-20 bg-primary-500">
+    @if($settings['banner_image'])
+        <!-- Debug: Banner image path: {{ $settings['banner_image'] }} -->
+        <div class="absolute inset-0">
+            <img src="{{ asset('storage/' . $settings['banner_image']) }}" 
+                 alt="PPDB Banner" 
+                 class="w-full h-full object-cover" 
+                 onerror="console.log('Banner image failed to load:', this.src); this.style.display='none'; this.nextElementSibling.style.display='block';"
+                 onload="console.log('Banner image loaded successfully:', this.src);">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary-600 to-primary-800" style="display: none;"></div>
+            <div class="absolute inset-0 bg-black opacity-40"></div>
+        </div>
+    @else
+        <!-- Debug: No banner image set -->
+        <div class="absolute inset-0 bg-gradient-to-r from-primary-600 to-primary-800"></div>
+        <div class="absolute inset-0 bg-black opacity-20"></div>
     @endif
-</x-background-section>
-
-<!-- Statistics Section -->
-<section class="py-16 bg-gray-50">
-    <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="text-center">
-                <div class="text-4xl font-bold text-primary-600 mb-2">{{ number_format($totalRegistrations) }}</div>
-                <div class="text-gray-600">Total Pendaftar</div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4">{{ $settings['hero_title'] }}</h1>
+        <p class="text-xl text-gray-200 mb-6">{{ $settings['hero_subtitle'] }} - {{ $settings['hero_description'] }}</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+            <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                <span class="text-white font-medium">Tahun Ajaran 2025/2026</span>
             </div>
-            <div class="text-center">
-                <div class="text-4xl font-bold text-yellow-600 mb-2">{{ number_format($pendingCount) }}</div>
-                <div class="text-gray-600">Menunggu Verifikasi</div>
-            </div>
-            <div class="text-center">
-                <div class="text-4xl font-bold text-green-600 mb-2">{{ number_format($acceptedCount) }}</div>
-                <div class="text-gray-600">Diterima</div>
+            <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2">
+                <span class="text-white font-medium">Periode: {{ date('d M', strtotime($settings['registration_period_start'])) }} - {{ date('d M Y', strtotime($settings['registration_period_end'])) }}</span>
             </div>
         </div>
-    </div>
-</section>
-
-<!-- Registration Paths Section -->
-<section class="py-16">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Jalur Pendaftaran</h2>
-            <p class="text-gray-600 max-w-2xl mx-auto">
-                Pilih jalur pendaftaran yang sesuai dengan kondisi dan kemampuan Anda
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Jalur Prestasi -->
-            <div class="bg-white rounded-lg shadow-lg p-8 text-center border-2 border-yellow-200 hover:border-yellow-400 transition-colors duration-200">
-                <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-4">Jalur Prestasi</h3>
-                <p class="text-gray-600 mb-6">
-                    Untuk siswa yang memiliki prestasi akademik atau non-akademik yang membanggakan
-                </p>
-                <div class="text-sm text-gray-500 mb-6">
-                    <div>Kuota: {{ number_format($setting->quota_achievement) }} siswa</div>
-                    <div>Biaya: Rp {{ number_format($setting->registration_fee, 0, ',', '.') }}</div>
-                </div>
-                @if($setting->isRegistrationOpen())
-                    <a href="{{ route('ppdb.form') }}?path=achievement" 
-                       class="inline-flex items-center px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg transition-colors duration-200">
-                        Daftar Sekarang
-                    </a>
-                @else
-                    <button disabled class="inline-flex items-center px-6 py-3 bg-gray-300 text-gray-500 font-semibold rounded-lg cursor-not-allowed">
-                        Belum Dibuka
-                    </button>
-                @endif
-            </div>
-
-            <!-- Jalur Reguler -->
-            <div class="bg-white rounded-lg shadow-lg p-8 text-center border-2 border-blue-200 hover:border-blue-400 transition-colors duration-200">
-                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-4">Jalur Reguler</h3>
-                <p class="text-gray-600 mb-6">
-                    Jalur pendaftaran umum untuk semua calon siswa yang memenuhi persyaratan
-                </p>
-                <div class="text-sm text-gray-500 mb-6">
-                    <div>Kuota: {{ number_format($setting->quota_regular) }} siswa</div>
-                    <div>Biaya: Rp {{ number_format($setting->registration_fee, 0, ',', '.') }}</div>
-                </div>
-                @if($setting->isRegistrationOpen())
-                    <a href="{{ route('ppdb.form') }}?path=regular" 
-                       class="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors duration-200">
-                        Daftar Sekarang
-                    </a>
-                @else
-                    <button disabled class="inline-flex items-center px-6 py-3 bg-gray-300 text-gray-500 font-semibold rounded-lg cursor-not-allowed">
-                        Belum Dibuka
-                    </button>
-                @endif
-            </div>
-
-            <!-- Jalur Afirmasi -->
-            <div class="bg-white rounded-lg shadow-lg p-8 text-center border-2 border-green-200 hover:border-green-400 transition-colors duration-200">
-                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-4">Jalur Afirmasi</h3>
-                <p class="text-gray-600 mb-6">
-                    Jalur khusus untuk siswa dari keluarga kurang mampu dan daerah terpencil
-                </p>
-                <div class="text-sm text-gray-500 mb-6">
-                    <div>Kuota: {{ number_format($setting->quota_affirmation) }} siswa</div>
-                    <div>Biaya: Rp {{ number_format($setting->registration_fee, 0, ',', '.') }}</div>
-                </div>
-                @if($setting->isRegistrationOpen())
-                    <a href="{{ route('ppdb.form') }}?path=affirmation" 
-                       class="inline-flex items-center px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors duration-200">
-                        Daftar Sekarang
-                    </a>
-                @else
-                    <button disabled class="inline-flex items-center px-6 py-3 bg-gray-300 text-gray-500 font-semibold rounded-lg cursor-not-allowed">
-                        Belum Dibuka
-                    </button>
-                @endif
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Requirements Section -->
-<section class="py-16 bg-gray-50">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Persyaratan Pendaftaran</h2>
-            <p class="text-gray-600 max-w-2xl mx-auto">
-                Pastikan Anda memenuhi semua persyaratan sebelum melakukan pendaftaran
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Persyaratan Umum -->
-            <div class="bg-white rounded-lg shadow-lg p-8">
-                <h3 class="text-2xl font-bold text-gray-900 mb-6">Persyaratan Umum</h3>
-                <ul class="space-y-4">
-                    <li class="flex items-start">
-                        <svg class="w-6 h-6 text-green-500 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Usia maksimal 15 tahun pada 1 Juli {{ $setting->academicYear->year }}</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="w-6 h-6 text-green-500 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Lulus dari SD/MI atau sederajat</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="w-6 h-6 text-green-500 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Memiliki NIK dan NISN yang valid</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="w-6 h-6 text-green-500 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Sehat jasmani dan rohani</span>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Dokumen yang Diperlukan -->
-            <div class="bg-white rounded-lg shadow-lg p-8">
-                <h3 class="text-2xl font-bold text-gray-900 mb-6">Dokumen yang Diperlukan</h3>
-                <ul class="space-y-4">
-                    <li class="flex items-start">
-                        <svg class="w-6 h-6 text-blue-500 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        <span>Foto siswa 3x4 (latar belakang merah)</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="w-6 h-6 text-blue-500 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        <span>Scan ijazah/SKHUN SD/MI</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="w-6 h-6 text-blue-500 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        <span>Scan kartu keluarga</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="w-6 h-6 text-blue-500 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        <span>Scan akta kelahiran</span>
-                    </li>
-                    <li class="flex items-start">
-                        <svg class="w-6 h-6 text-blue-500 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        <span>Sertifikat prestasi (jika ada)</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Timeline Section -->
-<section class="py-16">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Alur Pendaftaran</h2>
-            <p class="text-gray-600 max-w-2xl mx-auto">
-                Ikuti langkah-langkah pendaftaran dengan benar untuk memastikan kelancaran proses
-            </p>
-        </div>
-
-        <div class="max-w-4xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span class="text-2xl font-bold text-primary-600">1</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Daftar Online</h3>
-                    <p class="text-gray-600 text-sm">Isi formulir pendaftaran dengan data yang benar</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span class="text-2xl font-bold text-primary-600">2</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Upload Dokumen</h3>
-                    <p class="text-gray-600 text-sm">Upload semua dokumen yang diperlukan</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span class="text-2xl font-bold text-primary-600">3</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Verifikasi</h3>
-                    <p class="text-gray-600 text-sm">Admin akan memverifikasi dokumen Anda</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span class="text-2xl font-bold text-primary-600">4</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Pengumuman</h3>
-                    <p class="text-gray-600 text-sm">Lihat hasil seleksi pada tanggal yang ditentukan</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Schedule Section -->
-<section class="py-16 bg-gray-50">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Jadwal & Timeline</h2>
-            <p class="text-gray-600 max-w-2xl mx-auto">
-                Perhatikan jadwal penting dalam proses pendaftaran PPDB
-            </p>
-        </div>
-
-        <div class="max-w-4xl mx-auto">
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2">
-                    <div class="p-8">
-                        <h3 class="text-xl font-bold text-gray-900 mb-6">Jadwal Pendaftaran</h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-green-500 rounded-full mr-4"></div>
-                                <div>
-                                    <div class="font-semibold text-gray-900">Pembukaan Pendaftaran</div>
-                                    <div class="text-sm text-gray-600">{{ $setting->start_date->format('d F Y, H:i') }}</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-red-500 rounded-full mr-4"></div>
-                                <div>
-                                    <div class="font-semibold text-gray-900">Penutupan Pendaftaran</div>
-                                    <div class="text-sm text-gray-600">{{ $setting->end_date->format('d F Y, H:i') }}</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-blue-500 rounded-full mr-4"></div>
-                                <div>
-                                    <div class="font-semibold text-gray-900">Pengumuman Hasil</div>
-                                    <div class="text-sm text-gray-600">{{ $setting->announcement_date->format('d F Y, H:i') }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-8 bg-primary-50">
-                        <h3 class="text-xl font-bold text-gray-900 mb-6">Informasi Penting</h3>
-                        <div class="space-y-4 text-sm text-gray-600">
-                            <p>• Pastikan semua dokumen sudah lengkap sebelum upload</p>
-                            <p>• Simpan nomor pendaftaran untuk tracking status</p>
-                            <p>• Periksa email secara berkala untuk notifikasi</p>
-                            <p>• Hubungi admin jika mengalami kendala teknis</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<!-- CTA Section -->
-<section class="py-16 bg-primary-600 text-white">
-    <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold mb-4">Siap Mendaftar?</h2>
-        <p class="text-xl mb-8 max-w-2xl mx-auto">
-            Jangan lewatkan kesempatan untuk bergabung dengan SMP Negeri 01 Namrole
-        </p>
+        
+        <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            @if($setting->isRegistrationOpen())
-                <a href="{{ route('ppdb.form') }}" 
-                   class="inline-flex items-center px-8 py-4 bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-xl rounded-lg transition-colors duration-200 shadow-lg">
-                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    MULAI PENDAFTARAN SEKARANG
-                </a>
-            @else
-                <div class="bg-white/20 backdrop-blur-sm rounded-lg p-6 max-w-2xl mx-auto">
-                    <h3 class="text-2xl font-semibold mb-2">Pendaftaran Belum Dibuka</h3>
-                    <p class="text-lg">Pendaftaran akan dibuka pada {{ $setting->start_date->format('d F Y, H:i') }}</p>
-                </div>
-            @endif
-            
             <a href="{{ route('ppdb.status') }}" 
-               class="inline-flex items-center px-8 py-4 bg-white/20 hover:bg-white/30 text-white font-bold text-xl rounded-lg transition-colors duration-200 shadow-lg border-2 border-white/30">
-                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                CEK STATUS PENDAFTARAN
+               class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 backdrop-blur-sm border border-white border-opacity-30">
+                <i class="fas fa-search mr-2"></i>
+                Cek Status Pendaftaran
+            </a>
+            <a href="#form" 
+               class="bg-yellow-400 hover:bg-yellow-500 text-primary-700 font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                <i class="fas fa-edit mr-2"></i>
+                Daftar Sekarang
             </a>
         </div>
     </div>
 </section>
+
+<!-- Main Content -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Info Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-blue-100 rounded-full">
+                        <i class="fas fa-calendar-alt text-blue-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Periode Pendaftaran</h3>
+                        <p class="text-sm text-gray-600">{{ date('d M', strtotime($settings['registration_period_start'])) }} - {{ date('d M Y', strtotime($settings['registration_period_end'])) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-green-100 rounded-full">
+                        <i class="fas fa-users text-green-600 text-xl"></i>
+                                </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Kuota Tersedia</h3>
+                        <p class="text-sm text-gray-600">{{ $settings['quota'] }} Siswa</p>
+                        </div>
+                    </div>
+                </div>
+                
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center">
+                    <div class="p-3 bg-yellow-100 rounded-full">
+                        <i class="fas fa-graduation-cap text-yellow-600 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Pendaftar Terdaftar</h3>
+                        <p class="text-sm text-gray-600">{{ \App\Models\UserRegistration::where('registration_type', 'student')->count() }} Siswa</p>
+                    </div>
+                </div>
+                </div>
+                </div>
+
+        <!-- Form Container -->
+        <div class="bg-white rounded-xl shadow-xl overflow-hidden">
+            <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-8 py-6">
+                <h2 class="text-2xl font-bold text-white mb-2">Formulir Pendaftaran PPDB 2025</h2>
+                <p class="text-primary-100">Isi data dengan lengkap dan benar sesuai dokumen resmi</p>
+                </div>
+
+            <div class="p-8">
+                @if ($errors->any())
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-circle text-red-400"></i>
+            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-red-800">Terjadi kesalahan:</h3>
+                                <div class="mt-2 text-sm text-red-700">
+                                    <ul class="list-disc list-inside space-y-1">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+            </div>
+            </div>
+        </div>
+    </div>
+                @endif
+
+                <form id="form" method="POST" action="{{ route('ppdb.store') }}" enctype="multipart/form-data" class="space-y-6">
+                    @csrf
+                    
+                    <!-- Data Pribadi -->
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-user text-blue-600 mr-2"></i>
+                            Data Pribadi
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Nama Lengkap <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="full_name" value="{{ old('full_name') }}" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                       placeholder="Masukkan nama lengkap sesuai KTP/Akta" required>
+        </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Email <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" name="email" value="{{ old('email') }}" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                       placeholder="contoh@email.com" required>
+                </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Nomor HP/WhatsApp <span class="text-red-500">*</span>
+                                </label>
+                                <input type="tel" name="phone" value="{{ old('phone') }}" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                       placeholder="08xxxxxxxxxx" required>
+        </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    NIK (Nomor Induk Kependudukan)
+                                </label>
+                                <input type="text" name="nik" value="{{ old('nik') }}" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                       placeholder="16 digit NIK KTP" maxlength="16">
+                </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Tempat Lahir
+                                </label>
+                                <input type="text" name="birth_place" value="{{ old('birth_place') }}" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                       placeholder="Contoh: Jakarta">
+                </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Tanggal Lahir <span class="text-red-500">*</span>
+                                </label>
+                                <input type="date" name="birth_date" value="{{ old('birth_date') }}" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Jenis Kelamin <span class="text-red-500">*</span>
+                                </label>
+                                <div class="flex space-x-4">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="gender" value="L" {{ old('gender') == 'L' ? 'checked' : '' }} 
+                                               class="w-4 h-4 text-blue-600 focus:ring-blue-500" required>
+                                        <span class="ml-2 text-sm text-gray-700">Laki-laki</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="gender" value="P" {{ old('gender') == 'P' ? 'checked' : '' }} 
+                                               class="w-4 h-4 text-blue-600 focus:ring-blue-500" required>
+                                        <span class="ml-2 text-sm text-gray-700">Perempuan</span>
+                                    </label>
+                </div>
+                </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Kode Pos
+                                </label>
+                                <input type="text" name="postal_code" value="{{ old('postal_code') }}" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                       placeholder="12345" maxlength="5">
+                </div>
+            </div>
+
+                        <div class="mt-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Alamat Lengkap <span class="text-red-500">*</span>
+                            </label>
+                            <textarea name="address" rows="3" 
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                      placeholder="Jalan, RT/RW, Kelurahan, Kecamatan" required>{{ old('address') }}</textarea>
+                </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Kota/Kabupaten <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="city" value="{{ old('city') }}" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                       placeholder="Pilih atau ketik kota" required>
+                </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Provinsi <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="province" value="{{ old('province') }}" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                       placeholder="Pilih provinsi" required>
+            </div>
+        </div>
+    </div>
+
+                    <!-- Data Pendidikan -->
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-graduation-cap text-blue-600 mr-2"></i>
+                            Data Pendidikan
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    NISN (Nomor Induk Siswa Nasional)
+                                </label>
+                                <input type="text" name="nisn" value="{{ old('nisn') }}" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                       placeholder="10 digit NISN" maxlength="10">
+        </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Asal Sekolah <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="school_origin" value="{{ old('school_origin') }}" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                       placeholder="Nama sekolah terakhir" required>
+            </div>
+
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Tahun Lulus <span class="text-red-500">*</span>
+                                </label>
+                                <select name="graduation_year" 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                    <option value="">Pilih tahun lulus</option>
+                                    @for($year = date('Y'); $year >= 2015; $year--)
+                                        <option value="{{ $year }}" {{ old('graduation_year') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                                    @endfor
+                                </select>
+            </div>
+        </div>
+    </div>
+
+                    <!-- Persetujuan -->
+                    <div class="bg-blue-50 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-shield-alt text-blue-600 mr-2"></i>
+                            Persetujuan
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-3">
+                                <input type="checkbox" name="agreed_to_terms" id="agreed_to_terms" 
+                                       class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 mt-1" required>
+                                <label for="agreed_to_terms" class="text-sm text-gray-700">
+                                    Saya menyatakan bahwa data yang diisi adalah benar dan dapat dipertanggungjawabkan. 
+                                    <span class="text-red-500">*</span>
+                                </label>
+        </div>
+
+                            <div class="flex items-start space-x-3">
+                                <input type="checkbox" name="agreed_to_privacy" id="agreed_to_privacy" 
+                                       class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 mt-1" required>
+                                <label for="agreed_to_privacy" class="text-sm text-gray-700">
+                                    Saya menyetujui penggunaan data pribadi untuk keperluan administrasi sekolah. 
+                                    <span class="text-red-500">*</span>
+                                </label>
+                    </div>
+                </div>
+                    </div>
+
+                    <!-- Upload Dokumen -->
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                            <i class="fas fa-file-upload text-blue-600 mr-2"></i>
+                            Upload Dokumen Persyaratan
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Foto 3x4 -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Foto 3x4 <span class="text-red-500">*</span>
+                                </label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-400 transition-colors">
+                                    <div class="space-y-1 text-center">
+                                        <i class="fas fa-camera text-gray-400 text-4xl"></i>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="photo_3x4" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                <span>Upload foto 3x4</span>
+                                                <input id="photo_3x4" name="photo_3x4" type="file" class="sr-only" accept="image/*" required>
+                                            </label>
+                                            <p class="pl-1">atau drag and drop</p>
+                </div>
+                                        <p class="text-xs text-gray-500">PNG, JPG, GIF hingga 2MB</p>
+                    </div>
+                </div>
+                    </div>
+
+                            <!-- Akta Kelahiran -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Akta Kelahiran <span class="text-red-500">*</span>
+                                </label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-400 transition-colors">
+                                    <div class="space-y-1 text-center">
+                                        <i class="fas fa-file-pdf text-gray-400 text-4xl"></i>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="birth_certificate" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                <span>Upload akta kelahiran</span>
+                                                <input id="birth_certificate" name="birth_certificate" type="file" class="sr-only" accept=".pdf,.jpg,.jpeg,.png" required>
+                                            </label>
+                                            <p class="pl-1">atau drag and drop</p>
+                </div>
+                                        <p class="text-xs text-gray-500">PDF, JPG, PNG hingga 5MB</p>
+            </div>
+        </div>
+    </div>
+
+                            <!-- Kartu Keluarga -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Kartu Keluarga <span class="text-red-500">*</span>
+                                </label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-400 transition-colors">
+                                    <div class="space-y-1 text-center">
+                                        <i class="fas fa-id-card text-gray-400 text-4xl"></i>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="family_card" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                <span>Upload KK</span>
+                                                <input id="family_card" name="family_card" type="file" class="sr-only" accept=".pdf,.jpg,.jpeg,.png" required>
+                                            </label>
+                                            <p class="pl-1">atau drag and drop</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500">PDF, JPG, PNG hingga 5MB</p>
+                                    </div>
+                                </div>
+        </div>
+
+                            <!-- Ijazah SD/MI -->
+                                <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Ijazah SD/MI <span class="text-red-500">*</span>
+                                </label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-400 transition-colors">
+                                    <div class="space-y-1 text-center">
+                                        <i class="fas fa-graduation-cap text-gray-400 text-4xl"></i>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="diploma" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                <span>Upload ijazah</span>
+                                                <input id="diploma" name="diploma" type="file" class="sr-only" accept=".pdf,.jpg,.jpeg,.png" required>
+                                            </label>
+                                            <p class="pl-1">atau drag and drop</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500">PDF, JPG, PNG hingga 5MB</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rapor SD/MI -->
+                                <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Rapor SD/MI <span class="text-red-500">*</span>
+                                </label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-400 transition-colors">
+                                    <div class="space-y-1 text-center">
+                                        <i class="fas fa-file-alt text-gray-400 text-4xl"></i>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="report_card" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                <span>Upload rapor</span>
+                                                <input id="report_card" name="report_card" type="file" class="sr-only" accept=".pdf,.jpg,.jpeg,.png" required>
+                                            </label>
+                                            <p class="pl-1">atau drag and drop</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500">PDF, JPG, PNG hingga 5MB</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- KTP Orang Tua -->
+                                <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    KTP Orang Tua <span class="text-red-500">*</span>
+                                </label>
+                                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-blue-400 transition-colors">
+                                    <div class="space-y-1 text-center">
+                                        <i class="fas fa-id-badge text-gray-400 text-4xl"></i>
+                                        <div class="flex text-sm text-gray-600">
+                                            <label for="parent_id_card" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                <span>Upload KTP orang tua</span>
+                                                <input id="parent_id_card" name="parent_id_card" type="file" class="sr-only" accept=".pdf,.jpg,.jpeg,.png" required>
+                                            </label>
+                                            <p class="pl-1">atau drag and drop</p>
+                                        </div>
+                                        <p class="text-xs text-gray-500">PDF, JPG, PNG hingga 5MB</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                        <!-- Info Persyaratan -->
+                        <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-info-circle text-blue-400"></i>
+                        </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-blue-800">Persyaratan Dokumen</h3>
+                                    <div class="mt-2 text-sm text-blue-700">
+                                        <ul class="list-disc list-inside space-y-1">
+                                            <li>Semua dokumen harus dalam format PDF, JPG, atau PNG</li>
+                                            <li>Ukuran maksimal 5MB per file (kecuali foto 3x4 maksimal 2MB)</li>
+                                            <li>Dokumen harus jelas dan dapat dibaca</li>
+                                            <li>Foto 3x4 harus berwarna dengan latar belakang putih</li>
+                                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    <!-- Submit Button & Status Check -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center pt-6">
+                        <button type="submit" 
+                                class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            Daftar PPDB 2025
+                        </button>
+                        
+                        <a href="{{ route('ppdb.status') }}" 
+                           class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-200 shadow-lg hover:shadow-xl text-center">
+                            <i class="fas fa-search mr-2"></i>
+                            Cek Status Pendaftaran
+                        </a>
+                    </div>
+                </form>
+                        </div>
+                    </div>
+
+        <!-- Info Tambahan -->
+        <div class="mt-8 bg-white rounded-lg shadow-md p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Informasi Penting</h3>
+                <a href="{{ route('ppdb.status') }}" 
+                   class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
+                    <i class="fas fa-search mr-2"></i>
+                    Cek Status Pendaftaran
+                </a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">Persyaratan Umum:</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        {!! nl2br(e($settings['requirements'])) !!}
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-2">Kontak Panitia:</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• Telepon: {{ $settings['contact_phone'] }}</li>
+                        <li>• Email: {{ $settings['contact_email'] }}</li>
+                        <li>• WhatsApp: {{ $settings['contact_whatsapp'] }}</li>
+                        <li>• Alamat: {{ $settings['contact_address'] }}</li>
+                    </ul>
+                </div>
+                </div>
+        </div>
+    </div>
+
+    </div>
+</section>
+
+<script>
+// File upload preview functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const container = this.closest('.mt-1');
+                const preview = container.querySelector('.file-preview');
+                
+                // Remove existing preview
+                if (preview) {
+                    preview.remove();
+                }
+                
+                // Create new preview
+                const previewDiv = document.createElement('div');
+                previewDiv.className = 'file-preview mt-2 p-3 bg-green-50 border border-green-200 rounded-lg';
+                
+                if (file.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.className = 'w-20 h-20 object-cover rounded-lg';
+                    previewDiv.appendChild(img);
+                } else {
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-file text-green-600 text-2xl';
+                    previewDiv.appendChild(icon);
+                }
+                
+                const fileName = document.createElement('p');
+                fileName.className = 'text-sm text-green-800 mt-1';
+                fileName.textContent = file.name;
+                previewDiv.appendChild(fileName);
+                
+                const fileSize = document.createElement('p');
+                fileSize.className = 'text-xs text-green-600';
+                fileSize.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+                previewDiv.appendChild(fileSize);
+                
+                container.appendChild(previewDiv);
+            }
+        });
+    });
+    
+    // Drag and drop functionality
+    const dropZones = document.querySelectorAll('.border-dashed');
+    
+    dropZones.forEach(zone => {
+        zone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('border-blue-400', 'bg-blue-50');
+        });
+        
+        zone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('border-blue-400', 'bg-blue-50');
+        });
+        
+        zone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('border-blue-400', 'bg-blue-50');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const fileInput = this.querySelector('input[type="file"]');
+                if (fileInput) {
+                    fileInput.files = files;
+                    fileInput.dispatchEvent(new Event('change'));
+                }
+            }
+        });
+    });
+});
+</script>
 @endsection
-
-@push('styles')
-<style>
-/* FAQ Dropdown Styles */
-.faq-content {
-    transition: all 0.3s ease-in-out;
-}
-
-.faq-icon {
-    transition: transform 0.3s ease-in-out;
-}
-
-/* Ensure dropdown visibility */
-.group:hover .group-hover\:opacity-100 {
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* Mobile dropdown improvements */
-@media (max-width: 768px) {
-    .group:hover .group-hover\:opacity-100 {
-        opacity: 0;
-        visibility: hidden;
-    }
-}
-
-/* Card-based Registration Status Styles - Exact Match */
-.status-cards-container {
-    margin: 0 auto;
-}
-
-.status-cards-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    align-items: stretch;
-}
-
-.status-card {
-    border-radius: 12px;
-    padding: 1.25rem;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.status-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.status-card-green {
-    background: #f0fff0;
-    border: 1px solid rgba(34, 197, 94, 0.1);
-    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.05);
-}
-
-.status-card-blue {
-    background: #e0f2ff;
-    border: 1px solid rgba(59, 130, 246, 0.1);
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.05);
-}
-
-.card-content {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-}
-
-.card-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    margin-top: 0.5rem;
-}
-
-.card-dot-green {
-    background: #22c55e;
-}
-
-.card-dot-blue {
-    background: #3b82f6;
-}
-
-.card-text {
-    flex: 1;
-}
-
-.card-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #374151;
-    margin-bottom: 0.25rem;
-    line-height: 1.3;
-}
-
-.card-subtitle {
-    font-size: 0.875rem;
-    color: #6b7280;
-    font-weight: 400;
-    line-height: 1.3;
-    margin: 0;
-}
-
-/* Simple Hover Effects */
-.status-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-    .status-cards-container {
-        margin: 0 1rem;
-    }
-    
-    .status-cards-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-    
-    .status-card {
-        padding: 1rem;
-    }
-    
-    .card-content {
-        gap: 0.5rem;
-    }
-    
-    .card-dot {
-        width: 6px;
-        height: 6px;
-        margin-top: 0.4rem;
-    }
-    
-    .card-title {
-        font-size: 0.9rem;
-    }
-    
-    .card-subtitle {
-        font-size: 0.8rem;
-    }
-}
-</style>
-@endpush
-
-
-
-

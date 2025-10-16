@@ -115,7 +115,7 @@
                     <img src="{{ $relatedGallery->cover_image_url }}" alt="{{ $relatedGallery->title }}" class="w-full h-48 object-cover">
                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
                         <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <a href="{{ route('gallery.show', $relatedGallery->slug) }}" class="bg-white text-primary-600 px-4 py-2 rounded-lg font-medium hover:bg-primary-600 hover:text-white transition-colors">
+                            <a href="{{ route('gallery.show', $relatedGallery->slug ?? 'no-slug') }}" class="bg-white text-primary-600 px-4 py-2 rounded-lg font-medium hover:bg-primary-600 hover:text-white transition-colors">
                                 Lihat Album
                             </a>
                         </div>

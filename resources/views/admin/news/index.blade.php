@@ -3,34 +3,43 @@
 @section('page-title', 'Kelola Berita')
 
 @section('content')
-<div class="p-4 lg:p-6">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Kelola Berita</h1>
-            <p class="text-gray-600">Kelola konten berita dan artikel sekolah</p>
-        </div>
-        <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-            <button onclick="exportNews()" 
-                    class="inline-flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-                <span class="text-sm font-semibold">Export</span>
-            </button>
-            <a href="{{ route('admin.news.create') }}" 
-               class="inline-flex items-center justify-center px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-200">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                <span class="text-sm font-semibold">Tulis Berita Baru</span>
-            </a>
+<div class="p-4 lg:p-6 space-y-6">
+    <!-- Header with Gradient Background -->
+    <div class="bg-gradient-to-r from-primary-500 to-primary-700 rounded-2xl shadow-xl p-6 lg:p-8 text-white">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="p-3 bg-white bg-opacity-20 rounded-xl backdrop-blur-sm">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold mb-1">Kelola Berita</h1>
+                    <p class="text-blue-100">Kelola konten berita dan artikel sekolah</p>
+                </div>
+            </div>
+            <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                <button onclick="exportNews()" 
+                        class="inline-flex items-center justify-center px-5 py-3 bg-white text-primary-600 rounded-xl hover:bg-blue-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <span class="text-sm font-bold">Export Data</span>
+                </button>
+                <a href="{{ route('admin.news.create') }}" 
+                   class="inline-flex items-center justify-center px-5 py-3 bg-yellow-400 text-primary-700 rounded-xl hover:bg-yellow-300 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    <span class="text-sm font-bold">Tulis Berita Baru</span>
+                </a>
+            </div>
         </div>
     </div>
 
     <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow-lg p-4 lg:p-6 border-l-4 border-blue-500">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+        <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 border-l-4 border-blue-500 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
             <div class="flex items-center">
                 <div class="p-2 lg:p-3 bg-blue-100 rounded-full">
                     <svg class="w-6 h-6 lg:w-8 lg:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,12 +48,12 @@
                 </div>
                 <div class="ml-3 lg:ml-4">
                     <p class="text-xs lg:text-sm font-medium text-gray-600">Total Berita</p>
-                    <p class="text-lg lg:text-2xl font-semibold text-gray-900">{{ $news->total() }}</p>
+                    <p class="text-lg lg:text-2xl font-semibold text-gray-900">{{ $stats['total'] }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-4 lg:p-6 border-l-4 border-green-500">
+        <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 border-l-4 border-green-500 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
             <div class="flex items-center">
                 <div class="p-2 lg:p-3 bg-green-100 rounded-full">
                     <svg class="w-6 h-6 lg:w-8 lg:h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,12 +62,12 @@
                 </div>
                 <div class="ml-3 lg:ml-4">
                     <p class="text-xs lg:text-sm font-medium text-gray-600">Published</p>
-                    <p class="text-lg lg:text-2xl font-semibold text-gray-900">{{ $news->where('published_at', '!=', null)->count() }}</p>
+                    <p class="text-lg lg:text-2xl font-semibold text-gray-900">{{ $stats['published'] }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-4 lg:p-6 border-l-4 border-yellow-500">
+        <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 border-l-4 border-yellow-500 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
             <div class="flex items-center">
                 <div class="p-2 lg:p-3 bg-yellow-100 rounded-full">
                     <svg class="w-6 h-6 lg:w-8 lg:h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,12 +76,12 @@
                 </div>
                 <div class="ml-3 lg:ml-4">
                     <p class="text-xs lg:text-sm font-medium text-gray-600">Draft</p>
-                    <p class="text-lg lg:text-2xl font-semibold text-gray-900">{{ $news->where('published_at', null)->count() }}</p>
+                    <p class="text-lg lg:text-2xl font-semibold text-gray-900">{{ $stats['draft'] }}</p>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-4 lg:p-6 border-l-4 border-purple-500">
+        <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 border-l-4 border-purple-500 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
             <div class="flex items-center">
                 <div class="p-2 lg:p-3 bg-purple-100 rounded-full">
                     <svg class="w-6 h-6 lg:w-8 lg:h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,15 +90,15 @@
                     </svg>
                 </div>
                 <div class="ml-3 lg:ml-4">
-                    <p class="text-xs lg:text-sm font-medium text-gray-600">Total Views</p>
-                    <p class="text-lg lg:text-2xl font-semibold text-gray-900">{{ $news->sum('views') }}</p>
+                    <p class="text-xs lg:text-sm font-medium text-gray-600">Featured</p>
+                    <p class="text-lg lg:text-2xl font-semibold text-gray-900">{{ $stats['featured'] }}</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Filter & Search -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6 mb-6">
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-4 lg:p-6">
         <form method="GET" action="{{ route('admin.news.index') }}" class="space-y-4">
             <!-- Mobile Search -->
             <div class="block lg:hidden">
@@ -204,7 +213,7 @@
     </div>
 
     <!-- Bulk Actions -->
-    <div class="bg-white rounded-lg shadow-lg p-4 lg:p-6 mb-6" id="bulkActions" style="display: none;">
+    <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl shadow-lg border-2 border-blue-300 p-4 lg:p-6" id="bulkActions" style="display: none;">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
             <div class="flex items-center space-x-4">
                 <div class="flex items-center">
@@ -218,6 +227,8 @@
                     <option value="delete">Hapus</option>
                     <option value="publish">Publish</option>
                     <option value="draft">Jadikan Draft</option>
+                    <option value="featured">Jadikan Featured</option>
+                    <option value="unfeatured">Hapus dari Featured</option>
                 </select>
             </div>
             <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
@@ -241,11 +252,11 @@
     </div>
 
     <!-- News Table -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
         <!-- Mobile View -->
         <div class="block lg:hidden">
             @forelse($news as $newsItem)
-                <div class="border-b border-gray-200 p-4">
+                <div class="border-b border-gray-200 p-4" data-slug="{{ $newsItem->slug }}" data-id="{{ $newsItem->id }}">
                     <div class="flex items-start space-x-3">
                         <div class="flex-shrink-0">
                             <div class="w-16 h-12 bg-gray-100 rounded overflow-hidden">
@@ -283,18 +294,18 @@
                                     @endif
                                 </div>
                                 <div class="flex items-center space-x-1">
-                                    <a href="{{ route('admin.news.show', $newsItem) }}" class="text-blue-600 hover:text-blue-800">
+                                    <a href="{{ route('admin.news.show', $newsItem) }}" class="inline-flex items-center p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                         </svg>
                                     </a>
-                                    <a href="{{ route('admin.news.edit', $newsItem) }}" class="text-yellow-600 hover:text-yellow-800">
+                                    <a href="{{ route('admin.news.edit', $newsItem) }}" class="inline-flex items-center p-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all duration-200">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                         </svg>
                                     </a>
-                                    <button onclick="deleteNews({{ $newsItem->id }})" class="inline-flex items-center px-2 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 text-xs font-medium">
+                                    <button onclick="deleteNews({{ $newsItem->id }})" class="inline-flex items-center px-2 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 text-xs font-medium shadow-sm hover:shadow-md">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
@@ -337,7 +348,7 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse($news as $newsItem)
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-50" data-slug="{{ $newsItem->slug }}" data-id="{{ $newsItem->id }}">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <input type="checkbox" name="news_ids[]" value="{{ $newsItem->id }}" class="news-checkbox rounded border-gray-300 text-primary-600 focus:ring-primary-500">
                             </td>
@@ -393,20 +404,20 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-2">
-                                    <a href="{{ route('admin.news.show', $newsItem) }}" class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 transition-colors duration-200">
+                                    <a href="{{ route('admin.news.show', $newsItem) }}" class="inline-flex items-center px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                         </svg>
                                         Detail
                                     </a>
-                                    <a href="{{ route('admin.news.edit', $newsItem) }}" class="inline-flex items-center px-3 py-1 bg-yellow-100 text-yellow-800 rounded-lg hover:bg-yellow-200 transition-colors duration-200">
+                                    <a href="{{ route('admin.news.edit', $newsItem) }}" class="inline-flex items-center px-3 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                         </svg>
                                         Edit
                                     </a>
-                                    <button onclick="deleteNews({{ $newsItem->id }})" class="inline-flex items-center px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 text-sm font-medium">
+                                    <button onclick="deleteNews({{ $newsItem->id }})" class="inline-flex items-center px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md transform hover:scale-105">
                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
@@ -439,8 +450,8 @@
     @endif
 
     <!-- Recent Activities -->
-    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 hover:shadow-2xl transition-shadow duration-300">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Aktivitas Terbaru</h3>
             <div class="space-y-3">
                 @foreach($news->take(5) as $recentNews)
@@ -459,7 +470,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-lg shadow-lg p-4 lg:p-6">
+        <div class="bg-white rounded-xl shadow-lg p-4 lg:p-6 hover:shadow-2xl transition-shadow duration-300">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Berita Populer</h3>
             <div class="space-y-3">
                 @foreach($news->sortByDesc('views')->take(5) as $popularNews)
@@ -505,8 +516,13 @@ function deleteNews(id) {
             button.innerHTML = '<svg class="w-4 h-4 mr-1 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>Menghapus...';
         });
         
+        // Get the slug for the news item
+        const deleteButton = document.querySelector(`button[onclick="deleteNews(${id})"]`);
+        const newsRow = deleteButton ? (deleteButton.closest('tr') || deleteButton.closest('div[data-slug]')) : null;
+        const newsSlug = newsRow ? newsRow.dataset.slug : id;
+        
         // Use fetch API for delete request
-        fetch(`/admin/news/${id}`, {
+        fetch(`/admin/news/${newsSlug}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -632,6 +648,134 @@ function handleBulkAction() {
     submitButton.innerHTML = '<svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>Memproses...';
     
     form.submit();
+}
+
+// Export functionality
+function exportNews() {
+    const selectedCheckboxes = document.querySelectorAll('.news-checkbox:checked');
+    const newsIds = Array.from(selectedCheckboxes).map(cb => cb.value);
+    
+    if (newsIds.length === 0) {
+        alert('Pilih minimal satu berita untuk di-export.');
+        return;
+    }
+    
+    // Create export form
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ route("admin.news.export") }}';
+    form.style.display = 'none';
+    
+    // Add CSRF token
+    const csrfToken = document.createElement('input');
+    csrfToken.type = 'hidden';
+    csrfToken.name = '_token';
+    csrfToken.value = '{{ csrf_token() }}';
+    form.appendChild(csrfToken);
+    
+    // Add news IDs
+    newsIds.forEach(id => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'news_ids[]';
+        input.value = id;
+        form.appendChild(input);
+    });
+    
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+}
+
+// Quick actions for individual news items
+function quickPublish(newsId) {
+    if (confirm('Publish berita ini sekarang?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ route("admin.news.bulk-action") }}';
+        form.style.display = 'none';
+        
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = '{{ csrf_token() }}';
+        form.appendChild(csrfToken);
+        
+        const newsIdInput = document.createElement('input');
+        newsIdInput.type = 'hidden';
+        newsIdInput.name = 'news_ids[]';
+        newsIdInput.value = newsId;
+        form.appendChild(newsIdInput);
+        
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'publish';
+        form.appendChild(actionInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function quickDraft(newsId) {
+    if (confirm('Jadikan berita ini sebagai draft?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ route("admin.news.bulk-action") }}';
+        form.style.display = 'none';
+        
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = '{{ csrf_token() }}';
+        form.appendChild(csrfToken);
+        
+        const newsIdInput = document.createElement('input');
+        newsIdInput.type = 'hidden';
+        newsIdInput.name = 'news_ids[]';
+        newsIdInput.value = newsId;
+        form.appendChild(newsIdInput);
+        
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'draft';
+        form.appendChild(actionInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function quickFeatured(newsId) {
+    if (confirm('Jadikan berita ini sebagai featured?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ route("admin.news.bulk-action") }}';
+        form.style.display = 'none';
+        
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = '{{ csrf_token() }}';
+        form.appendChild(csrfToken);
+        
+        const newsIdInput = document.createElement('input');
+        newsIdInput.type = 'hidden';
+        newsIdInput.name = 'news_ids[]';
+        newsIdInput.value = newsId;
+        form.appendChild(newsIdInput);
+        
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'featured';
+        form.appendChild(actionInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
 }
 </script>
 @endsection

@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\News;
 use App\Models\NewsCategory;
 use App\Models\User;
+use App\Models\Tag;
 use Illuminate\Support\Str;
 
 class NewsSeeder extends Seeder
@@ -15,160 +17,100 @@ class NewsSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create news categories
+        // Create news categories if they don't exist
         $categories = [
+            ['name' => 'Pendidikan', 'slug' => 'pendidikan', 'description' => 'Berita tentang pendidikan'],
             ['name' => 'Kegiatan Sekolah', 'slug' => 'kegiatan-sekolah', 'description' => 'Berita tentang kegiatan sekolah'],
-            ['name' => 'Prestasi', 'slug' => 'prestasi', 'description' => 'Berita tentang prestasi siswa dan sekolah'],
-            ['name' => 'Pengumuman', 'slug' => 'pengumuman', 'description' => 'Pengumuman penting dari sekolah'],
-            ['name' => 'Ekstrakurikuler', 'slug' => 'ekstrakurikuler', 'description' => 'Berita tentang kegiatan ekstrakurikuler'],
+            ['name' => 'Prestasi', 'slug' => 'prestasi', 'description' => 'Berita tentang prestasi siswa'],
+            ['name' => 'Pengumuman', 'slug' => 'pengumuman', 'description' => 'Pengumuman resmi sekolah'],
         ];
 
-        foreach ($categories as $categoryData) {
-            NewsCategory::firstOrCreate(
-                ['slug' => $categoryData['slug']],
-                $categoryData
-            );
+        foreach ($categories as $category) {
+            NewsCategory::firstOrCreate(['slug' => $category['slug']], $category);
+        }
+
+        // Create tags if they don't exist
+        $tags = [
+            ['name' => 'Siswa', 'slug' => 'siswa'],
+            ['name' => 'Guru', 'slug' => 'guru'],
+            ['name' => 'Prestasi', 'slug' => 'prestasi'],
+            ['name' => 'Kegiatan', 'slug' => 'kegiatan'],
+        ];
+
+        foreach ($tags as $tag) {
+            Tag::firstOrCreate(['slug' => $tag['slug']], $tag);
         }
 
         // Get admin user
-        $admin = User::where('email', 'admin@sekolah.com')->first();
+        $admin = User::where('email', 'admin@smpn01namrole.sch.id')->first();
         if (!$admin) {
             $admin = User::create([
-                'name' => 'Admin Sekolah',
-                'email' => 'admin@sekolah.com',
-                'password' => bcrypt('password'),
-                'email_verified_at' => now(),
+                'name' => 'Admin',
+                'email' => 'admin@smpn01namrole.sch.id',
+                'password' => bcrypt('password123'),
+                'role' => 'admin',
             ]);
         }
 
-        // Get categories
-        $kegiatanCategory = NewsCategory::where('slug', 'kegiatan-sekolah')->first();
-        $prestasiCategory = NewsCategory::where('slug', 'prestasi')->first();
-        $pengumumanCategory = NewsCategory::where('slug', 'pengumuman')->first();
-        $ekstrakurikulerCategory = NewsCategory::where('slug', 'ekstrakurikuler')->first();
-
-        // Create sample news
-        $newsData = [
+        // Create sample news items
+        $newsItems = [
             [
-                'title' => 'Kegiatan Ekstrakurikuler Semester Genap',
-                'slug' => 'kegiatan-ekstrakurikuler-semester-genap',
-                'content' => '<p>Kegiatan ekstrakurikuler semester genap telah dimulai dengan berbagai program menarik untuk siswa SMP Negeri 01 Namrole. Program ini bertujuan untuk mengembangkan bakat dan minat siswa di luar jam pelajaran formal.</p>
-
-                <h3>Program Ekstrakurikuler yang Tersedia:</h3>
-                <ul>
-                    <li><strong>Olahraga:</strong> Sepak bola, Voli, Basket, Badminton</li>
-                    <li><strong>Seni:</strong> Tari tradisional, Musik, Teater</li>
-                    <li><strong>Akademik:</strong> Olimpiade Matematika, Sains, Bahasa Inggris</li>
-                    <li><strong>Keterampilan:</strong> Komputer, Kerajinan, Pertanian</li>
-                </ul>
-
-                <p>Kegiatan ekstrakurikuler dilaksanakan setiap hari Selasa dan Kamis pukul 15.00-17.00 WIB. Siswa dapat memilih maksimal 2 ekstrakurikuler sesuai dengan minat dan bakat mereka.</p>
-
-                <h3>Pendaftaran:</h3>
-                <p>Pendaftaran dibuka mulai tanggal 15 Januari 2025 dan akan ditutup pada tanggal 25 Januari 2025. Siswa dapat mendaftar melalui wali kelas masing-masing.</p>
-
-                <p>Dengan mengikuti ekstrakurikuler, siswa diharapkan dapat mengembangkan potensi diri, meningkatkan keterampilan sosial, dan menciptakan prestasi yang membanggakan.</p>',
-                'excerpt' => 'Kegiatan ekstrakurikuler semester genap telah dimulai dengan berbagai program menarik untuk mengembangkan bakat dan minat siswa.',
-                'category_id' => $ekstrakurikulerCategory->id,
+                'title' => 'Pembukaan Tahun Ajaran Baru 2025-2026',
+                'content' => '<p>Kami dengan bangga mengumumkan pembukaan tahun ajaran baru 2025/2026 di SMP Negeri 01 Namrole. Tahun ajaran ini akan dimulai pada tanggal 15 Juli 2025 dengan berbagai program unggulan yang telah disiapkan untuk memberikan pendidikan terbaik bagi seluruh siswa.</p><p>Program-program unggulan yang akan dilaksanakan meliputi:</p><ul><li>Program pengembangan karakter siswa</li><li>Kegiatan ekstrakurikuler yang beragam</li><li>Program bimbingan belajar intensif</li><li>Kegiatan keagamaan dan spiritual</li></ul><p>Kami berharap seluruh siswa dapat memanfaatkan kesempatan ini dengan sebaik-baiknya untuk meraih prestasi yang gemilang.</p>',
+                'excerpt' => 'Pembukaan tahun ajaran baru 2025/2026 dengan berbagai program unggulan untuk memberikan pendidikan terbaik bagi seluruh siswa.',
+                'category_id' => NewsCategory::where('slug', 'pengumuman')->first()->id,
                 'author_id' => $admin->id,
                 'is_featured' => true,
-                'published_at' => now()->subDays(2),
-                'meta_title' => 'Kegiatan Ekstrakurikuler Semester Genap - SMP Negeri 01 Namrole',
-                'meta_description' => 'Program ekstrakurikuler semester genap dengan berbagai kegiatan olahraga, seni, akademik, dan keterampilan untuk siswa.',
-                'meta_keywords' => 'ekstrakurikuler, kegiatan sekolah, semester genap, olahraga, seni, akademik',
+                'published_at' => now(),
+                'meta_title' => 'Pembukaan Tahun Ajaran Baru 2025/2026 - SMP Negeri 01 Namrole',
+                'meta_description' => 'Pengumuman pembukaan tahun ajaran baru 2025/2026 di SMP Negeri 01 Namrole dengan program unggulan.',
                 'allow_comments' => true,
             ],
             [
-                'title' => 'Prestasi Siswa di Olimpiade Matematika Tingkat Provinsi',
-                'slug' => 'prestasi-siswa-olimpiade-matematika-provinsi',
-                'content' => '<p>Kami bangga mengumumkan bahwa siswa SMP Negeri 01 Namrole berhasil meraih prestasi gemilang dalam Olimpiade Matematika Tingkat Provinsi Maluku yang diselenggarakan pada tanggal 10 Januari 2025.</p>
-
-                <h3>Prestasi yang Diraih:</h3>
-                <ul>
-                    <li><strong>Juara 1:</strong> Ahmad Fauzi (Kelas 9A)</li>
-                    <li><strong>Juara 2:</strong> Siti Nurhaliza (Kelas 8B)</li>
-                    <li><strong>Juara 3:</strong> Muhammad Rizki (Kelas 9C)</li>
-                </ul>
-
-                <p>Prestasi ini merupakan bukti nyata dari dedikasi dan kerja keras siswa-siswi SMP Negeri 01 Namrole dalam bidang akademik. Kami mengucapkan selamat kepada para pemenang dan berharap prestasi ini dapat memotivasi siswa lainnya untuk terus berprestasi.</p>
-
-                <p>Kepala Sekolah, Bapak Dr. H. Ahmad Suryadi, M.Pd., menyampaikan apresiasi yang tinggi kepada para siswa yang telah mengharumkan nama sekolah di tingkat provinsi.</p>',
-                'excerpt' => 'Siswa SMP Negeri 01 Namrole berhasil meraih prestasi gemilang dalam Olimpiade Matematika Tingkat Provinsi Maluku.',
-                'category_id' => $prestasiCategory->id,
+                'title' => 'Siswa SMP Negeri 01 Namrole Raih Juara 1 Olimpiade Matematika',
+                'content' => '<p>Kami bangga mengumumkan bahwa salah satu siswa terbaik kami, <strong>Andi Pratama</strong> dari kelas IX-A, berhasil meraih juara 1 dalam Olimpiade Matematika tingkat kabupaten yang diselenggarakan pada tanggal 10 Oktober 2025.</p><p>Prestasi ini merupakan hasil dari dedikasi dan kerja keras yang luar biasa dari siswa tersebut, serta dukungan penuh dari guru-guru matematika yang telah memberikan bimbingan intensif.</p><p>Kepala Sekolah, Bapak Dr. Budi Santoso, M.Pd., menyampaikan rasa bangga dan apresiasi yang tinggi atas prestasi yang diraih oleh Andi Pratama. "Ini adalah bukti bahwa dengan kerja keras dan dukungan yang tepat, setiap siswa dapat meraih prestasi yang gemilang," ujarnya.</p>',
+                'excerpt' => 'Siswa SMP Negeri 01 Namrole berhasil meraih juara 1 Olimpiade Matematika tingkat kabupaten.',
+                'category_id' => NewsCategory::where('slug', 'prestasi')->first()->id,
                 'author_id' => $admin->id,
                 'is_featured' => true,
-                'published_at' => now()->subDays(5),
-                'meta_title' => 'Prestasi Siswa Olimpiade Matematika Provinsi - SMP Negeri 01 Namrole',
-                'meta_description' => 'Siswa SMP Negeri 01 Namrole meraih juara 1, 2, dan 3 dalam Olimpiade Matematika Tingkat Provinsi Maluku.',
-                'meta_keywords' => 'prestasi, olimpiade matematika, provinsi, siswa, prestasi akademik',
+                'published_at' => now(),
+                'meta_title' => 'Siswa SMP Negeri 01 Namrole Juara 1 Olimpiade Matematika',
+                'meta_description' => 'Prestasi gemilang siswa SMP Negeri 01 Namrole dalam Olimpiade Matematika tingkat kabupaten.',
                 'allow_comments' => true,
             ],
             [
-                'title' => 'Pengumuman Libur Semester Genap',
-                'slug' => 'pengumuman-libur-semester-genap',
-                'content' => '<p>Berdasarkan kalender akademik tahun pelajaran 2024/2025, kami mengumumkan jadwal libur semester genap sebagai berikut:</p>
-
-                <h3>Jadwal Libur Semester Genap:</h3>
-                <ul>
-                    <li><strong>Libur Tengah Semester:</strong> 15-20 Maret 2025</li>
-                    <li><strong>Libur Akhir Semester:</strong> 15-30 Juni 2025</li>
-                    <li><strong>Libur Idul Fitri:</strong> 25-30 April 2025</li>
-                </ul>
-
-                <p>Selama masa libur, siswa diharapkan untuk:</p>
-                <ul>
-                    <li>Mengisi waktu dengan kegiatan yang positif</li>
-                    <li>Menyelesaikan tugas-tugas yang diberikan guru</li>
-                    <li>Mempersiapkan diri untuk semester berikutnya</li>
-                </ul>
-
-                <p>Informasi lebih lanjut dapat menghubungi wali kelas atau bagian akademik sekolah.</p>',
-                'excerpt' => 'Pengumuman jadwal libur semester genap tahun pelajaran 2024/2025 untuk siswa SMP Negeri 01 Namrole.',
-                'category_id' => $pengumumanCategory->id,
+                'title' => 'Kegiatan Ekstrakurikuler Semester Ganjil 2025',
+                'content' => '<p>Kegiatan ekstrakurikuler semester ganjil tahun ajaran 2025/2026 telah dimulai dengan antusiasme yang tinggi dari seluruh siswa. Berbagai jenis ekstrakurikuler tersedia untuk mengembangkan bakat dan minat siswa di luar jam pelajaran.</p><p>Jenis-jenis ekstrakurikuler yang tersedia:</p><ul><li><strong>Olahraga:</strong> Sepak Bola, Basket, Voli, Badminton</li><li><strong>Seni:</strong> Tari, Musik, Teater, Lukis</li><li><strong>Akademik:</strong> Matematika, IPA, Bahasa Inggris</li><li><strong>Keagamaan:</strong> Tahfidz, Qiro\'ah, Pramuka</li></ul><p>Kegiatan ekstrakurikuler dilaksanakan setiap hari Selasa dan Kamis pukul 14.00 - 16.00 WIT. Siswa dapat memilih maksimal 2 jenis ekstrakurikuler sesuai dengan minat dan bakat masing-masing.</p>',
+                'excerpt' => 'Kegiatan ekstrakurikuler semester ganjil telah dimulai dengan berbagai pilihan untuk mengembangkan bakat siswa.',
+                'category_id' => NewsCategory::where('slug', 'kegiatan-sekolah')->first()->id,
                 'author_id' => $admin->id,
                 'is_featured' => false,
-                'published_at' => now()->subDays(1),
-                'meta_title' => 'Pengumuman Libur Semester Genap - SMP Negeri 01 Namrole',
-                'meta_description' => 'Jadwal libur semester genap tahun pelajaran 2024/2025 untuk siswa SMP Negeri 01 Namrole.',
-                'meta_keywords' => 'libur semester, kalender akademik, pengumuman, jadwal libur',
+                'published_at' => now(),
+                'meta_title' => 'Kegiatan Ekstrakurikuler Semester Ganjil 2025',
+                'meta_description' => 'Informasi lengkap tentang kegiatan ekstrakurikuler semester ganjil di SMP Negeri 01 Namrole.',
                 'allow_comments' => true,
             ],
             [
-                'title' => 'Kegiatan Pramuka dan Kepramukaan',
-                'slug' => 'kegiatan-pramuka-kepramukaan',
-                'content' => '<p>Gerakan Pramuka SMP Negeri 01 Namrole mengadakan berbagai kegiatan kepramukaan yang bertujuan untuk membentuk karakter dan kepribadian siswa yang berakhlak mulia.</p>
-
-                <h3>Kegiatan Pramuka yang Dilaksanakan:</h3>
-                <ul>
-                    <li><strong>Latihan Rutin:</strong> Setiap hari Sabtu pukul 07.00-10.00 WIB</li>
-                    <li><strong>Kemah Akhir Pekan:</strong> Setiap bulan sekali</li>
-                    <li><strong>Perkemahan Besar:</strong> Setiap semester</li>
-                    <li><strong>Lomba Pramuka:</strong> Tingkat kecamatan dan kabupaten</li>
-                </ul>
-
-                <p>Kegiatan pramuka tidak hanya mengajarkan keterampilan kepramukaan, tetapi juga menanamkan nilai-nilai kepemimpinan, kedisiplinan, dan kerja sama tim.</p>
-
-                <h3>Prestasi Pramuka:</h3>
-                <p>Tim Pramuka SMP Negeri 01 Namrole telah meraih berbagai prestasi di tingkat kecamatan dan kabupaten, termasuk Juara 1 Lomba Pramuka Tingkat Kecamatan pada tahun 2024.</p>',
-                'excerpt' => 'Kegiatan kepramukaan SMP Negeri 01 Namrole untuk membentuk karakter dan kepribadian siswa yang berakhlak mulia.',
-                'category_id' => $kegiatanCategory->id,
+                'title' => 'Workshop Guru: Peningkatan Kompetensi Pedagogik',
+                'content' => '<p>Dalam rangka meningkatkan kualitas pembelajaran, SMP Negeri 01 Namrole menyelenggarakan workshop guru dengan tema "Peningkatan Kompetensi Pedagogik dalam Era Digital" pada tanggal 20-22 Oktober 2025.</p><p>Workshop ini diikuti oleh seluruh guru SMP Negeri 01 Namrole dan menghadirkan narasumber dari Universitas Pendidikan Indonesia (UPI) Bandung. Materi yang disampaikan meliputi:</p><ul><li>Strategi pembelajaran berbasis teknologi</li><li>Pengembangan media pembelajaran digital</li><li>Penilaian autentik dalam pembelajaran</li><li>Pengelolaan kelas yang efektif</li></ul><p>Kepala Sekolah berharap workshop ini dapat meningkatkan kualitas pembelajaran dan memberikan dampak positif bagi perkembangan siswa.</p>',
+                'excerpt' => 'Workshop guru untuk peningkatan kompetensi pedagogik dalam era digital diikuti seluruh guru SMP Negeri 01 Namrole.',
+                'category_id' => NewsCategory::where('slug', 'pendidikan')->first()->id,
                 'author_id' => $admin->id,
                 'is_featured' => false,
-                'published_at' => now()->subDays(3),
-                'meta_title' => 'Kegiatan Pramuka dan Kepramukaan - SMP Negeri 01 Namrole',
-                'meta_description' => 'Kegiatan kepramukaan SMP Negeri 01 Namrole untuk membentuk karakter siswa yang berakhlak mulia.',
-                'meta_keywords' => 'pramuka, kepramukaan, kegiatan sekolah, karakter, kepribadian',
-                'allow_comments' => true,
+                'published_at' => now(),
+                'meta_title' => 'Workshop Guru: Peningkatan Kompetensi Pedagogik',
+                'meta_description' => 'Workshop guru SMP Negeri 01 Namrole untuk meningkatkan kompetensi pedagogik dalam era digital.',
+                'allow_comments' => false,
             ],
         ];
 
-        foreach ($newsData as $data) {
-            News::firstOrCreate(
-                ['slug' => $data['slug']],
-                $data
-            );
+        foreach ($newsItems as $newsData) {
+            $news = News::create($newsData);
+            
+            // Attach tags
+            $news->tags()->attach(Tag::whereIn('slug', ['siswa', 'guru', 'prestasi', 'kegiatan'])->pluck('id'));
         }
 
-        $this->command->info('News seeded successfully!');
+        $this->command->info('News items have been seeded successfully.');
     }
 }

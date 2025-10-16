@@ -14,14 +14,31 @@ class AboutController extends Controller
      */
     public function index()
     {
-        $homepageSetting = HomepageSetting::getActive();
-        $facilities = Facility::available()->take(8)->get();
-        $achievements = Achievement::featured()->orderBy('date', 'desc')->take(8)->get();
+        $homepageSetting = \Cache::remember('homepage_setting_active', 3600, function () {
+            return HomepageSetting::getActive();
+        });
         
-        // Get real statistics from database
-        $statistics = $this->getRealStatistics();
+        $facilities = \Cache::remember('about_facilities', 1800, function () {
+            return Facility::available()
+                ->select(['id', 'name', 'description', 'image', 'category'])
+                ->take(8)
+                ->get();
+        });
         
-        return view('frontend.about.index', compact('homepageSetting', 'facilities', 'achievements', 'statistics'));
+        $achievements = \Cache::remember('about_achievements', 1800, function () {
+            return Achievement::featured()
+                ->select(['id', 'title', 'description', 'date', 'achievement_level', 'category'])
+                ->orderBy('date', 'desc')
+                ->take(8)
+                ->get();
+        });
+        
+        // Get real statistics from database with caching
+        $statistics = \Cache::remember('about_statistics', 1800, function () {
+            return $this->getRealStatistics();
+        });
+        
+        return view('frontend.about.index', compact('homepageSetting', 'facilities', 'achievements', 'statistics'))->with('aboutHomepageSetting', $homepageSetting);
     }
 
     /**
@@ -33,7 +50,7 @@ class AboutController extends Controller
         $totalStudents = \App\Models\User::where('role', 'student')->count();
         $totalTeachers = \App\Models\Teacher::count();
         $totalAchievements = \App\Models\Achievement::where('is_published', true)->count();
-        $totalRegistrations = \App\Models\Registration::count();
+        $totalRegistrations = \App\Models\UserRegistration::count();
         $totalClasses = \App\Models\SchoolClass::count();
         
         // Calculate years of experience

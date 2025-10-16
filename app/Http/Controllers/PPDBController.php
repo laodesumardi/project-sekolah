@@ -2,353 +2,243 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Registration;
-use App\Models\RegistrationSetting;
-use App\Models\AcademicYear;
-use App\Events\NewRegistrationReceived;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Models\UserRegistration;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Services\NotificationService;
 
 class PPDBController extends Controller
 {
     /**
-     * Display PPDB landing page.
+     * Display PPDB form
      */
     public function index()
     {
-        $currentYear = AcademicYear::where('is_active', true)->first();
+        // Get PPDB settings from database
+        $settings = $this->getPPDBSettings();
         
-        if (!$currentYear) {
-            abort(404, 'Tahun ajaran aktif tidak ditemukan.');
+        // Check if registration is open
+        if (!$settings['is_open']) {
+            return view('ppdb.closed', compact('settings'));
         }
-
-        $setting = RegistrationSetting::where('academic_year_id', $currentYear->id)
-            ->where('is_active', true)
-            ->first();
-
-        if (!$setting) {
-            abort(404, 'Pendaftaran PPDB belum dibuka.');
-        }
-
-        // Statistics
-        $totalRegistrations = Registration::where('academic_year_id', $currentYear->id)->count();
-        $pendingCount = Registration::where('academic_year_id', $currentYear->id)
-            ->where('status', 'pending')->count();
-        $acceptedCount = Registration::where('academic_year_id', $currentYear->id)
-            ->where('status', 'accepted')->count();
-
-        return view('ppdb.index', compact('setting', 'totalRegistrations', 'pendingCount', 'acceptedCount'));
+        
+        return view('ppdb.index', compact('settings'));
     }
 
     /**
-     * Display registration form.
+     * Get PPDB settings from database
      */
-    public function form()
+    private function getPPDBSettings()
     {
-        $currentYear = AcademicYear::where('is_active', true)->first();
+        $settings = DB::table('ppdb_settings')->pluck('value', 'key')->toArray();
         
-        if (!$currentYear) {
-            abort(404, 'Tahun ajaran aktif tidak ditemukan.');
-        }
-
-        $setting = RegistrationSetting::where('academic_year_id', $currentYear->id)
-            ->where('is_active', true)
-            ->first();
-
-        if (!$setting) {
-            return redirect()->route('ppdb.index')
-                ->with('error', 'Pengaturan pendaftaran tidak ditemukan.');
-        }
-
-
-        if (!$setting->isRegistrationOpen()) {
-            return redirect()->route('ppdb.index')
-                ->with('error', 'Pendaftaran PPDB belum dibuka atau sudah ditutup.');
-        }
-
-        return view('ppdb.form', compact('setting'));
+        return [
+            'registration_period_start' => $settings['registration_period_start'] ?? date('Y-m-d'),
+            'registration_period_end' => $settings['registration_period_end'] ?? date('Y-m-d', strtotime('+3 months')),
+            'quota' => $settings['quota'] ?? 200,
+            'is_open' => ($settings['is_open'] ?? '1') === '1',
+            'description' => $settings['description'] ?? 'Penerimaan Peserta Didik Baru SMP Negeri 01 Namrole Tahun Ajaran 2025/2026',
+            'requirements' => $settings['requirements'] ?? '• Usia maksimal 15 tahun pada 1 Juli 2025\n• Memiliki ijazah SD/MI atau sederajat\n• Foto berwarna 3x4 (2 lembar)\n• Fotokopi akta kelahiran',
+            'contact_phone' => $settings['contact_phone'] ?? '(021) 1234-5678',
+            'contact_email' => $settings['contact_email'] ?? 'ppdb@smpn01namrole.sch.id',
+            'contact_whatsapp' => $settings['contact_whatsapp'] ?? '0812-3456-7890',
+            'contact_address' => $settings['contact_address'] ?? 'Jl. Pendidikan No. 1, Namrole',
+            'banner_image' => $settings['banner_image'] ?? null,
+            'hero_title' => $settings['hero_title'] ?? 'PPDB 2025',
+            'hero_subtitle' => $settings['hero_subtitle'] ?? 'Penerimaan Peserta Didik Baru',
+            'hero_description' => $settings['hero_description'] ?? 'Bergabunglah dengan keluarga besar SMP Negeri 01 Namrole',
+        ];
     }
 
-
     /**
-     * Submit simplified registration.
+     * Store PPDB registration
      */
-    public function submit(Request $request)
+    public function store(Request $request)
     {
-        $currentYear = AcademicYear::where('is_active', true)->first();
-        
-        if (!$currentYear) {
-            return back()->with('error', 'Tahun akademik aktif tidak ditemukan.');
-        }
-
-        $setting = RegistrationSetting::where('academic_year_id', $currentYear->id)
-            ->where('is_active', true)
-            ->first();
-
-        if (!$setting) {
-            return back()->with('error', 'Pengaturan pendaftaran tidak ditemukan.');
-        }
-
-
-        if (!$setting->isRegistrationOpen()) {
-            return back()->with('error', 'Pendaftaran PPDB belum dibuka atau sudah ditutup.');
-        }
-
-        // Validation rules untuk form yang lengkap
-        $request->validate([
-            'registration_path' => 'required|in:regular,achievement,affirmation',
+        $validator = Validator::make($request->all(), [
             'full_name' => 'required|string|max:255',
-            'nisn' => 'required|string|max:10|min:10|unique:registrations,nisn',
-            'birth_place' => 'required|string|max:255',
-            'birth_date' => 'required|date|before:today|after:2005-01-01',
+            'email' => 'required|email|unique:user_registrations,email',
+            'phone' => 'required|string|max:20',
+            'birth_place' => 'nullable|string|max:100',
+            'birth_date' => 'required|date',
             'gender' => 'required|in:L,P',
-            'religion' => 'required|string|max:50',
-            'school_origin' => 'required|string|max:255',
-            'school_address' => 'nullable|string|max:500',
-            'graduation_year' => 'required|integer|min:2020|max:2025',
-            'child_order' => 'nullable|integer|min:1|max:20',
-            'siblings_count' => 'nullable|integer|min:0|max:20',
-            'father_name' => 'required|string|max:255',
-            'mother_name' => 'required|string|max:255',
-            'father_occupation' => 'nullable|string|max:100',
-            'mother_occupation' => 'nullable|string|max:100',
-            'father_phone' => 'nullable|string|min:10|max:15',
-            'mother_phone' => 'nullable|string|min:10|max:15',
-            'father_income' => 'nullable|string|max:50',
-            'mother_income' => 'nullable|string|max:50',
-            'phone' => 'required|string|min:10|max:15',
-            'email' => 'required|email|unique:registrations,email',
             'address' => 'required|string|max:500',
-            'rt' => 'nullable|string|max:10',
-            'rw' => 'nullable|string|max:10',
-            'village' => 'nullable|string|max:100',
-            'district' => 'nullable|string|max:100',
-            'city' => 'nullable|string|max:100',
+            'city' => 'required|string|max:100',
+            'province' => 'required|string|max:100',
             'postal_code' => 'nullable|string|max:10',
-            'photo' => 'required|image|max:2048|mimes:jpg,jpeg,png',
-            'ijazah' => 'required|file|max:5120|mimes:jpg,jpeg,png,pdf',
-            'skhun' => 'required|file|max:5120|mimes:jpg,jpeg,png,pdf',
-            'kk' => 'required|file|max:5120|mimes:jpg,jpeg,png,pdf',
-            'akta_kelahiran' => 'required|file|max:5120|mimes:jpg,jpeg,png,pdf',
-            'ktp_ortu' => 'nullable|file|max:5120|mimes:jpg,jpeg,png,pdf',
-            // Prestasi fields (optional untuk jalur prestasi)
-            'achievement_name' => 'nullable|string|max:255',
-            'achievement_level' => 'nullable|string|max:50',
-            'achievement_year' => 'nullable|integer|min:2020|max:2025',
-            'achievement_rank' => 'nullable|string|max:100',
+            'school_origin' => 'required|string|max:255',
+            'graduation_year' => 'required|integer|min:2015|max:' . date('Y'),
+            'nisn' => 'nullable|string|max:20',
+            'photo_3x4' => 'required|file|mimes:jpeg,jpg,png|max:2048',
+            'birth_certificate' => 'required|file|mimes:pdf,jpeg,jpg,png|max:5120',
+            'family_card' => 'required|file|mimes:pdf,jpeg,jpg,png|max:5120',
+            'diploma' => 'required|file|mimes:pdf,jpeg,jpg,png|max:5120',
+            'report_card' => 'required|file|mimes:pdf,jpeg,jpg,png|max:5120',
+            'parent_id_card' => 'required|file|mimes:pdf,jpeg,jpg,png|max:5120',
+            'agreed_to_terms' => 'required|accepted',
+            'agreed_to_privacy' => 'required|accepted',
         ], [
-            'full_name.required' => 'Nama lengkap wajib diisi',
-            'nisn.required' => 'NISN wajib diisi',
-            'nisn.unique' => 'NISN sudah terdaftar',
-            'birth_date.required' => 'Tanggal lahir wajib diisi',
-            'gender.required' => 'Jenis kelamin wajib dipilih',
-            'religion.required' => 'Agama wajib dipilih',
-            'school_origin.required' => 'Asal sekolah wajib diisi',
-            'graduation_year.required' => 'Tahun lulus wajib dipilih',
-            'father_name.required' => 'Nama ayah wajib diisi',
-            'mother_name.required' => 'Nama ibu wajib diisi',
-            'phone.required' => 'Nomor telepon wajib diisi',
-            'email.required' => 'Email wajib diisi',
+            'full_name.required' => 'Nama lengkap harus diisi',
+            'email.required' => 'Email harus diisi',
+            'email.email' => 'Format email tidak valid',
             'email.unique' => 'Email sudah terdaftar',
-            'address.required' => 'Alamat wajib diisi',
-            'photo.required' => 'Foto siswa wajib diupload',
-            'ijazah.required' => 'Scan ijazah wajib diupload',
-            'skhun.required' => 'Scan SKHUN wajib diupload',
-            'kk.required' => 'Scan Kartu Keluarga wajib diupload',
-            'akta_kelahiran.required' => 'Scan Akta Kelahiran wajib diupload',
+            'phone.required' => 'Nomor telepon harus diisi',
+            'birth_date.required' => 'Tanggal lahir harus diisi',
+            'gender.required' => 'Jenis kelamin harus dipilih',
+            'address.required' => 'Alamat harus diisi',
+            'city.required' => 'Kota harus diisi',
+            'province.required' => 'Provinsi harus diisi',
+            'school_origin.required' => 'Asal sekolah harus diisi',
+            'graduation_year.required' => 'Tahun lulus harus diisi',
+            'photo_3x4.required' => 'Foto 3x4 harus diupload.',
+            'photo_3x4.mimes' => 'Foto 3x4 harus berupa file JPEG, JPG, atau PNG.',
+            'photo_3x4.max' => 'Foto 3x4 maksimal 2MB.',
+            'birth_certificate.required' => 'Akta kelahiran harus diupload.',
+            'birth_certificate.mimes' => 'Akta kelahiran harus berupa file PDF, JPEG, JPG, atau PNG.',
+            'birth_certificate.max' => 'Akta kelahiran maksimal 5MB.',
+            'family_card.required' => 'Kartu keluarga harus diupload.',
+            'family_card.mimes' => 'Kartu keluarga harus berupa file PDF, JPEG, JPG, atau PNG.',
+            'family_card.max' => 'Kartu keluarga maksimal 5MB.',
+            'diploma.required' => 'Ijazah SD/MI harus diupload.',
+            'diploma.mimes' => 'Ijazah harus berupa file PDF, JPEG, JPG, atau PNG.',
+            'diploma.max' => 'Ijazah maksimal 5MB.',
+            'report_card.required' => 'Rapor SD/MI harus diupload.',
+            'report_card.mimes' => 'Rapor harus berupa file PDF, JPEG, JPG, atau PNG.',
+            'report_card.max' => 'Rapor maksimal 5MB.',
+            'parent_id_card.required' => 'KTP orang tua harus diupload.',
+            'parent_id_card.mimes' => 'KTP orang tua harus berupa file PDF, JPEG, JPG, atau PNG.',
+            'parent_id_card.max' => 'KTP orang tua maksimal 5MB.',
+            'agreed_to_terms.required' => 'Anda harus menyetujui syarat dan ketentuan',
+            'agreed_to_privacy.required' => 'Anda harus menyetujui kebijakan privasi',
         ]);
 
-        // Check quota
-        $currentCount = Registration::where('academic_year_id', $currentYear->id)
-            ->where('registration_path', $request->registration_path)
-            ->count();
-
-        $quotaField = 'quota_' . $request->registration_path;
-        if ($currentCount >= $setting->$quotaField) {
-            return back()->with('error', "Kuota jalur {$request->registration_path} sudah penuh.");
-        }
-
-        // Generate registration number
-        $year = date('Y');
-        $lastRegistration = Registration::where('academic_year_id', $currentYear->id)
-            ->where('registration_number', 'like', "PPDB{$year}%")
-            ->orderBy('registration_number', 'desc')
-            ->first();
-        
-        $sequence = 1;
-        if ($lastRegistration) {
-            $lastSequence = (int) substr($lastRegistration->registration_number, -4);
-            $sequence = $lastSequence + 1;
-        }
-        
-        $registrationNumber = "PPDB{$year}" . str_pad($sequence, 4, '0', STR_PAD_LEFT);
-
-        // Handle file uploads
-        $photoPath = null;
-        $ijazahPath = null;
-        $skhunPath = null;
-        $kkPath = null;
-        $aktaPath = null;
-        $ktpPath = null;
-
-        if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('registrations', 'public');
-        }
-        if ($request->hasFile('ijazah')) {
-            $ijazahPath = $request->file('ijazah')->store('registrations', 'public');
-        }
-        if ($request->hasFile('skhun')) {
-            $skhunPath = $request->file('skhun')->store('registrations', 'public');
-        }
-        if ($request->hasFile('kk')) {
-            $kkPath = $request->file('kk')->store('registrations', 'public');
-        }
-        if ($request->hasFile('akta_kelahiran')) {
-            $aktaPath = $request->file('akta_kelahiran')->store('registrations', 'public');
-        }
-        if ($request->hasFile('ktp_ortu')) {
-            $ktpPath = $request->file('ktp_ortu')->store('registrations', 'public');
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
         }
 
         try {
+            // Handle file uploads
+            $filePaths = [];
+            $fileFields = [
+                'photo_3x4',
+                'birth_certificate', 
+                'family_card',
+                'diploma',
+                'report_card',
+                'parent_id_card'
+            ];
+
+            foreach ($fileFields as $field) {
+                if ($request->hasFile($field)) {
+                    $file = $request->file($field);
+                    $filename = time() . '_' . $field . '_' . $file->getClientOriginalName();
+                    $path = $file->storeAs('ppdb/documents', $filename, 'public');
+                    $filePaths[$field] = $path;
+                }
+            }
+
+            // Generate registration number
+            $registrationNumber = $this->generateRegistrationNumber();
+            
             // Create registration
-            $registration = Registration::create([
-                'academic_year_id' => $currentYear->id,
-                'registration_setting_id' => $setting->id,
+            $registration = UserRegistration::create([
                 'registration_number' => $registrationNumber,
-                'registration_path' => $request->registration_path,
+                'registration_type' => 'student',
                 'full_name' => $request->full_name,
-                'nisn' => $request->nisn,
+                'email' => $request->email,
+                'phone' => $request->phone,
                 'birth_place' => $request->birth_place,
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
-                'religion' => $request->religion,
-                'school_origin' => $request->school_origin,
-                'school_address' => $request->school_address,
-                'graduation_year' => $request->graduation_year,
-                'child_order' => $request->child_order,
-                'siblings_count' => $request->siblings_count,
-                'father_name' => $request->father_name,
-                'mother_name' => $request->mother_name,
-                'father_occupation' => $request->father_occupation ?: 'Tidak Diketahui',
-                'mother_occupation' => $request->mother_occupation ?: 'Tidak Diketahui',
-                'father_phone' => $request->father_phone,
-                'mother_phone' => $request->mother_phone,
-                'father_income' => $request->father_income,
-                'mother_income' => $request->mother_income,
-                'phone' => $request->phone,
-                'email' => $request->email,
                 'address' => $request->address,
-                'rt' => $request->rt,
-                'rw' => $request->rw,
-                'village' => $request->village,
-                'district' => $request->district,
                 'city' => $request->city,
+                'province' => $request->province,
                 'postal_code' => $request->postal_code,
-                'photo' => $photoPath,
-                'ijazah' => $ijazahPath,
-                'skhun' => $skhunPath,
-                'kk' => $kkPath,
-                'akta_kelahiran' => $aktaPath,
-                'ktp_ortu' => $ktpPath,
-                'achievement_name' => $request->achievement_name,
-                'achievement_level' => $request->achievement_level,
-                'achievement_year' => $request->achievement_year,
-                'achievement_rank' => $request->achievement_rank,
-                'status' => 'pending',
+                'school_origin' => $request->school_origin,
+                'graduation_year' => $request->graduation_year,
+                'nisn' => $request->nisn,
+                'photo_3x4' => $filePaths['photo_3x4'] ?? null,
+                'birth_certificate' => $filePaths['birth_certificate'] ?? null,
+                'family_card' => $filePaths['family_card'] ?? null,
+                'diploma' => $filePaths['diploma'] ?? null,
+                'report_card' => $filePaths['report_card'] ?? null,
+                'parent_id_card' => $filePaths['parent_id_card'] ?? null,
+                'password' => Str::random(12), // Generate random password
+                'agreed_to_terms' => true,
+                'agreed_to_privacy' => true,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
             ]);
 
-            // Broadcast notification to admin
-            event(new NewRegistrationReceived($registration));
+            // Send notification to admins
+            NotificationService::notifyNewPPDBRegistration($registration);
 
-            return redirect()->route('ppdb.confirmation', $registration->registration_number)
-                ->with('success', 'Pendaftaran berhasil! Nomor pendaftaran Anda: ' . $registrationNumber);
+            return redirect()->route('ppdb.success', $registration->registration_number)
+                ->with('success', 'Pendaftaran berhasil! Silakan cek email untuk informasi selanjutnya.');
                 
         } catch (\Exception $e) {
-            // Log error
-            \Log::error('PPDB Registration Error: ' . $e->getMessage());
-            
             return back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.')
                 ->withInput();
         }
     }
 
     /**
-     * Display confirmation page.
+     * Show success page
      */
-    public function confirmation($registrationNumber)
+    public function success($registrationNumber)
     {
-        $registration = Registration::where('registration_number', $registrationNumber)->firstOrFail();
-
-        return view('ppdb.confirmation', compact('registration'));
+        $registration = UserRegistration::where('registration_number', $registrationNumber)->first();
+        
+        if (!$registration) {
+            return redirect()->route('ppdb.index')->with('error', 'Data pendaftaran tidak ditemukan.');
+        }
+        
+        return view('ppdb.success', compact('registration'));
     }
 
     /**
-     * Download registration form.
+     * Show status check form
      */
-    public function downloadForm($registrationNumber)
+    public function checkStatusForm()
     {
-        $registration = Registration::where('registration_number', $registrationNumber)->firstOrFail();
-
-        return view('ppdb.download-form', compact('registration'));
+        return view('ppdb.status');
     }
 
     /**
-     * Display status check form.
-     */
-    public function statusForm()
-    {
-        $setting = RegistrationSetting::getActive();
-        return view('ppdb.status', compact('setting'));
-    }
-
-    /**
-     * Check registration status.
+     * Check registration status
      */
     public function checkStatus(Request $request)
     {
         $request->validate([
             'registration_number' => 'required|string',
+            'email' => 'required|email',
         ]);
 
-        $registration = Registration::where('registration_number', $request->registration_number)
+        $registration = UserRegistration::where('registration_number', $request->registration_number)
+            ->where('email', $request->email)
             ->first();
 
         if (!$registration) {
             return back()->with('error', 'Data pendaftaran tidak ditemukan.');
         }
 
-        return back()->with('registration', $registration);
+        return view('ppdb.status', compact('registration'));
     }
 
     /**
-     * Display announcement page.
+     * Generate unique registration number
      */
-    public function announcement(Request $request)
+    private function generateRegistrationNumber()
     {
-        $currentYear = AcademicYear::where('is_active', true)->first();
+        $year = date('Y');
+        $prefix = "PPDB{$year}";
         
-        $query = Registration::where('academic_year_id', $currentYear->id)
-            ->whereIn('status', ['accepted', 'rejected', 'reserved']);
-
-        // Filter by path
-        if ($request->path) {
-            $query->where('registration_path', $request->path);
-        }
-
-        // Search
-        if ($request->search) {
-            $query->where(function ($q) use ($request) {
-                $q->where('full_name', 'like', '%' . $request->search . '%')
-                  ->orWhere('registration_number', 'like', '%' . $request->search . '%');
-            });
-        }
-
-        $registrations = $query->orderBy('created_at', 'desc')->paginate(20);
-
-        return view('ppdb.announcement', compact('registrations'));
+        do {
+            $number = $prefix . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        } while (UserRegistration::where('registration_number', $number)->exists());
+        
+        return $number;
     }
-
 }
-

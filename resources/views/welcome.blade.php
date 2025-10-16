@@ -63,22 +63,16 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div class="animate-slide-up">
                 <h2 class="text-4xl font-bold text-primary-500 mb-6">Tentang Kami</h2>
-                <p class="text-lg text-gray-600 mb-6 leading-relaxed">
-                    SMP Negeri 01 Namrole adalah lembaga pendidikan menengah pertama yang telah berdiri sejak tahun 1985. 
-                    Kami berkomitmen untuk memberikan pendidikan berkualitas tinggi yang mengintegrasikan aspek akademik, 
-                    karakter, dan keterampilan hidup.
-                </p>
-                <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                    Dengan fasilitas modern, tenaga pendidik yang berpengalaman, dan kurikulum yang disesuaikan dengan 
-                    perkembangan zaman, kami siap membimbing setiap siswa untuk meraih prestasi terbaik mereka.
-                </p>
-                <a href="{{ route('academic.curriculum') }}" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <div class="text-lg text-gray-600 mb-8 leading-relaxed">
+                    {!! $homepageSetting && $homepageSetting->about_description ? nl2br(e($homepageSetting->about_description)) : 'SMP Negeri 01 Namrole adalah lembaga pendidikan menengah pertama yang telah berdiri sejak tahun 1985. Kami berkomitmen untuk memberikan pendidikan berkualitas tinggi yang mengintegrasikan aspek akademik, karakter, dan keterampilan hidup.<br><br>Dengan fasilitas modern, tenaga pendidik yang berpengalaman, dan kurikulum yang disesuaikan dengan perkembangan zaman, kami siap membimbing setiap siswa untuk meraih prestasi terbaik mereka.' !!}
+                </div>
+                <a href="{{ route('about') }}" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
                     Selengkapnya
                 </a>
             </div>
             <div class="animate-fade-in">
                 <div class="relative">
-                    <img src="{{ asset('Screenshot 2025-10-08 152932.png') }}" alt="Sekolah Building" class="w-full h-96 object-cover rounded-2xl shadow-2xl">
+                    <img src="{{ $homepageSetting && $homepageSetting->school_image ? $homepageSetting->school_image_url : asset('images/placeholder-school.jpg') }}" alt="Gambar Sekolah" class="w-full h-96 object-cover rounded-2xl shadow-2xl" onerror="this.src='{{ asset('images/placeholder-school.jpg') }}'">
                     <div class="absolute inset-0 bg-primary-500 bg-opacity-20 rounded-2xl"></div>
                 </div>
             </div>
@@ -292,7 +286,7 @@
             <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                 <img src="{{ asset('Screenshot 2025-10-08 152932.png') }}" alt="Berita 1" class="w-full h-48 object-cover">
                 <div class="p-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Pembukaan PPDB 2024</h3>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Pembukaan PPDB 2025</h3>
                     <p class="text-gray-600 text-sm mb-4">Pendaftaran Peserta Didik Baru (PPDB) tahun 2024 telah dibuka. Segera daftarkan putra-putri Anda...</p>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-500">12 Oktober 2024</span>
@@ -460,7 +454,7 @@
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="{{ route('ppdb.index') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-                Daftar PPDB 2024
+                Daftar PPDB 2025
             </a>
         </div>
     </div>

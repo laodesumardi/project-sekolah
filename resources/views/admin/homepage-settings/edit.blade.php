@@ -153,6 +153,18 @@
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <div>
+                        <label for="about_description" class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Tentang Kami (Homepage)</label>
+                        <textarea id="about_description" name="about_description" rows="6" 
+                                  placeholder="SMP Negeri 01 Namrole adalah lembaga pendidikan menengah pertama yang telah berdiri sejak tahun 1985. Kami berkomitmen untuk memberikan pendidikan berkualitas tinggi yang mengintegrasikan aspek akademik, karakter, dan keterampilan hidup.
+
+Dengan fasilitas modern, tenaga pendidik yang berpengalaman, dan kurikulum yang disesuaikan dengan perkembangan zaman, kami siap membimbing setiap siswa untuk meraih prestasi terbaik mereka."
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">{{ old('about_description', $homepageSetting->about_description ?? '') }}</textarea>
+                        @error('about_description')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
                 <div class="space-y-4">
@@ -271,14 +283,61 @@
 
                 <div>
                     <label for="logo" class="block text-sm font-medium text-gray-700 mb-2">Logo Sekolah</label>
-                    <input type="file" id="logo" name="logo" accept="image/*" 
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                    
+                    <!-- Current Logo Display -->
+                    @if($homepageSetting && $homepageSetting->logo)
+                        <div class="mb-4">
+                            <p class="text-sm text-gray-600 mb-2">Logo saat ini:</p>
+                            <div class="relative inline-block">
+                                <img src="{{ Storage::url($homepageSetting->logo) }}" 
+                                     alt="Current Logo" 
+                                     class="h-20 w-20 object-contain border border-gray-300 rounded-lg">
+                                <button type="button" 
+                                        onclick="removeCurrentLogo()" 
+                                        class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600">
+                                    ×
+                                </button>
+                            </div>
+                            <input type="hidden" name="remove_logo" id="remove_logo" value="0">
+                        </div>
+                    @endif
+                    
+                    <!-- Logo Upload Area -->
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-400 transition-colors" 
+                         id="logo-upload-area">
+                        <div id="logo-upload-content">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div class="mt-4">
+                                <label for="logo" class="cursor-pointer">
+                                    <span class="mt-2 block text-sm font-medium text-gray-900">
+                                        Klik untuk memilih logo
+                                    </span>
+                                    <span class="mt-1 block text-sm text-gray-500">
+                                        PNG, JPG, SVG hingga 2MB
+                                    </span>
+                                </label>
+                                <input type="file" id="logo" name="logo" accept="image/*" 
+                                       class="hidden" onchange="previewLogo(this)">
+                            </div>
+                        </div>
+                        
+                        <!-- New Logo Preview -->
+                        <div id="logo-preview" class="hidden">
+                            <img id="logo-preview-img" class="mx-auto h-20 w-20 object-contain border border-gray-300 rounded-lg">
+                            <div class="mt-2">
+                                <button type="button" onclick="removeNewLogo()" 
+                                        class="text-sm text-red-600 hover:text-red-800">
+                                    Hapus
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
                     @error('logo')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                    @if($homepageSetting && $homepageSetting->logo)
-                        <p class="mt-2 text-sm text-gray-600">Logo saat ini: {{ $homepageSetting->logo }}</p>
-                    @endif
                 </div>
 
                 <div>
@@ -2278,6 +2337,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Logo upload functions
+function previewLogo(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('logo-preview-img').src = e.target.result;
+            document.getElementById('logo-preview').classList.remove('hidden');
+            document.getElementById('logo-upload-content').classList.add('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function removeNewLogo() {
+    document.getElementById('logo').value = '';
+    document.getElementById('logo-preview').classList.add('hidden');
+    document.getElementById('logo-upload-content').classList.remove('hidden');
+}
+
+function removeCurrentLogo() {
+    if (confirm('Apakah Anda yakin ingin menghapus logo saat ini?')) {
+        document.getElementById('remove_logo').value = '1';
+        document.querySelector('.mb-4').style.display = 'none';
+    }
+}
 </script>
 
 @push('styles')

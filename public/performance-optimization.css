@@ -1,0 +1,290 @@
+/**
+ * Performance Optimization CSS
+ * Optimizes website performance with CSS techniques
+ */
+
+/* Critical CSS - Above the fold styles */
+.hero-section {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    will-change: transform;
+}
+
+/* Optimize animations */
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.animate-on-scroll.animated {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Optimize images */
+img {
+    max-width: 100%;
+    height: auto;
+    loading: lazy;
+}
+
+/* Lazy loading styles */
+.lazy {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.lazy.loaded {
+    opacity: 1;
+}
+
+/* Optimize scroll performance */
+* {
+    box-sizing: border-box;
+}
+
+/* Use transform instead of changing layout properties */
+.smooth-scroll {
+    scroll-behavior: smooth;
+}
+
+/* Optimize font loading */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('/fonts/custom-font.woff2') format('woff2');
+    font-display: swap; /* Show fallback font while loading */
+}
+
+/* Optimize critical rendering path */
+.critical-content {
+    contain: layout style paint;
+}
+
+/* Optimize animations with will-change */
+.animated-element {
+    will-change: transform, opacity;
+}
+
+/* Remove will-change after animation */
+.animated-element.animation-complete {
+    will-change: auto;
+}
+
+/* Optimize hover states */
+.hover-optimized {
+    transition: transform 0.2s ease;
+}
+
+.hover-optimized:hover {
+    transform: translateY(-2px);
+}
+
+/* Optimize form elements */
+input, textarea, select {
+    will-change: border-color, box-shadow;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Optimize loading states */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Optimize spinner */
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Optimize grid layouts */
+.grid-optimized {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Optimize flexbox layouts */
+.flex-optimized {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Optimize text rendering */
+.text-optimized {
+    text-rendering: optimizeSpeed;
+    font-smooth: never;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Optimize shadows */
+.shadow-optimized {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    will-change: box-shadow;
+}
+
+/* Optimize borders */
+.border-optimized {
+    border: 1px solid #e5e7eb;
+    will-change: border-color;
+}
+
+/* Optimize background images */
+.bg-optimized {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    will-change: background-image;
+}
+
+/* Optimize transitions */
+.transition-optimized {
+    transition: all 0.2s ease;
+    will-change: transform, opacity;
+}
+
+/* Optimize hover effects */
+.hover-effect {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-effect:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Optimize focus states */
+.focus-optimized:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Optimize responsive images */
+.responsive-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+/* Optimize lazy loading placeholder */
+.lazy-placeholder {
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+}
+
+/* Optimize performance for mobile */
+@media (max-width: 768px) {
+    .mobile-optimized {
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+    }
+    
+    .mobile-optimized * {
+        will-change: auto;
+    }
+}
+
+/* Optimize print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-optimized {
+        color: black !important;
+        background: white !important;
+    }
+}
+
+/* Optimize dark mode */
+@media (prefers-color-scheme: dark) {
+    .dark-optimized {
+        background-color: #1f2937;
+        color: #f9fafb;
+    }
+}
+
+/* Optimize reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .motion-optimized {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Optimize high contrast */
+@media (prefers-contrast: high) {
+    .contrast-optimized {
+        border: 2px solid currentColor;
+    }
+}
+
+/* Optimize performance monitoring */
+.performance-monitor {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    z-index: 9999;
+    display: none;
+}
+
+.performance-monitor.show {
+    display: block;
+}
+
+/* Optimize critical path */
+.critical-path {
+    contain: layout style paint;
+    will-change: transform;
+}
+
+/* Optimize non-critical content */
+.non-critical {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+}
+

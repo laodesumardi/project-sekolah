@@ -4,7 +4,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\GalleryController;
-use App\Http\Controllers\PPDBController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\AcademicController;
 use App\Http\Controllers\LibraryController;
@@ -20,9 +19,27 @@ use App\Http\Controllers\Teacher\GradeController;
 use App\Http\Controllers\Teacher\AttendanceController;
 use App\Http\Controllers\Teacher\LearningMaterialController;
 use App\Http\Controllers\Teacher\ScheduleController as TeacherScheduleController;
+use App\Http\Controllers\Admin\UserRegistrationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// PPDB Routes
+Route::get('/ppdb', [\App\Http\Controllers\PPDBController::class, 'index'])->name('ppdb.index');
+Route::post('/ppdb', [\App\Http\Controllers\PPDBController::class, 'store'])->name('ppdb.store');
+Route::get('/ppdb/success/{registrationNumber}', [\App\Http\Controllers\PPDBController::class, 'success'])->name('ppdb.success');
+Route::get('/ppdb/status', [\App\Http\Controllers\PPDBController::class, 'checkStatusForm'])->name('ppdb.status');
+Route::post('/ppdb/status', [\App\Http\Controllers\PPDBController::class, 'checkStatus'])->name('ppdb.check-status');
+
+// Registration Routes (for user account registration)
+Route::get('/register', [\App\Http\Controllers\RegistrationController::class, 'show'])->name('register');
+Route::post('/register', [\App\Http\Controllers\RegistrationController::class, 'store'])->name('register.store');
+Route::get('/register/success/{registrationNumber}', [\App\Http\Controllers\RegistrationController::class, 'success'])->name('registration.success');
+Route::get('/register/verify/{token}', [\App\Http\Controllers\RegistrationController::class, 'verifyEmail'])->name('registration.verify');
+Route::get('/register/status', function() {
+    return view('auth.registration-status');
+})->name('registration.status');
+Route::post('/register/status', [\App\Http\Controllers\RegistrationController::class, 'checkStatus'])->name('registration.check-status');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -37,17 +54,6 @@ Route::get('/gambar-section', function () {
     return view('section-images.index');
 })->name('section-images');
 
-// PPDB Routes
-Route::prefix('ppdb')->name('ppdb.')->group(function () {
-    Route::get('/', [PPDBController::class, 'index'])->name('index');
-    Route::get('/daftar', [PPDBController::class, 'form'])->name('form');
-    Route::post('/daftar/submit', [PPDBController::class, 'submit'])->name('submit');
-    Route::get('/konfirmasi/{registration_number}', [PPDBController::class, 'confirmation'])->name('confirmation');
-    Route::get('/download-form/{registration_number}', [PPDBController::class, 'downloadForm'])->name('download-form');
-    Route::get('/status', [PPDBController::class, 'statusForm'])->name('status');
-    Route::post('/status', [PPDBController::class, 'checkStatus'])->name('check-status');
-    Route::get('/pengumuman', [PPDBController::class, 'announcement'])->name('announcement');
-});
 
 // News Routes
 Route::get('/berita', [NewsController::class, 'index'])->name('news');
@@ -142,8 +148,40 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
         
+        // User Registrations Management
+        Route::get('/user-registrations', [UserRegistrationController::class, 'index'])->name('user-registrations.index');
+        Route::get('/user-registrations/{userRegistration}', [UserRegistrationController::class, 'show'])->name('user-registrations.show');
+        Route::post('/user-registrations/{userRegistration}/approve', [UserRegistrationController::class, 'approve'])->name('user-registrations.approve');
+        Route::post('/user-registrations/{userRegistration}/reject', [UserRegistrationController::class, 'reject'])->name('user-registrations.reject');
+        Route::post('/user-registrations/bulk-status', [UserRegistrationController::class, 'bulkStatus'])->name('user-registrations.bulk-status');
+        Route::delete('/user-registrations/{userRegistration}', [UserRegistrationController::class, 'destroy'])->name('user-registrations.destroy');
+        Route::get('/user-registrations/export', [UserRegistrationController::class, 'export'])->name('user-registrations.export');
+
+        // PPDB Settings Management
+        Route::get('/ppdb-settings', [\App\Http\Controllers\Admin\PPDBSettingsController::class, 'index'])->name('ppdb-settings.index');
+        Route::put('/ppdb-settings', [\App\Http\Controllers\Admin\PPDBSettingsController::class, 'update'])->name('ppdb-settings.update');
+        Route::post('/ppdb-settings/toggle-status', [\App\Http\Controllers\Admin\PPDBSettingsController::class, 'toggleStatus'])->name('ppdb-settings.toggle-status');
+
+        // PPDB Registrations Management
+        Route::get('/ppdb-registrations', [\App\Http\Controllers\Admin\PPDBRegistrationController::class, 'index'])->name('ppdb-registrations.index');
+        Route::get('/ppdb-registrations/export', [\App\Http\Controllers\Admin\PPDBRegistrationController::class, 'export'])->name('ppdb-registrations.export');
+        Route::post('/ppdb-registrations/bulk-status', [\App\Http\Controllers\Admin\PPDBRegistrationController::class, 'bulkStatus'])->name('ppdb-registrations.bulk-status');
+        Route::get('/ppdb-registrations/{ppdbRegistration}', [\App\Http\Controllers\Admin\PPDBRegistrationController::class, 'show'])->name('ppdb-registrations.show');
+        Route::post('/ppdb-registrations/{ppdbRegistration}/approve', [\App\Http\Controllers\Admin\PPDBRegistrationController::class, 'approve'])->name('ppdb-registrations.approve');
+        Route::post('/ppdb-registrations/{ppdbRegistration}/reject', [\App\Http\Controllers\Admin\PPDBRegistrationController::class, 'reject'])->name('ppdb-registrations.reject');
+        Route::delete('/ppdb-registrations/{ppdbRegistration}', [\App\Http\Controllers\Admin\PPDBRegistrationController::class, 'destroy'])->name('ppdb-registrations.destroy');
+
         // Notifications
         Route::get('/notifications', [\App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('notifications');
+        Route::post('/notifications/mark-read', [\App\Http\Controllers\Admin\NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+        Route::delete('/notifications/delete', [\App\Http\Controllers\Admin\NotificationController::class, 'delete'])->name('notifications.delete');
+        
+        // Notification API
+        Route::get('/api/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('api.notifications');
+        Route::get('/api/notifications/unread-count', [\App\Http\Controllers\NotificationController::class, 'unreadCount'])->name('api.notifications.unread-count');
+        Route::post('/api/notifications/{id}/mark-read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('api.notifications.mark-read');
+        Route::post('/api/notifications/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('api.notifications.mark-all-read');
+        Route::get('/api/notifications/{id}', [\App\Http\Controllers\NotificationController::class, 'show'])->name('api.notifications.show');
         
         // Messages Management
         Route::get('/messages', [\App\Http\Controllers\Admin\MessageController::class, 'index'])->name('messages.index');
@@ -166,6 +204,7 @@ Route::middleware(['auth', 'active'])->group(function () {
         Route::resource('news', \App\Http\Controllers\Admin\NewsController::class);
         Route::post('news/{news}/toggle-featured', [\App\Http\Controllers\Admin\NewsController::class, 'toggleFeatured'])->name('news.toggle-featured');
         Route::post('news/bulk-action', [\App\Http\Controllers\Admin\NewsController::class, 'bulkAction'])->name('news.bulk-action');
+        Route::post('news/export', [\App\Http\Controllers\Admin\NewsController::class, 'export'])->name('news.export');
 
         // Test route for debugging
         Route::get('test-delete', function () {
@@ -186,35 +225,11 @@ Route::middleware(['auth', 'active'])->group(function () {
 
         // Gallery Management
         Route::resource('gallery', \App\Http\Controllers\Admin\GalleryController::class)->parameters([
-            'gallery' => 'gallery'
+            'gallery' => 'gallery:id'
         ]);
         Route::post('gallery/bulk-delete', [\App\Http\Controllers\Admin\GalleryController::class, 'bulkDelete'])->name('gallery.bulk-delete');
         Route::post('gallery/bulk-status', [\App\Http\Controllers\Admin\GalleryController::class, 'bulkStatus'])->name('gallery.bulk-status');
 
-        // PPDB Management
-        Route::prefix('ppdb')->name('ppdb.')->group(function () {
-            Route::get('/dashboard', [\App\Http\Controllers\Admin\PPDBController::class, 'dashboard'])->name('dashboard');
-            Route::get('/pendaftar', [\App\Http\Controllers\Admin\PPDBController::class, 'index'])->name('index');
-            Route::post('/pendaftar', [\App\Http\Controllers\Admin\PPDBController::class, 'store'])->name('store');
-            Route::get('/pendaftar/{registration}/edit', [\App\Http\Controllers\Admin\PPDBController::class, 'edit'])->name('edit');
-            Route::put('/pendaftar/{registration}', [\App\Http\Controllers\Admin\PPDBController::class, 'update'])->name('update');
-            Route::get('/pendaftar/{registration}', [\App\Http\Controllers\Admin\PPDBController::class, 'show'])->name('show');
-            Route::put('/pendaftar/{registration}/status', [\App\Http\Controllers\Admin\PPDBController::class, 'updateStatus'])->name('update-status');
-            Route::post('/pendaftar/bulk-status', [\App\Http\Controllers\Admin\PPDBController::class, 'bulkUpdateStatus'])->name('bulk-status');
-            Route::post('/pendaftar/bulk-delete', [\App\Http\Controllers\Admin\PPDBController::class, 'bulkDelete'])->name('bulk-delete');
-            Route::delete('/pendaftar/{registration}', [\App\Http\Controllers\Admin\PPDBController::class, 'destroy'])->name('destroy');
-            Route::get('/export', [\App\Http\Controllers\Admin\PPDBController::class, 'export'])->name('export');
-            Route::get('/statistics', [\App\Http\Controllers\Admin\PPDBController::class, 'statistics'])->name('statistics');
-            Route::post('/quick-register', [\App\Http\Controllers\Admin\PPDBController::class, 'quickRegister'])->name('quick-register');
-        });
-
-        // PPDB Settings
-        Route::prefix('ppdb-settings')->name('ppdb-settings.')->group(function () {
-            Route::get('/', [\App\Http\Controllers\Admin\PPDBSettingController::class, 'index'])->name('index');
-            Route::post('/', [\App\Http\Controllers\Admin\PPDBSettingController::class, 'store'])->name('store');
-            Route::post('/toggle-status', [\App\Http\Controllers\Admin\PPDBSettingController::class, 'toggleStatus'])->name('toggle-status');
-            Route::get('/quota-statistics', [\App\Http\Controllers\Admin\PPDBSettingController::class, 'quotaStatistics'])->name('quota-statistics');
-        });
 
 
         // Tags Management

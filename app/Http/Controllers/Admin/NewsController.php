@@ -19,37 +19,193 @@ class NewsController extends Controller
      */
     public function index(Request $request)
     {
-        $query = News::with(['category', 'author', 'tags']);
+        // Optimize query with select specific fields and eager loading
+        $query = News::with(['category:id,name', 'author:id,name', 'tags:id,name'])
+            ->select(['id', 'title', 'excerpt', 'image', 'published_at', 'is_featured', 'slug', 'category_id', 'author_id', 'created_at', 'updated_at']);
 
         // Filter by category
-        if ($request->has('category') && $request->category) {
+        if ($request->filled('category')) {
             $query->where('category_id', $request->category);
         }
 
         // Filter by status
-        if ($request->has('status') && $request->status) {
-            if ($request->status === 'published') {
+        if ($request->filled('status')) {
+            switch ($request->status) {
+                case 'published':
                 $query->whereNotNull('published_at')->where('published_at', '<=', now());
-            } elseif ($request->status === 'draft') {
+                    break;
+                case 'draft':
                 $query->whereNull('published_at');
-            } elseif ($request->status === 'scheduled') {
+                    break;
+                case 'scheduled':
                 $query->whereNotNull('scheduled_at')->where('scheduled_at', '>', now());
+                    break;
             }
         }
 
-        // Search
-        if ($request->has('search') && $request->search) {
+        // Search with optimized query
+        if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('content', 'like', "%{$search}%");
+                  ->orWhere('excerpt', 'like', "%{$search}%");
             });
         }
 
-        $news = $query->orderBy('created_at', 'desc')->paginate(15);
-        $categories = NewsCategory::all();
+        // Sort options
+        $sortBy = $request->get('sort', 'latest');
+        switch ($sortBy) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'title':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'views':
+                $query->orderBy('view_count', 'desc');
+                break;
+            case 'latest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
 
-        return view('admin.news.index', compact('news', 'categories'));
+        $news = $query->paginate(15)->withQueryString();
+        
+        // Get categories with count for better UX
+        $categories = NewsCategory::withCount('news')->orderBy('name')->get();
+
+        // Get statistics for dashboard with caching
+        $stats = \Cache::remember('admin_news_stats', 300, function () {
+            return [
+                'total' => News::count(),
+                'published' => News::whereNotNull('published_at')->where('published_at', '<=', now())->count(),
+                'draft' => News::whereNull('published_at')->count(),
+                'featured' => News::where('is_featured', true)->count(),
+            ];
+        });
+
+        return view('admin.news.index', compact('news', 'categories', 'stats'));
+    }
+
+    /**
+     * Handle bulk actions for news items.
+     */
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:delete,publish,draft,featured,unfeatured',
+            'news_ids' => 'required|array|min:1',
+            'news_ids.*' => 'exists:news,id'
+        ]);
+
+        $newsIds = $request->news_ids;
+        $action = $request->action;
+
+        switch ($action) {
+            case 'delete':
+                News::whereIn('id', $newsIds)->delete();
+                $message = count($newsIds) . ' berita berhasil dihapus.';
+                break;
+                
+            case 'publish':
+                News::whereIn('id', $newsIds)->update([
+                    'published_at' => now(),
+                    'updated_at' => now()
+                ]);
+                $message = count($newsIds) . ' berita berhasil dipublish.';
+                break;
+                
+            case 'draft':
+                News::whereIn('id', $newsIds)->update([
+                    'published_at' => null,
+                    'updated_at' => now()
+                ]);
+                $message = count($newsIds) . ' berita berhasil dijadikan draft.';
+                break;
+                
+            case 'featured':
+                News::whereIn('id', $newsIds)->update([
+                    'is_featured' => true,
+                    'updated_at' => now()
+                ]);
+                $message = count($newsIds) . ' berita berhasil dijadikan featured.';
+                break;
+                
+            case 'unfeatured':
+                News::whereIn('id', $newsIds)->update([
+                    'is_featured' => false,
+                    'updated_at' => now()
+                ]);
+                $message = count($newsIds) . ' berita berhasil dihapus dari featured.';
+                break;
+        }
+
+        // Clear cache after bulk action
+        \Cache::forget('admin_news_stats');
+
+        return redirect()->route('admin.news.index')
+            ->with('success', $message);
+    }
+
+    /**
+     * Export news to Excel/CSV.
+     */
+    public function export(Request $request)
+    {
+        $request->validate([
+            'news_ids' => 'required|array|min:1',
+            'news_ids.*' => 'exists:news,id'
+        ]);
+
+        $news = News::whereIn('id', $request->news_ids)
+            ->with(['category', 'author', 'tags'])
+            ->get();
+
+        $filename = 'news_export_' . date('Y-m-d_H-i-s') . '.csv';
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() use ($news) {
+            $file = fopen('php://output', 'w');
+            
+            // CSV Headers
+            fputcsv($file, [
+                'ID',
+                'Title',
+                'Excerpt',
+                'Category',
+                'Author',
+                'Status',
+                'Featured',
+                'Views',
+                'Published At',
+                'Created At'
+            ]);
+
+            // CSV Data
+            foreach ($news as $newsItem) {
+                fputcsv($file, [
+                    $newsItem->id,
+                    $newsItem->title,
+                    $newsItem->excerpt,
+                    $newsItem->category->name ?? 'N/A',
+                    $newsItem->author->name ?? 'N/A',
+                    $newsItem->published_at ? 'Published' : 'Draft',
+                    $newsItem->is_featured ? 'Yes' : 'No',
+                    $newsItem->view_count ?? 0,
+                    $newsItem->published_at ? $newsItem->published_at->format('Y-m-d H:i:s') : 'N/A',
+                    $newsItem->created_at->format('Y-m-d H:i:s')
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     /**
@@ -204,6 +360,7 @@ class NewsController extends Controller
      */
     public function update(Request $request, News $news)
     {
+        
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -334,6 +491,7 @@ class NewsController extends Controller
      */
     public function destroy(News $news)
     {
+        
         try {
             // Delete image files
             if ($news->image) {
@@ -396,34 +554,4 @@ class NewsController extends Controller
         ]);
     }
 
-    /**
-     * Bulk actions.
-     */
-    public function bulkAction(Request $request)
-    {
-        $request->validate([
-            'action' => 'required|in:delete,publish,draft',
-            'news_ids' => 'required|array',
-            'news_ids.*' => 'exists:news,id'
-        ]);
-
-        $newsIds = $request->news_ids;
-
-        switch ($request->action) {
-            case 'delete':
-                News::whereIn('id', $newsIds)->delete();
-                $message = 'Berita berhasil dihapus.';
-                break;
-            case 'publish':
-                News::whereIn('id', $newsIds)->update(['published_at' => now()]);
-                $message = 'Berita berhasil dipublikasikan.';
-                break;
-            case 'draft':
-                News::whereIn('id', $newsIds)->update(['published_at' => null]);
-                $message = 'Berita berhasil dijadikan draft.';
-                break;
-        }
-
-        return redirect()->route('admin.news.index')->with('success', $message);
-    }
 }

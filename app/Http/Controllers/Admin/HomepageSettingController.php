@@ -36,12 +36,14 @@ class HomepageSettingController extends Controller
             'hero_title' => 'nullable|string|max:255',
             'hero_subtitle' => 'nullable|string|max:255',
             'hero_description' => 'nullable|string',
+            'about_description' => 'nullable|string',
             'hero_button_1_text' => 'nullable|string|max:255',
             'hero_button_1_url' => 'nullable|string|max:255',
             'hero_button_2_text' => 'nullable|string|max:255',
             'hero_button_2_url' => 'nullable|string|max:255',
             'hero_background_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'remove_hero_background' => 'nullable|boolean',
+            'remove_logo' => 'nullable|boolean',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'school_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'contact_phone' => 'nullable|string|max:255',
@@ -161,6 +163,14 @@ class HomepageSettingController extends Controller
             $homepageSetting->hero_background_image = $request->file('hero_background_image')->store('homepage', 'public');
         }
 
+        // Handle logo removal
+        if ($request->has('remove_logo') && $request->remove_logo) {
+            if ($homepageSetting->logo) {
+                Storage::delete($homepageSetting->logo);
+                $homepageSetting->logo = null;
+            }
+        }
+
         if ($request->hasFile('logo')) {
             if ($homepageSetting->logo) {
                 Storage::delete($homepageSetting->logo);
@@ -275,7 +285,7 @@ class HomepageSettingController extends Controller
         }
 
         // Update other fields
-        $homepageSetting->fill($request->except(['hero_background_image', 'logo', 'school_image', 'principal_photo', 'accreditation_certificate', 'about_page_principal_photo', 'about_page_school_photo', 'about_page_organization_chart', 'about_page_background_image', 'curriculum_page_background_image', 'extracurricular_page_background_image', 'gallery_page_background_image', 'news_page_background_image', 'ppdb_page_background_image', 'organization_structure_image', 'library_structure_image', 'remove_hero_background', 'remove_about_background', 'remove_curriculum_background', 'remove_extracurricular_background', 'remove_gallery_background', 'remove_news_background', 'remove_ppdb_background']));
+        $homepageSetting->fill($request->except(['hero_background_image', 'logo', 'school_image', 'principal_photo', 'accreditation_certificate', 'about_page_principal_photo', 'about_page_school_photo', 'about_page_organization_chart', 'about_page_background_image', 'curriculum_page_background_image', 'extracurricular_page_background_image', 'gallery_page_background_image', 'news_page_background_image', 'ppdb_page_background_image', 'organization_structure_image', 'library_structure_image', 'remove_hero_background', 'remove_about_background', 'remove_curriculum_background', 'remove_extracurricular_background', 'remove_gallery_background', 'remove_news_background', 'remove_ppdb_background', 'remove_logo']));
         $homepageSetting->is_active = true;
         $homepageSetting->save();
 

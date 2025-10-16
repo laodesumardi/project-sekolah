@@ -66,7 +66,7 @@
                             {{ $gallery->total_photos }} foto
                         </span>
                     </div>
-                    <a href="{{ route('gallery.show', $gallery->slug) }}" class="mt-4 inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
+                    <a href="{{ route('gallery.show', $gallery->slug ?? 'no-slug') }}" class="mt-4 inline-flex items-center text-primary-600 hover:text-primary-700 font-medium">
                         Lihat Album
                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -124,7 +124,7 @@
                         <img src="{{ $gallery->cover_image_url }}" alt="{{ $gallery->title }}" class="w-full h-64 object-cover">
                         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
                             <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <a href="{{ route('gallery.show', $gallery->slug) }}" class="bg-white text-primary-600 px-4 py-2 rounded-lg font-medium hover:bg-primary-600 hover:text-white transition-colors">
+                                <a href="{{ route('gallery.show', $gallery->slug ?? 'no-slug') }}" class="bg-white text-primary-600 px-4 py-2 rounded-lg font-medium hover:bg-primary-600 hover:text-white transition-colors">
                                     Lihat Album
                                 </a>
                             </div>

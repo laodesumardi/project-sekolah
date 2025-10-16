@@ -2,7 +2,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
     @foreach($galleries as $gallery)
     <div class="group gallery-card bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-3 overflow-hidden cursor-pointer"
-         onclick="window.location.href='{{ route('gallery.show', $gallery->slug) }}'">
+         onclick="window.location.href='{{ route('gallery.show', $gallery->slug ?? 'no-slug') }}'">
         
         <!-- Cover Image Section -->
         <div class="relative overflow-hidden" style="aspect-ratio: 16/9;">

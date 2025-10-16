@@ -394,7 +394,7 @@ class AchievementController extends Controller
 
         // Handle documentation images
         if ($request->hasFile('documentation_images')) {
-            $docImages = $achievement->documentation_images ?? [];
+            $docImages = $achievement->getDocumentationImagesArray();
             $docDir = storage_path('app/public/achievements/documentation');
             if (!file_exists($docDir)) {
                 mkdir($docDir, 0755, true);
@@ -446,8 +446,9 @@ class AchievementController extends Controller
             Storage::delete('public/achievements/trophies/' . $achievement->trophy_image);
         }
 
-        if ($achievement->documentation_images) {
-            foreach ($achievement->documentation_images as $image) {
+        $documentationImages = $achievement->getDocumentationImagesArray();
+        if (!empty($documentationImages)) {
+            foreach ($documentationImages as $image) {
                 Storage::delete('public/achievements/documentation/' . $image);
             }
         }

@@ -225,7 +225,7 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <a href="{{ route('ppdb.index') }}" class="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 group">
+            <a href="{{ route('register') }}" class="bg-white rounded-lg p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 group">
                 <div class="flex items-center mb-4">
                     <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center group-hover:bg-primary-500 transition-colors duration-300">
                         <svg class="w-6 h-6 text-primary-500 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">

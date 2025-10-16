@@ -50,15 +50,18 @@ class GalleryController extends Controller
             'lainnya' => 'Lainnya'
         ];
 
-        // Get featured galleries
-        $featuredGalleries = Gallery::published()
-            ->featured()
-            ->with(['images' => function($q) {
-                $q->orderBy('sort_order')->orderBy('id');
-            }])
-            ->recent()
-            ->limit(6)
-            ->get();
+        // Get featured galleries with caching
+        $featuredGalleries = \Cache::remember('galleries_featured', 1800, function () {
+            return Gallery::published()
+                ->featured()
+                ->with(['images' => function($q) {
+                    $q->orderBy('sort_order')->orderBy('id');
+                }])
+                ->recent()
+                ->select(['id', 'title', 'slug', 'description', 'category', 'date', 'cover_image', 'is_featured', 'view_count'])
+                ->limit(6)
+                ->get();
+        });
 
         return view('gallery.index', compact('galleries', 'categories', 'featuredGalleries'));
     }

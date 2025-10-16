@@ -147,6 +147,20 @@
                                    required>
                         </div>
 
+                        <!-- Jenis Peserta -->
+                        <div>
+                            <label for="participant_type" class="block text-sm font-medium text-gray-700 mb-2">Jenis Peserta *</label>
+                            <select id="participant_type" 
+                                    name="participant_type" 
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#13315c] focus:border-transparent"
+                                    required>
+                                <option value="">Pilih Jenis Peserta</option>
+                                <option value="individu" {{ old('participant_type') == 'individu' ? 'selected' : '' }}>Individu</option>
+                                <option value="kelompok" {{ old('participant_type') == 'kelompok' ? 'selected' : '' }}>Kelompok</option>
+                                <option value="tim" {{ old('participant_type') == 'tim' ? 'selected' : '' }}>Tim</option>
+                            </select>
+                        </div>
+
                         <!-- Lokasi Event -->
                         <div class="md:col-span-2">
                             <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Lokasi Event</label>

@@ -17,6 +17,36 @@
     :subtitle="$homepageSetting->about_page_description ? Str::limit($homepageSetting->about_page_description, 100) : 'Mengenal lebih dekat SMP Negeri 01 Namrole'"
 />
 
+<!-- Main Content Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="animate-slide-up">
+                <h2 class="text-3xl font-bold text-primary-500 mb-6">Tentang Kami</h2>
+                <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                    SMP Negeri 01 Namrole adalah lembaga pendidikan menengah pertama yang telah berdiri sejak tahun 1985. 
+                    Kami berkomitmen untuk memberikan pendidikan berkualitas tinggi yang mengintegrasikan aspek akademik, 
+                    karakter, dan keterampilan hidup.
+                </p>
+                <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                    Dengan fasilitas modern, tenaga pendidik yang berpengalaman, dan kurikulum yang disesuaikan dengan 
+                    perkembangan zaman, kami siap membimbing setiap siswa untuk meraih prestasi terbaik mereka.
+                </p>
+                <a href="{{ route('academic.curriculum') }}" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    Selengkapnya
+                </a>
+            </div>
+            <div class="animate-fade-in">
+                <div class="relative">
+                    
+                    <img src="{{ $aboutHomepageSetting && $aboutHomepageSetting->school_image ? $aboutHomepageSetting->school_image_url : asset('images/placeholder-school.jpg') }}" alt="Gambar Sekolah" class="w-full h-96 object-cover rounded-2xl shadow-2xl" onerror="this.src='{{ asset('images/placeholder-school.jpg') }}'">
+                    <div class="absolute inset-0 bg-primary-500 bg-opacity-20 rounded-2xl"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Visi & Misi Section -->
 <section class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

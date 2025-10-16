@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Analysis - SMP Negeri 01 Namrole</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #f0f4ff 100%);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .issue {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .critical {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .warning {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+        }
+        .success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .code {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        .metric {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin: 2px;
+        }
+        .metric.critical { background: #dc3545; }
+        .metric.warning { background: #ffc107; color: #000; }
+        .metric.success { background: #28a745; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Performance Analysis - SMP Negeri 01 Namrole</h1>
+        <p>Analisis mendalam untuk mengidentifikasi dan memperbaiki masalah performa website.</p>
+
+        <div class="issue critical">
+            <h3>🚨 CRITICAL ISSUES</h3>
+            <h4>1. N+1 Query Problem di HomeController</h4>
+            <p><strong>Masalah:</strong> Multiple database queries tanpa eager loading</p>
+            <div class="code">
+// HomeController.php - Line 46-75
+$totalStudents = \App\Models\User::where('role', 'student')->count();
+$totalTeachers = \App\Models\Teacher::count();
+$totalAchievements = \App\Models\Achievement::where('is_published', true)->count();
+// 8+ separate queries untuk statistics
+            </div>
+            <p><strong>Impact:</strong> <span class="metric critical">HIGH</span> - 8+ database queries per request</p>
+        </div>
+
+        <div class="issue critical">
+            <h4>2. Missing Database Indexes</h4>
+            <p><strong>Masalah:</strong> Queries tanpa index yang optimal</p>
+            <div class="code">
+// Queries yang membutuhkan index:
+- users.role
+- achievements.is_published
+- achievements.achievement_level
+- news.published_at
+- galleries.published
+            </div>
+            <p><strong>Impact:</strong> <span class="metric critical">HIGH</span> - Slow query execution</p>
+        </div>
+
+        <div class="issue warning">
+            <h4>3. Heavy Image Loading</h4>
+            <p><strong>Masalah:</strong> Banyak gambar tanpa lazy loading</p>
+            <div class="code">
+// Gallery, News, Facilities images loaded immediately
+// No image optimization or compression
+// Missing WebP format support
+            </div>
+            <p><strong>Impact:</strong> <span class="metric warning">MEDIUM</span> - Large initial page load</p>
+        </div>
+
+        <div class="issue warning">
+            <h4>4. Missing Caching Strategy</h4>
+            <p><strong>Masalah:</strong> No caching untuk data yang jarang berubah</p>
+            <div class="code">
+// Statistics, HomepageSettings, Categories
+// Should be cached for 1-24 hours
+// No Redis/Memcached implementation
+            </div>
+            <p><strong>Impact:</strong> <span class="metric warning">MEDIUM</span> - Repeated database hits</p>
+        </div>
+
+        <div class="issue warning">
+            <h4>5. Large CSS/JS Bundle</h4>
+            <p><strong>Masalah:</strong> Bundle size terlalu besar</p>
+            <div class="code">
+// Current bundle sizes:
+CSS: 101.75 kB (gzip: 14.83 kB)
+JS: 86.66 kB (gzip: 32.10 kB)
+// Should be optimized further
+            </div>
+            <p><strong>Impact:</strong> <span class="metric warning">MEDIUM</span> - Slow asset loading</p>
+        </div>
+
+        <h2>🛠️ SOLUTIONS & OPTIMIZATIONS</h2>
+
+        <div class="issue success">
+            <h3>✅ Database Optimization</h3>
+            <h4>1. Add Database Indexes</h4>
+            <div class="code">
+// Migration untuk indexes
+Schema::table('users', function (Blueprint $table) {
+    $table->index('role');
+});
+
+Schema::table('achievements', function (Blueprint $table) {
+    $table->index(['is_published', 'achievement_level']);
+    $table->index(['is_published', 'category']);
+});
+
+Schema::table('news', function (Blueprint $table) {
+    $table->index(['published_at', 'is_published']);
+});
+            </div>
+        </div>
+
+        <div class="issue success">
+            <h4>2. Implement Query Optimization</h4>
+            <div class="code">
+// Optimize HomeController statistics
+private function getRealStatistics()
+{
+    return Cache::remember('homepage_statistics', 3600, function () {
+        return [
+            'total_students' => User::where('role', 'student')->count(),
+            'total_teachers' => Teacher::count(),
+            // Cache for 1 hour
+        ];
+    });
+}
+            </div>
+        </div>
+
+        <div class="issue success">
+            <h4>3. Add Eager Loading</h4>
+            <div class="code">
+// NewsController optimization
+$news = News::published()
+    ->with(['category:id,name', 'author:id,name']) // Only needed fields
+    ->select(['id', 'title', 'excerpt', 'published_at', 'category_id', 'author_id'])
+    ->orderBy('published_at', 'desc')
+    ->paginate(15);
+            </div>
+        </div>
+
+        <div class="issue success">
+            <h4>4. Image Optimization</h4>
+            <div class="code">
+// Add lazy loading to images
+&lt;img src="image.jpg" loading="lazy" alt="..."&gt;
+
+// Add WebP support
+&lt;picture&gt;
+    &lt;source srcset="image.webp" type="image/webp"&gt;
+    &lt;img src="image.jpg" alt="..."&gt;
+&lt;/picture&gt;
+            </div>
+        </div>
+
+        <div class="issue success">
+            <h4>5. Implement Caching</h4>
+            <div class="code">
+// Add to HomepageSetting model
+public static function getActive()
+{
+    return Cache::remember('homepage_setting_active', 3600, function () {
+        return self::where('is_active', true)->first();
+    });
+}
+            </div>
+        </div>
+
+        <h2>📊 PERFORMANCE METRICS</h2>
+        <div class="issue">
+            <h3>Current Performance Issues:</h3>
+            <ul>
+                <li><span class="metric critical">8+ DB Queries</span> per homepage load</li>
+                <li><span class="metric critical">No Indexes</span> on frequently queried columns</li>
+                <li><span class="metric warning">Large Images</span> without optimization</li>
+                <li><span class="metric warning">No Caching</span> for static data</li>
+                <li><span class="metric warning">Heavy CSS/JS</span> bundle size</li>
+            </ul>
+        </div>
+
+        <div class="issue success">
+            <h3>Expected Improvements After Optimization:</h3>
+            <ul>
+                <li><span class="metric success">2-3 DB Queries</span> per homepage load</li>
+                <li><span class="metric success">50% Faster</span> query execution</li>
+                <li><span class="metric success">30% Smaller</span> image sizes</li>
+                <li><span class="metric success">80% Faster</span> repeated page loads</li>
+                <li><span class="metric success">20% Smaller</span> bundle size</li>
+            </ul>
+        </div>
+
+        <h2>🎯 PRIORITY ACTIONS</h2>
+        <ol>
+            <li><strong>HIGH PRIORITY:</strong> Add database indexes</li>
+            <li><strong>HIGH PRIORITY:</strong> Implement caching for statistics</li>
+            <li><strong>MEDIUM PRIORITY:</strong> Optimize image loading</li>
+            <li><strong>MEDIUM PRIORITY:</strong> Add eager loading to queries</li>
+            <li><strong>LOW PRIORITY:</strong> Optimize CSS/JS bundle</li>
+        </ol>
+    </div>
+</body>
+</html>
+

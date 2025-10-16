@@ -52,21 +52,26 @@ class ExtracurricularController extends Controller
                 $query->orderBy($sortBy, $sortOrder);
         }
 
-        // Featured
-        $featured = Extracurricular::with(['instructor.user'])
-            ->active()
-            ->featured()
-            ->limit(3)
-            ->get();
+        // Featured with caching
+        $featured = \Cache::remember('extracurriculars_featured', 1800, function () {
+            return Extracurricular::with(['instructor:id,name,user_id', 'instructor.user:id,name'])
+                ->active()
+                ->featured()
+                ->select(['id', 'name', 'description', 'category', 'instructor_id', 'is_featured', 'view_count'])
+                ->limit(3)
+                ->get();
+        });
 
         // Paginate
         $extracurriculars = $query->paginate(9);
 
-        // Categories with count
-        $categories = Extracurricular::select('category', \DB::raw('count(*) as total'))
-            ->active()
-            ->groupBy('category')
-            ->pluck('total', 'category');
+        // Categories with count and caching
+        $categories = \Cache::remember('extracurriculars_categories', 3600, function () {
+            return Extracurricular::select('category', \DB::raw('count(*) as total'))
+                ->active()
+                ->groupBy('category')
+                ->pluck('total', 'category');
+        });
 
         return view('extracurriculars.index', compact(
             'extracurriculars',

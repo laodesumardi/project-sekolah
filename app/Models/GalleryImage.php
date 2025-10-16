@@ -47,7 +47,7 @@ class GalleryImage extends Model
     public function getImageUrlAttribute()
     {
         if ($this->image) {
-            return asset('storage/gallery/' . $this->image);
+            return asset('storage/' . $this->image);
         }
         return asset('images/placeholder-gallery.jpg');
     }
@@ -55,7 +55,7 @@ class GalleryImage extends Model
     public function getThumbnailUrlAttribute()
     {
         if ($this->thumbnail) {
-            return asset('storage/gallery/thumbnails/' . $this->thumbnail);
+            return asset('storage/' . $this->thumbnail);
         }
         return $this->image_url;
     }
@@ -63,7 +63,7 @@ class GalleryImage extends Model
     public function getMediumUrlAttribute()
     {
         if ($this->medium) {
-            return asset('storage/gallery/medium/' . $this->medium);
+            return asset('storage/' . $this->medium);
         }
         return $this->image_url;
     }
