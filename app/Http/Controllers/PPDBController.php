@@ -241,4 +241,30 @@ class PPDBController extends Controller
         
         return $number;
     }
+
+    /**
+     * Session ping to keep session alive
+     */
+    public function sessionPing(Request $request)
+    {
+        // Update session timestamp to keep it alive
+        $request->session()->put('last_activity', time());
+        
+        // Also update the session in database if using database driver
+        if (config('session.driver') === 'database') {
+            $sessionId = $request->session()->getId();
+            DB::table('sessions')
+                ->where('id', $sessionId)
+                ->update([
+                    'last_activity' => time(),
+                    'updated_at' => now()
+                ]);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Session extended',
+            'timestamp' => time()
+        ]);
+    }
 }

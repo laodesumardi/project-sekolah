@@ -1,3 +1,9 @@
-<!-- Placeholder untuk about page background -->
-<!-- Gambar ini akan diganti dengan gambar yang diupload dari admin panel -->
-<!-- Format: JPG, resolusi tinggi, orientasi landscape -->
+<svg width="1200" height="600" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="1200" height="600" fill="url(#paint0_linear_0_1)"/>
+<defs>
+<linearGradient id="paint0_linear_0_1" x1="0" y1="0" x2="1200" y2="600" gradientUnits="userSpaceOnUse">
+<stop stop-color="#4facfe"/>
+<stop offset="1" stop-color="#00f2fe"/>
+</linearGradient>
+</defs>
+</svg>

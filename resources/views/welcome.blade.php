@@ -3,76 +3,205 @@
 @section('title', 'SMP Negeri 01 Namrole - Beranda')
 
 @section('content')
-<!-- Hero Section -->
-<section class="relative overflow-hidden hero-background min-h-screen" 
-         style="background-image: url('{{ $homepageSetting && $homepageSetting->hero_background_image ? $homepageSetting->hero_background_image_url : asset('images/placeholders/placeholder-hero-background.jpg') }}');">
-    <!-- Background dengan gambar dari admin panel dan overlay gelap -->
-    <div class="absolute inset-0 hero-background-overlay"></div>
-    <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'2\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-    <div class="relative max-w-7xl mx-auto mobile-container hero-padding">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div class="text-white animate-fade-in mobile-text-center">
-                <h1 class="hero-title text-3xl lg:text-5xl font-bold mb-6 leading-tight">
+<style>
+/* MOBILE RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    /* Hero Section Mobile */
+    .hero-section {
+        min-height: auto !important;
+        padding: 1rem 0 !important;
+    }
+    
+    /* Mobile Grid */
+    .mobile-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+    
+    /* Mobile Text */
+    .mobile-title {
+        font-size: 1.2rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .mobile-description {
+        font-size: 0.8rem !important;
+        line-height: 1.4 !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .mobile-banner {
+        font-size: 0.7rem !important;
+        padding: 0.3rem 0.6rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Mobile Buttons */
+    .mobile-btn {
+        font-size: 0.8rem !important;
+        padding: 0.5rem 1rem !important;
+        margin-bottom: 0.3rem !important;
+        width: 100% !important;
+    }
+    
+    /* Mobile Image */
+    .mobile-image {
+        height: 12rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Mobile Vision */
+    .mobile-vision-title {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.3rem !important;
+    }
+    
+    .mobile-vision-text {
+        font-size: 0.75rem !important;
+        line-height: 1.3 !important;
+    }
+    
+    /* Mobile Container */
+    .mobile-container {
+        padding: 0.5rem !important;
+    }
+}
+</style>
+<!-- Hero Section - New Design -->
+<section class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 min-h-screen flex items-center hero-section">
+    <!-- Background Image -->
+    <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20" 
+         style="background-image: url('{{ $homepageSetting->hero_background_image_url }}');"></div>
+    
+    <!-- Content Container -->
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mobile-container">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mobile-grid">
+            <!-- Left Content - Welcome -->
+            <div class="text-white space-y-4">
+                <!-- PPDB Banner -->
+                <div class="bg-yellow-400 text-primary-800 px-4 py-2 rounded-full text-center font-bold text-sm sm:text-base inline-block w-full sm:w-auto mobile-banner">
+                    🎓 PPDB 2025/2026 Telah Dibuka!
+                </div>
+                
+                <!-- Title -->
+                <h1 class="text-2xl sm:text-4xl lg:text-6xl font-bold leading-tight mobile-title">
                     {{ $homepageSetting->hero_title ?? 'Selamat Datang di' }}<br>
                     <span class="text-yellow-300">{{ $homepageSetting->hero_subtitle ?? 'SMP Negeri 01 Namrole' }}</span>
                 </h1>
-                <p class="hero-subtitle text-xl lg:text-2xl mb-8 text-gray-200 leading-relaxed">
+                
+                <!-- Description -->
+                <p class="text-sm sm:text-lg lg:text-xl text-gray-200 leading-relaxed mobile-description">
                     {{ $homepageSetting->hero_description ?? 'Menjadi sekolah unggulan yang membentuk generasi berkarakter, berprestasi, dan berakhlak mulia untuk masa depan yang gemilang.' }}
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    @if($homepageSetting && $homepageSetting->hero_button_1_text)
-                        <a href="{{ $homepageSetting->hero_button_1_url ?? route('ppdb.index') }}" class="mobile-btn bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    @if($homepageSetting->hero_button_1_text)
+                        <a href="{{ $homepageSetting->hero_button_1_url ?? url('/ppdb') }}" 
+                           class="bg-yellow-400 hover:bg-yellow-500 text-primary-800 font-bold px-6 py-3 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-xl mobile-btn">
+                            <i class="fas fa-user-plus mr-2"></i>
                             {{ $homepageSetting->hero_button_1_text }}
                         </a>
                     @else
-                        <a href="{{ route('ppdb.index') }}" class="mobile-btn bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
-                            Daftar Sekarang
+                        <a href="{{ url('/ppdb') }}" 
+                           class="bg-yellow-400 hover:bg-yellow-500 text-primary-800 font-bold px-6 py-3 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-xl mobile-btn">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Daftar PPDB 2025
                         </a>
                     @endif
                     
-                    @if($homepageSetting && $homepageSetting->hero_button_2_text)
-                        <a href="{{ $homepageSetting->hero_button_2_url ?? route('about') }}" class="mobile-btn border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105">
+                    @if($homepageSetting->hero_button_2_text)
+                        <a href="{{ $homepageSetting->hero_button_2_url ?? url('/tentang-kami') }}" 
+                           class="border-2 border-white text-white hover:bg-white hover:text-primary-600 font-bold px-6 py-3 rounded-lg text-center transition-all duration-300 transform hover:scale-105 mobile-btn">
+                            <i class="fas fa-info-circle mr-2"></i>
                             {{ $homepageSetting->hero_button_2_text }}
                         </a>
                     @else
-                        <a href="{{ route('about') }}" class="mobile-btn border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105">
+                        <a href="{{ url('/tentang-kami') }}" 
+                           class="border-2 border-white text-white hover:bg-white hover:text-primary-600 font-bold px-6 py-3 rounded-lg text-center transition-all duration-300 transform hover:scale-105 mobile-btn">
+                            <i class="fas fa-info-circle mr-2"></i>
                             Pelajari Lebih Lanjut
                         </a>
                     @endif
                 </div>
-                                        </div>
-            <div class="animate-slide-up">
-                <div class="mobile-card bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
-                    <img src="{{ $homepageSetting && $homepageSetting->school_image ? $homepageSetting->school_image_url : asset('images/placeholder-school.jpg') }}" alt="Gambar Sekolah" class="mobile-img w-full h-64 object-cover rounded-lg">
-                    <div class="text-center mt-6">
-                        <h3 class="text-2xl font-bold text-white mb-2">{{ $homepageSetting->vision_title ?? 'Visi Sekolah' }}</h3>
-                        <p class="text-gray-200">
-                            "{{ $homepageSetting->vision_description ?? 'Terwujudnya sekolah yang unggul dalam prestasi, berkarakter, dan berakhlak mulia' }}"
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            </div>
+            
+            <!-- Right Content - School Image & Vision -->
+            <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-6 shadow-2xl">
+                <img src="{{ $homepageSetting->school_image_url }}" 
+                     alt="SMP Negeri 01 Namrole" 
+                     class="w-full h-48 sm:h-64 lg:h-80 object-cover rounded-lg mb-4 mobile-image">
+                
+                <div class="text-center text-white">
+                    <h3 class="text-lg sm:text-xl lg:text-2xl font-bold mb-3 mobile-vision-title">
+                        {{ $homepageSetting->vision_title ?? 'Visi Sekolah' }}
+                    </h3>
+                    <p class="text-sm sm:text-base lg:text-lg italic mobile-vision-text">
+                        "{{ $homepageSetting->vision_description ?? 'Terwujudnya sekolah yang unggul dalam prestasi, berkarakter, dan berakhlak mulia' }}"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 
+<!-- PPDB CTA Section -->
+<section class="py-8 sm:py-16 lg:py-20 bg-primary-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="bg-white rounded-2xl p-4 sm:p-8 lg:p-12 shadow-2xl">
+            <h2 class="text-xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-6">PPDB 2025/2026 Telah Dibuka!</h2>
+            <p class="text-sm sm:text-xl text-gray-600 mb-4 sm:mb-8">Bergabunglah dengan keluarga besar SMP Negeri 01 Namrole dan wujudkan impian pendidikan terbaik untuk putra-putri Anda</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 mb-4 sm:mb-8">
+                <div class="text-center">
+                    <div class="text-xl sm:text-3xl font-bold text-primary-600">200</div>
+                    <div class="text-xs sm:text-base text-gray-600">Kuota Tersedia</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xl sm:text-3xl font-bold text-primary-600">16 Okt</div>
+                    <div class="text-xs sm:text-base text-gray-600">Mulai Pendaftaran</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xl sm:text-3xl font-bold text-primary-600">22 Jan</div>
+                    <div class="text-xs sm:text-base text-gray-600">Tutup Pendaftaran</div>
+                </div>
+            </div>
+            
+            <div class="flex flex-col gap-2 sm:flex-row sm:gap-4 justify-center">
+                <a href="{{ url('/ppdb') }}" class="bg-primary-600 hover:bg-primary-700 text-white font-bold px-4 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base w-full sm:w-auto">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Daftar Sekarang
+                </a>
+                <a href="{{ url('/ppdb/status') }}" class="border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white font-bold px-4 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 text-sm sm:text-base w-full sm:w-auto">
+                    <i class="fas fa-search mr-2"></i>
+                    Cek Status Pendaftaran
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
 <!-- Profil Singkat Section -->
-<section id="tentang" class="py-20 bg-white">
+<section id="tentang" class="py-12 sm:py-16 lg:py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div class="animate-slide-up">
-                <h2 class="text-4xl font-bold text-primary-500 mb-6">Tentang Kami</h2>
-                <div class="text-lg text-gray-600 mb-8 leading-relaxed">
+                <h2 class="text-3xl sm:text-4xl font-bold text-primary-500 mb-4 sm:mb-6">Tentang Kami</h2>
+                <div class="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 leading-relaxed">
                     {!! $homepageSetting && $homepageSetting->about_description ? nl2br(e($homepageSetting->about_description)) : 'SMP Negeri 01 Namrole adalah lembaga pendidikan menengah pertama yang telah berdiri sejak tahun 1985. Kami berkomitmen untuk memberikan pendidikan berkualitas tinggi yang mengintegrasikan aspek akademik, karakter, dan keterampilan hidup.<br><br>Dengan fasilitas modern, tenaga pendidik yang berpengalaman, dan kurikulum yang disesuaikan dengan perkembangan zaman, kami siap membimbing setiap siswa untuk meraih prestasi terbaik mereka.' !!}
                 </div>
-                <a href="{{ route('about') }}" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <a href="{{ url('/tentang-kami') }}" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base">
                     Selengkapnya
                 </a>
             </div>
-            <div class="animate-fade-in">
+            <div class="animate-fade-in mt-8 lg:mt-0">
                 <div class="relative">
-                    <img src="{{ $homepageSetting && $homepageSetting->school_image ? $homepageSetting->school_image_url : asset('images/placeholder-school.jpg') }}" alt="Gambar Sekolah" class="w-full h-96 object-cover rounded-2xl shadow-2xl" onerror="this.src='{{ asset('images/placeholder-school.jpg') }}'">
+                    <img src="{{ $homepageSetting && $homepageSetting->school_image ? $homepageSetting->school_image_url : asset('images/placeholder-school.jpg') }}" alt="Gambar Sekolah" class="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-2xl shadow-2xl" onerror="this.src='{{ asset('images/placeholder-school.jpg') }}'">
                     <div class="absolute inset-0 bg-primary-500 bg-opacity-20 rounded-2xl"></div>
                 </div>
             </div>
@@ -82,28 +211,28 @@
 
 <!-- Informasi Kepala Sekolah Section -->
 @if($homepageSetting && $homepageSetting->principal_name)
-<section class="py-20 bg-gray-50">
+<section class="py-12 sm:py-16 lg:py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-primary-500 mb-4">Kepala Sekolah</h2>
-            <p class="text-xl text-gray-600">Pemimpin yang berdedikasi untuk kemajuan pendidikan</p>
+        <div class="text-center mb-8 sm:mb-12 lg:mb-16">
+            <h2 class="text-3xl sm:text-4xl font-bold text-primary-500 mb-3 sm:mb-4">Kepala Sekolah</h2>
+            <p class="text-lg sm:text-xl text-gray-600">Pemimpin yang berdedikasi untuk kemajuan pendidikan</p>
         </div>
         
         <div class="max-w-4xl mx-auto">
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 p-8">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 p-6 sm:p-8">
                     <!-- Foto Kepala Sekolah -->
-                    <div class="lg:col-span-1 flex justify-center">
+                    <div class="lg:col-span-1 flex justify-center mb-6 lg:mb-0">
                         <div class="relative">
                             @if($homepageSetting->principal_photo)
-                                <img src="{{ $homepageSetting->principal_photo_url }}" alt="{{ $homepageSetting->principal_name }}" class="w-64 h-64 object-cover rounded-2xl shadow-lg">
+                                <img src="{{ $homepageSetting->principal_photo_url }}" alt="{{ $homepageSetting->principal_name }}" class="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 object-cover rounded-2xl shadow-lg">
                             @else
-                                <div class="w-64 h-64 bg-primary-500 rounded-2xl shadow-lg flex items-center justify-center">
+                                <div class="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 bg-primary-500 rounded-2xl shadow-lg flex items-center justify-center">
                                     <div class="text-center text-white">
-                                        <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                         </svg>
-                                        <p class="text-lg font-semibold">Foto Kepala Sekolah</p>
+                                        <p class="text-sm sm:text-lg font-semibold">Foto Kepala Sekolah</p>
                                     </div>
                                 </div>
                             @endif
@@ -290,7 +419,7 @@
                     <p class="text-gray-600 text-sm mb-4">Pendaftaran Peserta Didik Baru (PPDB) tahun 2024 telah dibuka. Segera daftarkan putra-putri Anda...</p>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-500">12 Oktober 2024</span>
-                        <a href="#" class="text-primary-500 hover:text-primary-600 font-medium">Baca Selengkapnya</a>
+                        <a href="{{ route('news') }}" class="text-primary-500 hover:text-primary-600 font-medium">Baca Selengkapnya</a>
                     </div>
                 </div>
             </div>
@@ -302,7 +431,7 @@
                     <p class="text-gray-600 text-sm mb-4">Siswa SMP Negeri 01 Namrole berhasil meraih prestasi membanggakan dalam olimpiade sains...</p>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-500">10 Oktober 2024</span>
-                        <a href="#" class="text-primary-500 hover:text-primary-600 font-medium">Baca Selengkapnya</a>
+                        <a href="{{ route('news') }}" class="text-primary-500 hover:text-primary-600 font-medium">Baca Selengkapnya</a>
                     </div>
                 </div>
             </div>
@@ -314,7 +443,7 @@
                     <p class="text-gray-600 text-sm mb-4">Berbagai kegiatan ekstrakurikuler menarik tersedia untuk mengembangkan bakat dan minat siswa...</p>
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-500">8 Oktober 2024</span>
-                        <a href="#" class="text-primary-500 hover:text-primary-600 font-medium">Baca Selengkapnya</a>
+                        <a href="{{ route('news') }}" class="text-primary-500 hover:text-primary-600 font-medium">Baca Selengkapnya</a>
                     </div>
                 </div>
             </div>
@@ -322,7 +451,7 @@
         </div>
         
         <div class="text-center mt-12">
-            <a href="{{ route('news') }}" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+            <a href="{{ url('/berita') }}" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
                 Lihat Semua Berita
             </a>
         </div>
@@ -453,7 +582,7 @@
             dan wujudkan impian pendidikan terbaik untuk masa depan mereka.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{{ route('ppdb.index') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+            <a href="{{ url('/ppdb') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
                 Daftar PPDB 2025
             </a>
         </div>

@@ -443,7 +443,7 @@
                 <a href="{{ route('gallery.index') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('gallery*') ? 'text-primary-600 active' : '' }}">
                     Galeri
                 </a>
-                <a href="{{ route('ppdb.index') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('ppdb*') ? 'text-primary-600 active' : '' }}">
+                <a href="{{ url('/ppdb') }}" class="navbar-link text-gray-700 hover:text-primary-500 px-4 py-2 text-sm font-medium transition-colors duration-200 {{ request()->routeIs('ppdb*') ? 'text-primary-600 active' : '' }}">
                     PPDB
                 </a>
                 <div class="relative group">
@@ -624,7 +624,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('ppdb.index') }}" class="mobile-menu-item {{ request()->routeIs('ppdb*') ? 'active' : '' }}">
+                <a href="{{ url('/ppdb') }}" class="mobile-menu-item {{ request()->routeIs('ppdb*') ? 'active' : '' }}">
                     <div class="flex items-center space-x-3">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

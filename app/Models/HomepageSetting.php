@@ -23,6 +23,7 @@ class HomepageSetting extends Model
         'about_description',
         'contact_phone',
         'contact_email',
+        'contact_whatsapp',
         'contact_address',
         'principal_name',
         'principal_title',
@@ -92,6 +93,7 @@ class HomepageSetting extends Model
     public function getSchoolImageUrlAttribute()
     {
         if ($this->school_image) {
+            // Always use local URL for now
             return asset('storage/' . $this->school_image);
         }
         return asset('images/placeholder-school.jpg');
@@ -103,7 +105,10 @@ class HomepageSetting extends Model
     public function getHeroBackgroundImageUrlAttribute()
     {
         if ($this->hero_background_image) {
-            return asset('storage/' . $this->hero_background_image);
+            $url = asset('storage/' . $this->hero_background_image);
+            // Add cache busting parameter
+            $separator = strpos($url, '?') !== false ? '&' : '?';
+            return $url . $separator . 'v=' . time();
         }
         return asset('images/placeholders/placeholder-hero-background.jpg');
     }
@@ -153,7 +158,13 @@ class HomepageSetting extends Model
      */
     public function getAboutPageBackgroundImageUrlAttribute()
     {
-        return $this->about_page_background_image ? asset('storage/' . $this->about_page_background_image) : asset('images/placeholders/placeholder-about-background.jpg');
+        if ($this->about_page_background_image) {
+            $url = asset('storage/' . $this->about_page_background_image);
+            // Add cache busting parameter
+            $separator = strpos($url, '?') !== false ? '&' : '?';
+            return $url . $separator . 'v=' . time();
+        }
+        return asset('images/placeholders/placeholder-about-background.jpg');
     }
 
     /**

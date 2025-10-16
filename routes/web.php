@@ -30,6 +30,7 @@ Route::post('/ppdb', [\App\Http\Controllers\PPDBController::class, 'store'])->na
 Route::get('/ppdb/success/{registrationNumber}', [\App\Http\Controllers\PPDBController::class, 'success'])->name('ppdb.success');
 Route::get('/ppdb/status', [\App\Http\Controllers\PPDBController::class, 'checkStatusForm'])->name('ppdb.status');
 Route::post('/ppdb/status', [\App\Http\Controllers\PPDBController::class, 'checkStatus'])->name('ppdb.check-status');
+Route::post('/ppdb/session-ping', [\App\Http\Controllers\PPDBController::class, 'sessionPing'])->name('ppdb.session-ping');
 
 // Registration Routes (for user account registration)
 Route::get('/register', [\App\Http\Controllers\RegistrationController::class, 'show'])->name('register');

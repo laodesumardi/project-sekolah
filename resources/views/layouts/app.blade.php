@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title', 'SMP Negeri 01 Namrole')</title>
@@ -246,6 +246,238 @@
                 width: 100% !important;
                 height: auto !important;
                 object-fit: cover !important;
+            }
+            
+            /* Mobile hero section fixes */
+            .hero-mobile {
+                min-height: 100vh;
+                padding: 0.5rem 0;
+            }
+            
+            .hero-mobile h1 {
+                font-size: 1.1rem !important;
+                line-height: 1.2 !important;
+                margin-bottom: 0.4rem !important;
+            }
+            
+            .hero-mobile p {
+                font-size: 0.75rem !important;
+                line-height: 1.3 !important;
+                margin-bottom: 0.6rem !important;
+            }
+            
+            .hero-mobile .btn-mobile {
+                width: 100% !important;
+                padding: 0.5rem 0.6rem !important;
+                font-size: 0.75rem !important;
+                margin-bottom: 0.3rem !important;
+                display: block !important;
+            }
+            
+            /* Banner mobile fixes */
+            .banner-mobile {
+                width: 100% !important;
+                text-align: center !important;
+                padding: 0.3rem 0.5rem !important;
+                font-size: 0.65rem !important;
+                margin-bottom: 0.5rem !important;
+                display: block !important;
+            }
+            
+            /* Mobile school image */
+            .school-img-mobile {
+                height: 10rem !important;
+                margin-bottom: 0.4rem !important;
+                width: 100% !important;
+            }
+            
+            /* Mobile vision text */
+            .vision-mobile h3 {
+                font-size: 0.9rem !important;
+                margin-bottom: 0.3rem !important;
+            }
+            
+            .vision-mobile p {
+                font-size: 0.7rem !important;
+                line-height: 1.2 !important;
+            }
+            
+            /* Mobile container fixes */
+            .mobile-container {
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+                max-width: 100% !important;
+            }
+            
+            /* Mobile grid fixes */
+            .mobile-grid {
+                display: block !important;
+                gap: 0.5rem !important;
+            }
+            
+            /* Mobile text fixes */
+            .mobile-text {
+                font-size: 0.75rem !important;
+                line-height: 1.3 !important;
+            }
+            
+            /* Mobile button container */
+            .mobile-btn-container {
+                display: block !important;
+                width: 100% !important;
+            }
+            
+            .mobile-btn-container a {
+                display: block !important;
+                width: 100% !important;
+                margin-bottom: 0.3rem !important;
+            }
+            
+            /* Mobile-specific fixes - FORCE OVERRIDE */
+            @media (max-width: 768px) {
+                /* Force mobile layout */
+                body {
+                    overflow-x: hidden !important;
+                    width: 100% !important;
+                }
+                
+                /* Force container mobile */
+                .mobile-container {
+                    padding-left: 0.5rem !important;
+                    padding-right: 0.5rem !important;
+                    padding-top: 0.5rem !important;
+                    padding-bottom: 0.5rem !important;
+                }
+                
+                /* Force mobile grid to stack with proper order */
+                .mobile-grid {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 0.5rem !important;
+                }
+                
+                /* Mobile Layout Order: Welcome First, Vision Second */
+                .hero-mobile {
+                    order: 1 !important;
+                    width: 100% !important;
+                    text-align: center !important;
+                    margin-bottom: 0.5rem !important;
+                }
+                
+                .vision-mobile {
+                    order: 2 !important;
+                    width: 100% !important;
+                    text-align: center !important;
+                    margin-top: 0.5rem !important;
+                }
+                
+                /* Force mobile order with specific classes */
+                .mobile-welcome-first {
+                    order: 1 !important;
+                    display: block !important;
+                }
+                
+                .mobile-vision-second {
+                    order: 2 !important;
+                    display: block !important;
+                }
+                
+                /* Reduce hero section height on mobile */
+                .mobile-hero-section {
+                    min-height: auto !important;
+                    padding-top: 1rem !important;
+                    padding-bottom: 1rem !important;
+                }
+                
+                /* Force mobile hero text */
+                .hero-mobile h1 {
+                    font-size: 1.2rem !important;
+                    line-height: 1.3 !important;
+                    margin-bottom: 0.5rem !important;
+                    text-align: center !important;
+                }
+                
+                .hero-mobile p {
+                    font-size: 0.9rem !important;
+                    line-height: 1.4 !important;
+                    margin-bottom: 1rem !important;
+                    text-align: center !important;
+                }
+                
+                /* Force mobile banner */
+                .banner-mobile {
+                    font-size: 0.8rem !important;
+                    padding: 0.5rem 0.8rem !important;
+                    margin-bottom: 0.8rem !important;
+                    display: block !important;
+                    width: 100% !important;
+                    text-align: center !important;
+                }
+                
+                /* Force mobile buttons */
+                .btn-mobile {
+                    font-size: 0.85rem !important;
+                    padding: 0.7rem 1rem !important;
+                    margin-bottom: 0.5rem !important;
+                    display: block !important;
+                    width: 100% !important;
+                    text-align: center !important;
+                }
+                
+                /* Force mobile school image */
+                .school-img-mobile {
+                    height: 12rem !important;
+                    margin-bottom: 0.8rem !important;
+                    width: 100% !important;
+                    object-fit: cover !important;
+                }
+                
+                /* Force mobile vision text */
+                .vision-mobile h3 {
+                    font-size: 1rem !important;
+                    margin-bottom: 0.5rem !important;
+                    text-align: center !important;
+                }
+                
+                .vision-mobile p {
+                    font-size: 0.8rem !important;
+                    line-height: 1.3 !important;
+                    text-align: center !important;
+                }
+                
+                /* Force mobile text */
+                .mobile-text {
+                    font-size: 0.9rem !important;
+                    line-height: 1.4 !important;
+                    text-align: center !important;
+                }
+                
+                /* Force mobile button container */
+                .mobile-btn-container {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    gap: 0.3rem !important;
+                }
+                
+                /* Force all text to be smaller */
+                h1, h2, h3, h4, h5, h6 {
+                    font-size: 0.9rem !important;
+                    line-height: 1.2 !important;
+                    margin-bottom: 0.4rem !important;
+                }
+                
+                p, span, div {
+                    font-size: 0.75rem !important;
+                    line-height: 1.3 !important;
+                }
+                
+                /* Force buttons to be touchable */
+                a, button {
+                    min-height: 40px !important;
+                    min-width: 40px !important;
+                    padding: 0.4rem 0.6rem !important;
+                    font-size: 0.75rem !important;
+                }
             }
             
             /* Mobile navigation */
