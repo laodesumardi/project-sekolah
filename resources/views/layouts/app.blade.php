@@ -198,10 +198,91 @@
             background: rgba(0, 0, 0, 0.1);
         }
         
-        /* Responsive background */
+        /* Mobile Responsive Improvements */
         @media (max-width: 768px) {
             .background-section {
                 background-attachment: scroll;
+            }
+            
+            /* Mobile typography */
+            .hero-title {
+                font-size: 1.5rem !important;
+                line-height: 1.4 !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem !important;
+                line-height: 1.5 !important;
+                margin-bottom: 1rem !important;
+            }
+            
+            /* Mobile spacing */
+            .hero-padding {
+                padding: 2rem 1rem !important;
+            }
+            
+            /* Mobile buttons */
+            .mobile-btn {
+                width: 100% !important;
+                padding: 0.75rem 1rem !important;
+                font-size: 0.875rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            
+            /* Mobile container */
+            .mobile-container {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            
+            /* Mobile text alignment */
+            .mobile-text-center {
+                text-align: center !important;
+            }
+            
+            /* Mobile image optimization */
+            .mobile-img {
+                width: 100% !important;
+                height: auto !important;
+                object-fit: cover !important;
+            }
+            
+            /* Mobile navigation */
+            .mobile-nav {
+                padding: 0.5rem 1rem !important;
+            }
+            
+            /* Mobile cards */
+            .mobile-card {
+                margin-bottom: 1rem !important;
+                padding: 1rem !important;
+            }
+        }
+        
+        /* Tablet adjustments */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .hero-title {
+                font-size: 2rem !important;
+                line-height: 1.3 !important;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.125rem !important;
+                line-height: 1.6 !important;
+            }
+        }
+        
+        /* Touch-friendly interactions */
+        @media (hover: none) and (pointer: coarse) {
+            .touch-target {
+                min-height: 44px !important;
+                min-width: 44px !important;
+            }
+            
+            .hover-remove:hover {
+                transform: none !important;
+                box-shadow: none !important;
             }
         }
         

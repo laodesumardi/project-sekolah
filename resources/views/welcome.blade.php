@@ -9,41 +9,41 @@
     <!-- Background dengan gambar dari admin panel dan overlay gelap -->
     <div class="absolute inset-0 hero-background-overlay"></div>
     <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.1\'%3E%3Ccircle cx=\'30\' cy=\'30\' r=\'2\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+    <div class="relative max-w-7xl mx-auto mobile-container hero-padding">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div class="text-white animate-fade-in">
-                <h1 class="text-3xl lg:text-5xl font-bold mb-6 leading-tight">
+            <div class="text-white animate-fade-in mobile-text-center">
+                <h1 class="hero-title text-3xl lg:text-5xl font-bold mb-6 leading-tight">
                     {{ $homepageSetting->hero_title ?? 'Selamat Datang di' }}<br>
                     <span class="text-yellow-300">{{ $homepageSetting->hero_subtitle ?? 'SMP Negeri 01 Namrole' }}</span>
                 </h1>
-                <p class="text-xl lg:text-2xl mb-8 text-gray-200 leading-relaxed">
+                <p class="hero-subtitle text-xl lg:text-2xl mb-8 text-gray-200 leading-relaxed">
                     {{ $homepageSetting->hero_description ?? 'Menjadi sekolah unggulan yang membentuk generasi berkarakter, berprestasi, dan berakhlak mulia untuk masa depan yang gemilang.' }}
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4">
                     @if($homepageSetting && $homepageSetting->hero_button_1_text)
-                        <a href="{{ $homepageSetting->hero_button_1_url ?? route('ppdb.index') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        <a href="{{ $homepageSetting->hero_button_1_url ?? route('ppdb.index') }}" class="mobile-btn bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
                             {{ $homepageSetting->hero_button_1_text }}
                         </a>
                     @else
-                        <a href="{{ route('ppdb.index') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        <a href="{{ route('ppdb.index') }}" class="mobile-btn bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-lg">
                             Daftar Sekarang
                         </a>
                     @endif
                     
                     @if($homepageSetting && $homepageSetting->hero_button_2_text)
-                        <a href="{{ $homepageSetting->hero_button_2_url ?? route('about') }}" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105">
+                        <a href="{{ $homepageSetting->hero_button_2_url ?? route('about') }}" class="mobile-btn border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105">
                             {{ $homepageSetting->hero_button_2_text }}
                         </a>
                     @else
-                        <a href="{{ route('about') }}" class="border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105">
+                        <a href="{{ route('about') }}" class="mobile-btn border-2 border-white text-white hover:bg-white hover:text-primary-500 font-semibold px-8 py-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105">
                             Pelajari Lebih Lanjut
                         </a>
                     @endif
                 </div>
                                         </div>
             <div class="animate-slide-up">
-                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
-                    <img src="{{ $homepageSetting && $homepageSetting->school_image ? $homepageSetting->school_image_url : asset('images/placeholder-school.jpg') }}" alt="Gambar Sekolah" class="w-full h-64 object-cover rounded-lg">
+                <div class="mobile-card bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+                    <img src="{{ $homepageSetting && $homepageSetting->school_image ? $homepageSetting->school_image_url : asset('images/placeholder-school.jpg') }}" alt="Gambar Sekolah" class="mobile-img w-full h-64 object-cover rounded-lg">
                     <div class="text-center mt-6">
                         <h3 class="text-2xl font-bold text-white mb-2">{{ $homepageSetting->vision_title ?? 'Visi Sekolah' }}</h3>
                         <p class="text-gray-200">
