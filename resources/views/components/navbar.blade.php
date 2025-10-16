@@ -624,7 +624,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('register') }}" class="mobile-menu-item {{ request()->routeIs('register*') ? 'active' : '' }}">
+                <a href="{{ route('ppdb.index') }}" class="mobile-menu-item {{ request()->routeIs('ppdb*') ? 'active' : '' }}">
                     <div class="flex items-center space-x-3">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -744,7 +744,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const arrow = document.getElementById(dropdownId.replace('-dropdown', '-arrow'));
 
         if (dropdown) {
-            // Toggle dropdown visibility
+            // Close all other dropdowns first
+            document.querySelectorAll('.mobile-dropdown-content').forEach(otherDropdown => {
+                if (otherDropdown.id !== dropdownId) {
+                    otherDropdown.classList.add('hidden');
+                }
+            });
+
+            // Toggle current dropdown
             if (dropdown.classList.contains('hidden')) {
                 dropdown.classList.remove('hidden');
                 if (arrow) {
@@ -798,6 +805,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const dropdownId = button.getAttribute('data-dropdown');
             toggleMobileDropdown(dropdownId);
         }
+    });
+
+    // Ensure mobile dropdowns work properly
+    document.querySelectorAll('[data-dropdown]').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const dropdownId = this.getAttribute('data-dropdown');
+            toggleMobileDropdown(dropdownId);
+        });
     });
 
     // Prevent dropdown from closing when clicking on submenu items

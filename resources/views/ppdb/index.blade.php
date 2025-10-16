@@ -119,6 +119,47 @@
     </div>
                 @endif
 
+                <!-- Error Notifications -->
+                @if($errors->any())
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-triangle text-red-500 mr-3"></i>
+                            <div>
+                                <h4 class="text-red-800 font-medium">Terjadi Kesalahan!</h4>
+                                <ul class="text-red-700 text-sm mt-1">
+                                    @foreach($errors->all() as $error)
+                                        <li>• {{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                @if(session('success'))
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                            <div>
+                                <h4 class="text-green-800 font-medium">Berhasil!</h4>
+                                <p class="text-green-700 text-sm mt-1">{{ session('success') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-center">
+                            <i class="fas fa-exclamation-circle text-red-500 mr-3"></i>
+                            <div>
+                                <h4 class="text-red-800 font-medium">Gagal!</h4>
+                                <p class="text-red-700 text-sm mt-1">{{ session('error') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 <form id="form" method="POST" action="{{ route('ppdb.store') }}" enctype="multipart/form-data" class="space-y-6">
                     @csrf
                     
@@ -513,8 +554,103 @@
 </section>
 
 <script>
-// File upload preview functionality
+// Form validation and notification system
 document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('form');
+    const submitBtn = document.querySelector('button[type="submit"]');
+    
+    // Form submission with loading state
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Show loading state
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Mengirim...';
+            }
+            
+            // Validate required fields
+            const requiredFields = form.querySelectorAll('[required]');
+            let hasErrors = false;
+            const errorMessages = [];
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    hasErrors = true;
+                    field.classList.add('border-red-500');
+                    errorMessages.push(`${field.previousElementSibling?.textContent?.trim() || field.name} harus diisi`);
+                } else {
+                    field.classList.remove('border-red-500');
+                }
+            });
+            
+            // Validate file uploads
+            const fileInputs = form.querySelectorAll('input[type="file"][required]');
+            fileInputs.forEach(input => {
+                if (!input.files || input.files.length === 0) {
+                    hasErrors = true;
+                    input.classList.add('border-red-500');
+                    errorMessages.push(`${input.previousElementSibling?.textContent?.trim() || input.name} harus diupload`);
+                } else {
+                    input.classList.remove('border-red-500');
+                }
+            });
+            
+            if (hasErrors) {
+                e.preventDefault();
+                
+                // Show error notification
+                showNotification('error', 'Terjadi Kesalahan!', errorMessages.join('<br>'));
+                
+                // Reset button
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Daftar PPDB 2025';
+                }
+            }
+        });
+    }
+    
+    // Notification system
+    function showNotification(type, title, message) {
+        // Remove existing notifications
+        const existingNotifications = document.querySelectorAll('.notification-toast');
+        existingNotifications.forEach(notification => notification.remove());
+        
+        const notification = document.createElement('div');
+        notification.className = 'notification-toast fixed top-4 right-4 z-50 max-w-sm';
+        
+        const bgColor = type === 'error' ? 'bg-red-500' : 'bg-green-500';
+        const icon = type === 'error' ? 'fa-exclamation-triangle' : 'fa-check-circle';
+        
+        notification.innerHTML = `
+            <div class="${bgColor} text-white p-4 rounded-lg shadow-lg">
+                <div class="flex items-center">
+                    <i class="fas ${icon} mr-3"></i>
+                    <div>
+                        <h4 class="font-medium">${title}</h4>
+                        <p class="text-sm opacity-90 mt-1">${message}</p>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 5000);
+    }
+    
+    // Make showNotification globally available
+    window.showNotification = showNotification;
+
+// File upload preview functionality
     const fileInputs = document.querySelectorAll('input[type="file"]');
     
     fileInputs.forEach(input => {
