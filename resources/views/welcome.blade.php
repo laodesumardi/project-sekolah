@@ -96,36 +96,6 @@
                     {{ $homepageSetting->hero_description ?? 'Menjadi sekolah unggulan yang membentuk generasi berkarakter, berprestasi, dan berakhlak mulia untuk masa depan yang gemilang.' }}
                 </p>
                 
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-3">
-                    @if($homepageSetting->hero_button_1_text)
-                        <a href="{{ $homepageSetting->hero_button_1_url ?? route('ppdb.index') }}" 
-                           class="bg-yellow-400 hover:bg-yellow-500 text-primary-800 font-bold px-6 py-3 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-xl mobile-btn">
-                            <i class="fas fa-user-plus mr-2"></i>
-                            {{ $homepageSetting->hero_button_1_text }}
-                        </a>
-                    @else
-                        <a href="{{ route('ppdb.index') }}" 
-                           class="bg-yellow-400 hover:bg-yellow-500 text-primary-800 font-bold px-6 py-3 rounded-lg text-center transition-all duration-300 transform hover:scale-105 shadow-xl mobile-btn">
-                            <i class="fas fa-user-plus mr-2"></i>
-                            Daftar PPDB 2025
-                        </a>
-                    @endif
-                    
-                    @if($homepageSetting->hero_button_2_text)
-                        <a href="{{ $homepageSetting->hero_button_2_url ?? route('about') }}" 
-                           class="border-2 border-white text-white hover:bg-white hover:text-primary-600 font-bold px-6 py-3 rounded-lg text-center transition-all duration-300 transform hover:scale-105 mobile-btn">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            {{ $homepageSetting->hero_button_2_text }}
-                        </a>
-                    @else
-                        <a href="{{ route('about') }}" 
-                           class="border-2 border-white text-white hover:bg-white hover:text-primary-600 font-bold px-6 py-3 rounded-lg text-center transition-all duration-300 transform hover:scale-105 mobile-btn">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            Pelajari Lebih Lanjut
-                        </a>
-                    @endif
-                </div>
             </div>
             
             <!-- Right Content - School Image & Vision -->
