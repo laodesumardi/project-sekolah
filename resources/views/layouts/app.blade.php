@@ -7,9 +7,9 @@
 
     <title>@yield('title', 'SMP Negeri 01 Namrole')</title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ \App\Helpers\ImageHelper::getLogoUrl() }}">
-    <link rel="icon" type="image/x-icon" href="{{ \App\Helpers\ImageHelper::getFaviconUrl() }}">
+    <!-- Favicon with Cache-Busting -->
+    <link rel="icon" type="image/png" href="{{ \App\Helpers\ImageHelper::getLogoUrl() }}?v={{ time() }}">
+    <link rel="icon" type="image/x-icon" href="{{ \App\Helpers\ImageHelper::getFaviconUrl() }}?v={{ time() }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">

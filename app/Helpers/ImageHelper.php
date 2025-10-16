@@ -35,6 +35,18 @@ class ImageHelper
     }
 
     /**
+     * Get image URL with cache-busting for mobile
+     */
+    public static function getImageUrlWithCacheBust($path, $fallback = null)
+    {
+        $url = self::getImageUrl($path, $fallback);
+        
+        // Add timestamp for cache-busting
+        $separator = strpos($url, '?') !== false ? '&' : '?';
+        return $url . $separator . 'v=' . time();
+    }
+
+    /**
      * Get logo URL with fallback
      */
     public static function getLogoUrl()
