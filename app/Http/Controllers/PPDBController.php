@@ -57,6 +57,9 @@ class PPDBController extends Controller
      */
     public function store(Request $request)
     {
+        // Refresh CSRF token for mobile compatibility
+        $request->session()->regenerateToken();
+        
         $validator = Validator::make($request->all(), [
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|unique:user_registrations,email',
@@ -176,7 +179,7 @@ class PPDBController extends Controller
             NotificationService::notifyNewPPDBRegistration($registration);
 
             // Generate success URL with proper domain
-            $successUrl = url('/ppdb/success/' . $registration->registration_number);
+            $successUrl = config('app.url') . '/ppdb/success/' . $registration->registration_number;
             
             return redirect($successUrl)
                 ->with('success', 'Pendaftaran berhasil! Silakan cek email untuk informasi selanjutnya.');
@@ -185,8 +188,16 @@ class PPDBController extends Controller
             \Log::error('PPDB Registration Error: ' . $e->getMessage(), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
+                'user_agent' => $request->userAgent(),
+                'ip' => $request->ip()
             ]);
+            
+            // Check if it's a CSRF token mismatch
+            if (strpos($e->getMessage(), 'CSRF') !== false || strpos($e->getMessage(), '419') !== false) {
+                return back()->with('error', 'Session expired. Silakan refresh halaman dan coba lagi.')
+                    ->withInput();
+            }
             
             return back()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage())
                 ->withInput();
@@ -258,7 +269,7 @@ class PPDBController extends Controller
     {
         // Update session timestamp to keep it alive
         $request->session()->put('last_activity', time());
-        
+
         // Also update the session in database if using database driver
         if (config('session.driver') === 'database') {
             $sessionId = $request->session()->getId();
@@ -270,11 +281,18 @@ class PPDBController extends Controller
                 ]);
         }
         
-        return response()->json([
+        $response = [
             'success' => true,
             'message' => 'Session extended',
             'timestamp' => time()
-        ]);
+        ];
+        
+        // If request is asking for CSRF token refresh
+        if ($request->has('refresh_token') && $request->refresh_token) {
+            $response['csrf_token'] = csrf_token();
+        }
+        
+        return response()->json($response);
     }
 
 }

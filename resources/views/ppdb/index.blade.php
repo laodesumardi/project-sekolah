@@ -1596,29 +1596,57 @@ function showSessionStatus(status, message) {
     }
 }
 
-// Mobile-specific optimizations
-function optimizeForMobile() {
-    // Disable zoom on input focus for iOS
-    const inputs = document.querySelectorAll('input, textarea, select');
-    inputs.forEach(input => {
-        input.addEventListener('focus', function() {
-            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                const viewport = document.querySelector('meta[name="viewport"]');
-                if (viewport) {
-                    viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+    // Mobile-specific optimizations
+    function optimizeForMobile() {
+        // Refresh CSRF token periodically for mobile
+        function refreshCSRFToken() {
+            fetch('/ppdb/session-ping', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ refresh_token: true })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.csrf_token) {
+                    // Update CSRF token in meta tag and form
+                    document.querySelector('meta[name="csrf-token"]').setAttribute('content', data.csrf_token);
+                    const csrfInput = document.querySelector('input[name="_token"]');
+                    if (csrfInput) {
+                        csrfInput.value = data.csrf_token;
+                    }
                 }
-            }
-        });
+            })
+            .catch(error => console.log('CSRF token refresh failed:', error));
+        }
         
-        input.addEventListener('blur', function() {
-            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                const viewport = document.querySelector('meta[name="viewport"]');
-                if (viewport) {
-                    viewport.setAttribute('content', 'width=device-width, initial-scale=1');
+        // Refresh CSRF token every 2 minutes
+        setInterval(refreshCSRFToken, 2 * 60 * 1000);
+        
+        // Disable zoom on input focus for iOS
+        const inputs = document.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                    const viewport = document.querySelector('meta[name="viewport"]');
+                    if (viewport) {
+                        viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+                    }
                 }
-            }
+            });
+            
+            input.addEventListener('blur', function() {
+                if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                    const viewport = document.querySelector('meta[name="viewport"]');
+                    if (viewport) {
+                        viewport.setAttribute('content', 'width=device-width, initial-scale=1');
+                    }
+                }
+            });
         });
-    });
     
     // Optimize file upload for mobile
     const fileInputs = document.querySelectorAll('input[type="file"]');
