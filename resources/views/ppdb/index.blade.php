@@ -372,6 +372,19 @@
         margin-bottom: 0.5rem;
         padding: 0.75rem 1rem;
         font-size: 0.9rem;
+        display: block !important;
+        text-align: center !important;
+        min-height: 44px; /* Minimum touch target size */
+        touch-action: manipulation; /* Prevent double-tap zoom */
+    }
+    
+    /* Ensure buttons are properly spaced on mobile */
+    .flex-col .mobile-btn {
+        margin-bottom: 0.75rem;
+    }
+    
+    .flex-col .mobile-btn:last-child {
+        margin-bottom: 0;
     }
     
     /* Mobile spacing */
@@ -382,6 +395,17 @@
     /* Mobile form sections */
     .ppdb-form-section:last-child {
         margin-bottom: 0;
+    }
+    
+    /* Header buttons mobile optimization */
+    .flex-col .mobile-btn {
+        margin-bottom: 0.75rem;
+        border-radius: 0.5rem;
+    }
+    
+    /* Ensure proper button stacking on mobile */
+    .flex-col {
+        gap: 0.75rem;
     }
 }
 
@@ -501,12 +525,12 @@
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="{{ config('app.url') }}/ppdb/status" 
-               class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 backdrop-blur-sm border border-white border-opacity-30">
+               class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 backdrop-blur-sm border border-white border-opacity-30 mobile-btn">
                 <i class="fas fa-search mr-2"></i>
                 Cek Status Pendaftaran
             </a>
             <a href="#ppdb-form" 
-               class="bg-yellow-400 hover:bg-yellow-500 text-primary-700 font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+               class="bg-yellow-400 hover:bg-yellow-500 text-primary-700 font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl mobile-btn">
                 <i class="fas fa-edit mr-2"></i>
                 Daftar Sekarang
             </a>
@@ -992,13 +1016,13 @@
                     <!-- Submit Button & Status Check -->
                     <div class="flex flex-col sm:flex-row gap-4 justify-center pt-6">
                         <button type="submit" 
-                                class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
+                                class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-200 shadow-lg hover:shadow-xl mobile-btn">
                             <i class="fas fa-paper-plane mr-2"></i>
                             Daftar PPDB 2025
                         </button>
                         
                         <a href="{{ config('app.url') }}/ppdb/status" 
-                           class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-200 shadow-lg hover:shadow-xl text-center">
+                           class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-200 shadow-lg hover:shadow-xl text-center mobile-btn">
                             <i class="fas fa-search mr-2"></i>
                             Cek Status Pendaftaran
                         </a>
