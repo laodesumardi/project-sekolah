@@ -141,11 +141,11 @@
             </div>
             
             <div class="flex flex-col gap-2 sm:flex-row sm:gap-4 justify-center">
-                <a href="{{ route('ppdb.index') }}" class="bg-primary-600 hover:bg-primary-700 text-white font-bold px-4 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base w-full sm:w-auto">
+                <a href="{{ config('app.url') }}/ppdb" class="bg-primary-600 hover:bg-primary-700 text-white font-bold px-4 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base w-full sm:w-auto">
                     <i class="fas fa-user-plus mr-2"></i>
                     Daftar Sekarang
                 </a>
-                <a href="{{ route('ppdb.status') }}" class="border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white font-bold px-4 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 text-sm sm:text-base w-full sm:w-auto">
+                <a href="{{ config('app.url') }}/ppdb/status" class="border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white font-bold px-4 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 text-sm sm:text-base w-full sm:w-auto">
                     <i class="fas fa-search mr-2"></i>
                     Cek Status Pendaftaran
                 </a>
@@ -165,7 +165,7 @@
                 <div class="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 leading-relaxed">
                     {!! $homepageSetting && $homepageSetting->about_description ? nl2br(e($homepageSetting->about_description)) : 'SMP Negeri 01 Namrole adalah lembaga pendidikan menengah pertama yang telah berdiri sejak tahun 1985. Kami berkomitmen untuk memberikan pendidikan berkualitas tinggi yang mengintegrasikan aspek akademik, karakter, dan keterampilan hidup.<br><br>Dengan fasilitas modern, tenaga pendidik yang berpengalaman, dan kurikulum yang disesuaikan dengan perkembangan zaman, kami siap membimbing setiap siswa untuk meraih prestasi terbaik mereka.' !!}
                 </div>
-                <a href="{{ route('about') }}" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base">
+                <a href="{{ config('app.url') }}/tentang-kami" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base">
                     Selengkapnya
                 </a>
             </div>
@@ -421,7 +421,7 @@
         </div>
         
         <div class="text-center mt-12">
-            <a href="{{ route('news') }}" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+            <a href="{{ config('app.url') }}/berita" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
                 Lihat Semua Berita
             </a>
         </div>
@@ -552,7 +552,7 @@
             dan wujudkan impian pendidikan terbaik untuk masa depan mereka.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{{ route('ppdb.index') }}" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+            <a href="{{ config('app.url') }}/ppdb" class="bg-yellow-400 hover:bg-yellow-500 text-primary-500 font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
                 Daftar PPDB 2025
             </a>
         </div>

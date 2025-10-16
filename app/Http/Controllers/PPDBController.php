@@ -175,7 +175,10 @@ class PPDBController extends Controller
             // Send notification to admins
             NotificationService::notifyNewPPDBRegistration($registration);
 
-            return redirect()->route('ppdb.success', $registration->registration_number)
+            // Generate the success URL with proper domain
+            $successUrl = $this->generateSuccessUrl($registration->registration_number);
+            
+            return redirect($successUrl)
                 ->with('success', 'Pendaftaran berhasil! Silakan cek email untuk informasi selanjutnya.');
                 
         } catch (\Exception $e) {
@@ -266,5 +269,25 @@ class PPDBController extends Controller
             'message' => 'Session extended',
             'timestamp' => time()
         ]);
+    }
+
+    /**
+     * Generate success URL with proper domain
+     */
+    private function generateSuccessUrl($registrationNumber)
+    {
+        // Get the current request to determine the proper domain
+        $request = request();
+        $scheme = $request->getScheme();
+        $host = $request->getHost();
+        $port = $request->getPort();
+        
+        // Build the full URL
+        $baseUrl = $scheme . '://' . $host;
+        if (($scheme === 'http' && $port !== 80) || ($scheme === 'https' && $port !== 443)) {
+            $baseUrl .= ':' . $port;
+        }
+        
+        return $baseUrl . '/ppdb/success/' . $registrationNumber;
     }
 }
