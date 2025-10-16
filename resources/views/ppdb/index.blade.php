@@ -316,14 +316,25 @@
     border-radius: 0.5rem;
 }
 
-/* Responsive Typography */
-@media (max-width: 640px) {
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    .ppdb-form-container {
+        padding: 0.5rem;
+    }
+    
+    .ppdb-form-section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
     .ppdb-form-section h3 {
         font-size: 1rem;
+        margin-bottom: 0.75rem;
     }
     
     .ppdb-form-label {
         font-size: 0.8rem;
+        margin-bottom: 0.375rem;
     }
     
     .ppdb-form-input,
@@ -331,11 +342,77 @@
     .ppdb-form-select {
         font-size: 0.8rem;
         padding: 0.625rem 0.875rem;
+        border-radius: 0.375rem;
     }
     
     .ppdb-form-submit {
         font-size: 0.9rem;
         padding: 0.875rem 1.5rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .ppdb-form-grid {
+        gap: 1rem;
+    }
+    
+    /* Mobile file upload */
+    .file-upload-area {
+        padding: 1rem;
+        min-height: 120px;
+    }
+    
+    .file-upload-text {
+        font-size: 0.8rem;
+    }
+    
+    /* Mobile buttons */
+    .mobile-btn {
+        width: 100% !important;
+        margin-bottom: 0.5rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Mobile spacing */
+    .mobile-spacing {
+        margin-bottom: 1rem;
+    }
+    
+    /* Mobile form sections */
+    .ppdb-form-section:last-child {
+        margin-bottom: 0;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    .ppdb-form-container {
+        padding: 0.25rem;
+    }
+    
+    .ppdb-form-section {
+        padding: 0.75rem;
+    }
+    
+    .ppdb-form-section h3 {
+        font-size: 0.9rem;
+    }
+    
+    .ppdb-form-label {
+        font-size: 0.75rem;
+    }
+    
+    .ppdb-form-input,
+    .ppdb-form-textarea,
+    .ppdb-form-select {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .ppdb-form-submit {
+        font-size: 0.8rem;
+        padding: 0.75rem 1rem;
     }
 }
 
@@ -1148,18 +1225,36 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function extendSession() {
         // Send a ping to keep session alive
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+        if (!csrfToken) {
+            console.log('CSRF token not found');
+            return;
+        }
+        
         fetch('/ppdb/session-ping', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
+                'X-Requested-With': 'XMLHttpRequest'
             },
-            body: JSON.stringify({ timestamp: Date.now() })
+            body: JSON.stringify({ 
+                timestamp: Date.now(),
+                user_agent: navigator.userAgent,
+                screen_resolution: screen.width + 'x' + screen.height
+            })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 showSessionStatus('success', 'Session Diperpanjang');
+            } else {
+                showSessionStatus('error', 'Session Bermasalah');
             }
         })
         .catch(error => {
@@ -1172,11 +1267,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Extend session every 5 minutes
         sessionExtendInterval = setInterval(extendSession, 5 * 60 * 1000);
         
-        // Track user activity
-        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+        // Track user activity - mobile optimized
+        const activityEvents = [
+            'mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 
+            'click', 'touchend', 'touchmove', 'keydown', 'input', 'change'
+        ];
+        
+        activityEvents.forEach(event => {
             document.addEventListener(event, function() {
                 lastActivity = Date.now();
-            }, true);
+            }, { passive: true });
         });
         
         // Check for inactivity every minute
@@ -1189,6 +1289,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 showSessionWarning();
             }
         }, 60 * 1000);
+        
+        // Mobile-specific: handle visibility change
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                lastActivity = Date.now();
+                extendSession();
+            }
+        });
+        
+        // Mobile-specific: handle page focus
+        window.addEventListener('focus', function() {
+            lastActivity = Date.now();
+            extendSession();
+        });
     }
     
     function showSessionWarning() {
@@ -1457,6 +1571,57 @@ function showSessionStatus(status, message) {
         }, 3000);
     }
 }
+
+// Mobile-specific optimizations
+function optimizeForMobile() {
+    // Disable zoom on input focus for iOS
+    const inputs = document.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                const viewport = document.querySelector('meta[name="viewport"]');
+                if (viewport) {
+                    viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+                }
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                const viewport = document.querySelector('meta[name="viewport"]');
+                if (viewport) {
+                    viewport.setAttribute('content', 'width=device-width, initial-scale=1');
+                }
+            }
+        });
+    });
+    
+    // Optimize file upload for mobile
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                const file = this.files[0];
+                const maxSize = this.id === 'photo_3x4' ? 2 * 1024 * 1024 : 5 * 1024 * 1024; // 2MB or 5MB
+                
+                if (file.size > maxSize) {
+                    alert('File terlalu besar. Maksimal ' + (maxSize / 1024 / 1024) + 'MB');
+                    this.value = '';
+                    return;
+                }
+                
+                // Show file name
+                const label = this.nextElementSibling;
+                if (label && label.classList.contains('file-upload-text')) {
+                    label.textContent = 'File dipilih: ' + file.name;
+                }
+            }
+        });
+    });
+}
+
+// Initialize mobile optimizations
+optimizeForMobile();
 
 // Show initial session status
 showSessionStatus('success', 'Session Aktif');
