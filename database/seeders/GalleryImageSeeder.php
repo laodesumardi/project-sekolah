@@ -96,3 +96,4 @@ class GalleryImageSeeder extends Seeder
     }
 }
 
+
