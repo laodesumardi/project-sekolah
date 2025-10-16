@@ -423,7 +423,7 @@
         
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{{ route('ppdb.status') }}" 
+            <a href="{{ config('app.url') }}/ppdb/status" 
                class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 backdrop-blur-sm border border-white border-opacity-30">
                 <i class="fas fa-search mr-2"></i>
                 Cek Status Pendaftaran
@@ -554,7 +554,7 @@
                     </div>
                 @endif
 
-                <form id="ppdb-form" method="POST" action="{{ route('ppdb.store') }}" enctype="multipart/form-data" class="space-y-6">
+                <form id="ppdb-form" method="POST" action="{{ config('app.url') }}/ppdb" enctype="multipart/form-data" class="space-y-6">
                     @csrf
                     
                     <!-- Data Pribadi -->
@@ -920,7 +920,7 @@
                             Daftar PPDB 2025
                         </button>
                         
-                        <a href="{{ route('ppdb.status') }}" 
+                        <a href="{{ config('app.url') }}/ppdb/status" 
                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-colors duration-200 shadow-lg hover:shadow-xl text-center">
                             <i class="fas fa-search mr-2"></i>
                             Cek Status Pendaftaran
@@ -934,7 +934,7 @@
         <div class="mt-8 bg-white rounded-lg shadow-md p-6">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                 <h3 class="text-lg font-semibold text-gray-900">Informasi Penting</h3>
-                <a href="{{ route('ppdb.status') }}" 
+                <a href="{{ config('app.url') }}/ppdb/status" 
                    class="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
                     <i class="fas fa-search mr-2"></i>
                     Cek Status Pendaftaran

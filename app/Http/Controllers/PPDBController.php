@@ -175,14 +175,20 @@ class PPDBController extends Controller
             // Send notification to admins
             NotificationService::notifyNewPPDBRegistration($registration);
 
-            // Generate the success URL with proper domain
-            $successUrl = $this->generateSuccessUrl($registration->registration_number);
+            // Generate success URL with proper domain
+            $successUrl = url('/ppdb/success/' . $registration->registration_number);
             
             return redirect($successUrl)
                 ->with('success', 'Pendaftaran berhasil! Silakan cek email untuk informasi selanjutnya.');
                 
         } catch (\Exception $e) {
-            return back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.')
+            \Log::error('PPDB Registration Error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return back()->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage())
                 ->withInput();
         }
     }
@@ -271,23 +277,4 @@ class PPDBController extends Controller
         ]);
     }
 
-    /**
-     * Generate success URL with proper domain
-     */
-    private function generateSuccessUrl($registrationNumber)
-    {
-        // Get the current request to determine the proper domain
-        $request = request();
-        $scheme = $request->getScheme();
-        $host = $request->getHost();
-        $port = $request->getPort();
-        
-        // Build the full URL
-        $baseUrl = $scheme . '://' . $host;
-        if (($scheme === 'http' && $port !== 80) || ($scheme === 'https' && $port !== 443)) {
-            $baseUrl .= ':' . $port;
-        }
-        
-        return $baseUrl . '/ppdb/success/' . $registrationNumber;
-    }
 }
